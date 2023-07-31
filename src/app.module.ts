@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
-import { BoardsModule } from './boards/boards.module';
-import { typeORMConfig } from './configs/typeorm.config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { CatsController } from './cats/cats.controller';
-import { CatsService } from './cats/cats.service';
+import { UsersModule } from './users/users.module';
+import { ReportsModule } from './reports/reports.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeORMConfig), BoardsModule],
-  controllers: [CatsController],
-  providers: [CatsService],
+  controllers: [AppController],
+  providers: [AppService],
+  imports: [UsersModule, ReportsModule],
 })
 export class AppModule {}
