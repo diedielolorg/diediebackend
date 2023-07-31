@@ -31,6 +31,9 @@
 </br>
 
 ## 와이어 프레임
+![메인화면](https://github.com/diedielolorg/diediebackend/assets/96641210/eb90ca94-11af-49d8-84b2-44995ab5eea7)
+![랭킹-1](https://github.com/diedielolorg/diediebackend/assets/96641210/4dc6b221-3689-4fa6-a615-27c5e6e57ca9)
+![Uploading 신고등록-2.png…]()
 
 ## ERD
 
