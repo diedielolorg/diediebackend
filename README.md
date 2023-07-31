@@ -1,1 +1,28 @@
-# DieDieBackend
+# DieDie-Backend
+
+## 팀원 소개
+
+| 이름           | 주특기  | 깃허브 주소                     | 블로그주소                     |
+| :------------- | :------ | :------------------------------ | ------------------------------ |
+| 신희제 F.E (L) | React   | https://github.com/Leezero3     |
+| 김한솔 F.E     | React   | https://github.com/Leezero3     |
+| 최유리 F.E     | React   | https://github.com/stella0905   |
+| 신주영 F.E     | React   | https://github.com/devjjin      |
+| 박준수 B.E (L) | Node.js | https://github.com/crystalation |
+| 오성인 B.E     | Node.js | https://github.com/dhtjddls     |
+| 김용식 B.E     | Node.js | https://github.com/ystar5008    | https://ystar5008.tistory.com/ |
+
+</br>
+</br>
+
+## 프로젝트 소개
+
+- 욕설 랭킹
+- 인게임 정보
+- 욕설 신고
+  </br>
+  </br>
+
+## 와이어 프레임
+
+## ERD
