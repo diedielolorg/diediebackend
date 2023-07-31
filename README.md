@@ -1,12 +1,17 @@
-# DieDie-Backend
+# ⚔DieDie-Backend
+<div align=center>
+![image](https://github.com/diedielolorg/diediebackend/assets/96641210/6445819b-7c5a-44cd-b392-0461971f2d8e)
+</div>
+</br>
+</br>
 
-## 프로젝트 소개
+## 🎯프로젝트 소개
 
 - 롤을하면서 한번이라도 누군가와 싸워본적 있으신가요?
 - 이름도 모르는 사람에게 욕을 먹고 기분이 상해 고소장을 작성해본적 있으신가요?
 - DieDie는 익명 뒤에 숨어서 남에게 욕을하는 유저들을 신고하여 박제 할 수 있는 서비스입니다!
 
-### 주요기능
+### ✨주요기능
 
 - 욕설 랭킹
 - 인게임 정보
@@ -14,7 +19,18 @@
   </br>
   </br>
 
-## 팀원 소개
+## ⛏사용기술
+
+  
+### B.E
+<div align="center">
+<img src="https://img.shields.io/badgenestjs-E0234E?style=for-the-badge&logo=mysql&logoColor=white">
+<img src="https://img.shields.io/badge/typeform-262627?style=for-the-badge&logo=mysql&logoColor=white">
+<img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=mysql&logoColor=white">
+</div>
+</br>
+
+## 👩‍⚕️팀원 소개
 
 | 이름           | 주특기  | 깃허브 주소                     | 블로그주소                     |
 | :------------- | :------ | :------------------------------ | ------------------------------ |
@@ -30,7 +46,7 @@
 </br>
 </br>
 
-## 와이어 프레임
+## 🎞와이어 프레임
 ![메인화면](https://github.com/diedielolorg/diediebackend/assets/96641210/eb90ca94-11af-49d8-84b2-44995ab5eea7)
 ![랭킹-1](https://github.com/diedielolorg/diediebackend/assets/96641210/4dc6b221-3689-4fa6-a615-27c5e6e57ca9)
 ![신고등록-2](https://github.com/diedielolorg/diediebackend/assets/96641210/a1aea5cf-adc9-4b7b-b9fb-638aa06bff11)
