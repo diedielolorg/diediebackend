@@ -1,74 +1,58 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# ⚔DieDie-Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+![140995581](https://github.com/diedielolorg/diediebackend/assets/96641210/e19693ae-91f6-4d65-9fed-832b9f221b89)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+</br>
+</br>
 
-## Description
+## 🎯프로젝트 소개
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- 롤을하면서 한번이라도 누군가와 싸워본적 있으신가요?
+- 이름도 모르는 사람에게 욕을 먹고 기분이 상해 고소장을 작성해본적 있으신가요?
+- DieDie는 익명 뒤에 숨어서 남에게 욕을하는 유저들을 신고하여 박제 할 수 있는 서비스입니다!
+</br>
+</br>
 
-## Installation
+### ✨주요기능
 
-```bash
-$ npm install
-```
+- 욕설 랭킹
+- 인게임 정보
+- 욕설 신고
+  </br>
+  </br>
 
-## Running the app
+## ⛏사용기술
 
-```bash
-# development
-$ npm run start
+  
+### B.E
+<img src="https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=mysql&logoColor=white">
+<img src="https://img.shields.io/badge/typeform-262627?style=for-the-badge&logo=mysql&logoColor=white">
+<img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=mysql&logoColor=white">
+</br>
+</br>
 
-# watch mode
-$ npm run start:dev
+## 👩‍⚕️팀원 소개
 
-# production mode
-$ npm run start:prod
-```
+| 이름           | 주특기  | 깃허브 주소                     | 블로그주소                     |
+| :------------- | :------ | :------------------------------ | ------------------------------ |
+| 최혜민 D.E     | Design  |                                 |
+| 신희제 F.E (L) | React   | https://github.com/Leezero3     |
+| 김한솔 F.E     | React   | https://github.com/Leezero3     |
+| 최유리 F.E     | React   | https://github.com/stella0905   |
+| 신주영 F.E     | React   | https://github.com/devjjin      |
+| 박준수 B.E (L) | Node.js | https://github.com/crystalation |
+| 오성인 B.E     | Node.js | https://github.com/dhtjddls     |
+| 김용식 B.E     | Node.js | https://github.com/ystar5008    | https://ystar5008.tistory.com/ |
 
-## Test
+</br>
+</br>
 
-```bash
-# unit tests
-$ npm run test
+## 🎞와이어 프레임
+![메인화면](https://github.com/diedielolorg/diediebackend/assets/96641210/eb90ca94-11af-49d8-84b2-44995ab5eea7)
+![랭킹-1](https://github.com/diedielolorg/diediebackend/assets/96641210/4dc6b221-3689-4fa6-a615-27c5e6e57ca9)
+![신고등록-2](https://github.com/diedielolorg/diediebackend/assets/96641210/a1aea5cf-adc9-4b7b-b9fb-638aa06bff11)
 
-# e2e tests
-$ npm run test:e2e
 
-# test coverage
-$ npm run test:cov
-```
+## ERD
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
-# diediebaekend
+![erd](https://github.com/diedielolorg/diediebackend/assets/96641210/c2514346-3475-44d0-9d16-619abec6daad)
