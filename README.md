@@ -1,6 +1,6 @@
 # ⚔DieDie-Backend
 <div align=center>
-![image](https://github.com/diedielolorg/diediebackend/assets/96641210/6445819b-7c5a-44cd-b392-0461971f2d8e)
+![140995581](https://github.com/diedielolorg/diediebackend/assets/96641210/e19693ae-91f6-4d65-9fed-832b9f221b89)
 </div>
 </br>
 </br>
@@ -10,6 +10,8 @@
 - 롤을하면서 한번이라도 누군가와 싸워본적 있으신가요?
 - 이름도 모르는 사람에게 욕을 먹고 기분이 상해 고소장을 작성해본적 있으신가요?
 - DieDie는 익명 뒤에 숨어서 남에게 욕을하는 유저들을 신고하여 박제 할 수 있는 서비스입니다!
+</br>
+</br>
 
 ### ✨주요기능
 
@@ -24,10 +26,11 @@
   
 ### B.E
 <div align="center">
-<img src="https://img.shields.io/badgenestjs-E0234E?style=for-the-badge&logo=mysql&logoColor=white">
+<img src="https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=mysql&logoColor=white">
 <img src="https://img.shields.io/badge/typeform-262627?style=for-the-badge&logo=mysql&logoColor=white">
 <img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=mysql&logoColor=white">
 </div>
+</br>
 </br>
 
 ## 👩‍⚕️팀원 소개
