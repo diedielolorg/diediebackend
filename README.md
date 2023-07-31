@@ -1,4 +1,4 @@
-# DieDie-Backend
+![erd](https://github.com/diedielolorg/diediebackend/assets/96641210/123a7d62-1e15-42a7-989d-6f3b100b48f4)# DieDie-Backend
 
 ## 팀원 소개
 
@@ -26,3 +26,4 @@
 ## 와이어 프레임
 
 ## ERD
+![erd](https://github.com/diedielolorg/diediebackend/assets/96641210/c2514346-3475-44d0-9d16-619abec6daad)
