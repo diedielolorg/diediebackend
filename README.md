@@ -1,7 +1,7 @@
 # ⚔DieDie-Backend
-<div align=center>
+
 ![140995581](https://github.com/diedielolorg/diediebackend/assets/96641210/e19693ae-91f6-4d65-9fed-832b9f221b89)
-</div>
+
 </br>
 </br>
 
@@ -25,11 +25,9 @@
 
   
 ### B.E
-<div align="center">
 <img src="https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=mysql&logoColor=white">
 <img src="https://img.shields.io/badge/typeform-262627?style=for-the-badge&logo=mysql&logoColor=white">
 <img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=mysql&logoColor=white">
-</div>
 </br>
 </br>
 
