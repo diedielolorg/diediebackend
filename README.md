@@ -26,3 +26,4 @@
 ## 와이어 프레임
 
 ## ERD
+![erd](https://github.com/diedielolorg/diediebackend/assets/96641210/c2514346-3475-44d0-9d16-619abec6daad)
