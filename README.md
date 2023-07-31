@@ -1,4 +1,4 @@
-![erd](https://github.com/diedielolorg/diediebackend/assets/96641210/123a7d62-1e15-42a7-989d-6f3b100b48f4)# DieDie-Backend
+# DieDie-Backend
 
 ## 팀원 소개
 
