@@ -24,7 +24,7 @@ export class Report {
   @IsString()
   summonerName: string;
 
-  @Column('jsonb')
+  @Column()
   @IsString()
   summonerPhoto: string;
 
@@ -47,7 +47,7 @@ export class Report {
   //   })
   //   customTime: string; // 임의의 yyyy-mm-dd hh:mm 형식으로 저장될 속성
 
-  @Column('jsonb')
+  @Column()
   @IsString()
   category: string;
 
@@ -55,7 +55,7 @@ export class Report {
   @IsString()
   reportPayload: string;
 
-  @Column('jsonb')
+  @Column()
   @IsString()
   reportCapture: string;
 
