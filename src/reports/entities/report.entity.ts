@@ -1,6 +1,5 @@
 import { IsNumber, IsString } from 'class-validator';
 import { report } from 'process';
-import { json } from 'sequelize';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
@@ -24,7 +23,7 @@ export class Report {
   @IsString()
   summonerName: string;
 
-  @Column('jsonb')
+  @Column()
   @IsString()
   summonerPhoto: string;
 
@@ -47,7 +46,7 @@ export class Report {
   //   })
   //   customTime: string; // 임의의 yyyy-mm-dd hh:mm 형식으로 저장될 속성
 
-  @Column('jsonb')
+  @Column()
   @IsString()
   category: string;
 
@@ -55,7 +54,7 @@ export class Report {
   @IsString()
   reportPayload: string;
 
-  @Column('jsonb')
+  @Column()
   @IsString()
   reportCapture: string;
 
