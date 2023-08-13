@@ -13,6 +13,9 @@ interface EmailOptions {
 
 @Injectable()
 export class EmailService {
+  sendMail(arg0: { to: any; subject: string; text: string }) {
+    throw new Error('Method not implemented.');
+  }
   private transporter: Mail;
 
   constructor(
