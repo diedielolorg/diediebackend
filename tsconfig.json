@@ -16,6 +16,10 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false,
-  }
+    "noFallthroughCasesInSwitch": false
+  },
+  "include": [
+    "src/**/*.ts", // 프로젝트의 TypeScript 소스 코드 경로
+    "node_modules/@types" // @types 스코프 내의 타입 정의 파일 경로
+  ]
 }

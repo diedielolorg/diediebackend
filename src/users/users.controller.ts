@@ -1,42 +1,54 @@
 import {
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
   Param,
-  Delete,
+  Post,
+  Query,
+  Headers,
+  UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { AuthService } from 'src/auth/auth.service';
 import { CreateUsersDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UserLoginDto } from './dto/user-login.dto';
+import { VerifyEmailDto } from './dto/verify-email.dto';
+import { UserInfo } from './UserInfo';
+import { UsersService } from './users.service';
+import { AuthGuard } from './auth.guard';
 
-@Controller('users')
+@Controller('auth')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private authService: AuthService,
+  ) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUsersDto) {
-    return this.usersService.create(createUserDto);
+  // @Post('/signup')
+  // async createUser(
+  //   @Body(ValidationPipe) createUserdto: CreateUsersDto,
+  // ): Promise<void> {
+  //   const { nickname, email, password } = createUserdto;
+  //   return await this.usersService.createUser(nickname, email, password);
+  // }
+
+  @Post('/authcode')
+  async verifyEmailSend(
+    @Body() verifyEmailDto: VerifyEmailDto,
+  ): Promise<string> {
+    const { email } = verifyEmailDto;
+    return await this.usersService.verifyEmailSend({ email });
   }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
+  // @Post('/authcodevalidation')
+  // async verifyEmail(@Body() verifyEmailDto: VerifyEmailDto): Promise<string> {
+  //   const { signupVerifyToken } = verifyEmailDto;
+  //   return await this.usersService.verifyEmail(signupVerifyToken);
+  // }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Post('/login')
+  async login(@Body() userLoginDtodto: UserLoginDto): Promise<string> {
+    const { email, password } = userLoginDtodto;
+    return await this.usersService.login(email, password);
   }
 }

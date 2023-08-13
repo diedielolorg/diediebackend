@@ -9,7 +9,7 @@ import {
 import { Report } from '../../reports/entities/report.entity';
 
 @Entity()
-export class User {
+export class UserEntity {
   @PrimaryColumn()
   @IsNumber()
   userId: number;
