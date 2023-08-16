@@ -1,6 +1,5 @@
 import { IsNumber, IsString } from 'class-validator';
 import { report } from 'process';
-import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,

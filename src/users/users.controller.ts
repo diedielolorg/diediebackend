@@ -9,19 +9,22 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { AuthService } from 'src/auth/auth.service';
+//import { AuthService } from 'src/auth/auth.service';
 import { CreateUsersDto } from './dto/create-user.dto';
 import { UserLoginDto } from './dto/user-login.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { UserInfo } from './UserInfo';
 import { UsersService } from './users.service';
 import { AuthGuard } from './auth.guard';
+import { ConfigService } from '@nestjs/config';
+import { MailService } from 'src/email/email.service';
 
 @Controller('auth')
 export class UsersController {
   constructor(
-    private usersService: UsersService,
-    private authService: AuthService,
+    private configService: ConfigService,
+    private readonly mailSerivce: MailService,
+    private usersService: UsersService, //private authService: AuthService,
   ) {}
 
   // @Post('/signup')
@@ -33,11 +36,9 @@ export class UsersController {
   // }
 
   @Post('/authcode')
-  async verifyEmailSend(
-    @Body() verifyEmailDto: VerifyEmailDto,
-  ): Promise<string> {
+  async verifyEmailSend(@Body() verifyEmailDto: VerifyEmailDto): Promise<any> {
     const { email } = verifyEmailDto;
-    return await this.usersService.verifyEmailSend({ email });
+    return await this.mailSerivce.sendConfirmationEmail(email);
   }
 
   // @Post('/authcodevalidation')
@@ -46,9 +47,9 @@ export class UsersController {
   //   return await this.usersService.verifyEmail(code);
   // }
 
-  @Post('/login')
-  async login(@Body() userLoginDtodto: UserLoginDto): Promise<string> {
-    const { email, password } = userLoginDtodto;
-    return await this.usersService.login(email, password);
-  }
+  // @Post('/login')
+  // async login(@Body() userLoginDtodto: UserLoginDto): Promise<string> {
+  //   const { email, password } = userLoginDtodto;
+  //   return await this.usersService.login(email, password);
+  // }
 }
