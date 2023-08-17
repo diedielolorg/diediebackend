@@ -7,8 +7,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import authConfig from './config/authConfig';
 //import { validationSchema } from './config/validationSchema';
 import { MailService } from './email/email.service';
+import { SearchModule } from './search/search.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -23,7 +25,9 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
     // AuthModule,
     TypeOrmModule.forRoot(dataSourceOptions),
     UsersModule,
+    SearchModule,
+    HttpModule
   ],
-  providers: [MailService],
+  providers: [MailService]
 })
 export class AppModule {}
