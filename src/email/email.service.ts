@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
-
 @Injectable()
-export class MailService {
+export class EmailService {
   private readonly transporter: nodemailer.Transporter;
-
   constructor() {
+    // Transporter 초기화
     this.transporter = nodemailer.createTransport({
-      service: process.env.EMAIL_SERVICE, // 네이버 메일 서비스 설정
+      host: process.env.EMAIL_HOST,
+      service: process.env.EMAIL_SERVICE,
+      port: +process.env.EMAIL_PORT,
       auth: {
-        user: process.env.EMAIL_ADDRESS, // 네이버 이메일 계정
-        pass: process.env.EMAIL_AUTH_PASSWORD, // 네이버 이메일 비밀번호
+        user: process.env.EMAIL_ADDRESS,
+        pass: process.env.EMAIL_AUTH_PASSWORD,
       },
     });
   }
@@ -23,17 +24,22 @@ export class MailService {
     return +str;
   }
 
-  async sendConfirmationEmail(email: string): Promise<void> {
-    const authcode = await this.generateRandomCode();
-    console.log(authcode);
-    const mailOptions: nodemailer.SendMailOptions = {
-      from: process.env.EMAIL_ADDRESS, // 보내는 이메일 주소
-      to: email, // 받는 이메일 주소
-      subject: '인증 메일', // 이메일 제목
-      html: `인증번호 4자리입니다 ${authcode}`, // 인증 링크 포함한 HTML 내용
-    };
-
-    console.log(mailOptions);
-    return await this.transporter.sendMail(mailOptions);
+  async sendConfirmationEmail(email: string): Promise<string> {
+    try {
+      const authcode = await this.generateRandomCode();
+      console.log(authcode);
+      const mailOptions: nodemailer.SendMailOptions = {
+        from: process.env.EMAIL_ADDRESS, // 보내는 이메일 주소
+        to: email, // 받는 이메일 주소
+        subject: 'DIEDIE 인증 메일', // 이메일 제목
+        html: `인증번호 4자리입니다 ${authcode}`, // 인증 링크 포함한 HTML 내용
+      };
+      console.log(mailOptions);
+      await this.transporter.sendMail(mailOptions);
+      return '이메일 발송에 성공하였습니다.';
+    } catch (error) {
+      console.error(error);
+      return '실패';
+    }
   }
 }

@@ -17,13 +17,13 @@ import { UserInfo } from './UserInfo';
 import { UsersService } from './users.service';
 import { AuthGuard } from './auth.guard';
 import { ConfigService } from '@nestjs/config';
-import { MailService } from 'src/email/email.service';
+import { EmailService } from 'src/email/email.service';
 
 @Controller('auth')
 export class UsersController {
   constructor(
     private configService: ConfigService,
-    private readonly mailSerivce: MailService,
+    private readonly mailSerivce: EmailService,
     private usersService: UsersService, //private authService: AuthService,
   ) {}
 

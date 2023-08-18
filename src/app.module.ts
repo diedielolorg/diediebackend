@@ -6,9 +6,11 @@ import { dataSourceOptions } from './config/data-source';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import authConfig from './config/authConfig';
 //import { validationSchema } from './config/validationSchema';
-import { MailService } from './email/email.service';
+
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
+import { EmailModule } from './email/email.module';
+import { EmailService } from './email/email.service';
 
 @Module({
   imports: [
@@ -21,9 +23,11 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
     }),
     ReportsModule,
     // AuthModule,
+    //외부 모듈, api 주입 forRoot, forRootAsync 범위? forRoot, forFeature
+    //외부 모듈을 사용할때 필요한 옵션들을 가져옴
     TypeOrmModule.forRoot(dataSourceOptions),
     UsersModule,
   ],
-  providers: [MailService],
+  providers: [EmailService],
 })
 export class AppModule {}
