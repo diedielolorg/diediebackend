@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 @Injectable()
 export class EmailService {
   private readonly transporter: nodemailer.Transporter;
-  constructor() {
+  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {
     // Transporter 초기화
     this.transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
@@ -16,30 +18,36 @@ export class EmailService {
     });
   }
 
-  async generateRandomCode(): Promise<number> {
+  async generateRandomCode(): Promise<string> {
     let str = '';
     for (let i = 0; i < 4; i++) {
       str += Math.floor(Math.random() * 10);
     }
-    return +str;
+    return str;
   }
 
-  async sendConfirmationEmail(email: string): Promise<string> {
+  async sendConfirmationEmail(email: string): Promise<void> {
     try {
       const authcode = await this.generateRandomCode();
-      console.log(authcode);
       const mailOptions: nodemailer.SendMailOptions = {
         from: process.env.EMAIL_ADDRESS, // 보내는 이메일 주소
         to: email, // 받는 이메일 주소
         subject: 'DIEDIE 인증 메일', // 이메일 제목
         html: `인증번호 4자리입니다 ${authcode}`, // 인증 링크 포함한 HTML 내용
       };
-      console.log(mailOptions);
       await this.transporter.sendMail(mailOptions);
-      return '이메일 발송에 성공하였습니다.';
+      //입력받은 코드 redis에 폰번이랑 code 저장 ttl설정
+      await this.cacheManager.set(authcode, email, 0.5);
     } catch (error) {
       console.error(error);
-      return '실패';
+    }
+  }
+
+  async verifyEmail(code: number): Promise<void> {
+    //받은 코드 Redis에서 조회
+    const value = await this.cacheManager.get(String(code));
+    if (value === null) {
+      throw new BadRequestException(`인증번호가 일치하지 않습니다.`);
     }
   }
 }

@@ -1,15 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/create-report.dto';
-import { UpdateReportDto } from './dto/update-report.dto';
+import { S3FileInterceptor } from 'src/utils/S3FileInterceptor';
 
-@Controller('reports')
+@Controller('/api')
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
-  @Post()
-  create(@Body() createReportDto: CreateReportDto) {
-    return this.reportsService.create(createReportDto);
+  //신고 이미지 업로드 메소드
+  @Post('reportuser')
+  //인터셉터로 s3에 한번에 이미지 3장까지 업로드
+  @UseInterceptors(S3FileInterceptor)
+  async uploadFile(@UploadedFiles() files: Express.Multer.File[]) {
+    try {
+      const [url] = files;
+      console.log(files);
+      return '성공';
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   @Get()
@@ -20,11 +39,6 @@ export class ReportsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.reportsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReportDto: UpdateReportDto) {
-    return this.reportsService.update(+id, updateReportDto);
   }
 
   @Delete(':id')

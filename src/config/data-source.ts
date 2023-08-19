@@ -1,4 +1,4 @@
-import { DataSource, DataSourceOptions } from "typeorm";
+import { DataSource, DataSourceOptions } from 'typeorm';
 export const dataSourceOptions: DataSourceOptions = {
   type: 'mysql',
   host: 'diedie-backend-database.ccdf1vddo73r.ap-northeast-2.rds.amazonaws.com',
@@ -13,7 +13,7 @@ export const dataSourceOptions: DataSourceOptions = {
   // cli: {
   //   migrationsDir: "src/migrations" // migration 파일을 생성할 디렉토리
   // },
-  migrationsTableName: "migrations" // migration 내용이 기록될 테이블명(default = migration)
-}
-const dataSource = new DataSource(dataSourceOptions)
-export default dataSource
+  migrationsTableName: 'migrations', // migration 내용이 기록될 테이블명(default = migration)
+};
+const dataSource = new DataSource(dataSourceOptions);
+export default dataSource;

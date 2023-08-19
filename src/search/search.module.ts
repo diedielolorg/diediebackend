@@ -1,18 +1,18 @@
-// import { Module } from '@nestjs/common';
-// import { TypeOrmModule } from '@nestjs/typeorm';
-// import { UsersModule } from 'src/users/users.module';
-// import { SearchController } from './search.controller';
-// import { SearchService } from './search.service';
-// //import { SearchRepository } from './search.repository';
-// //import { Search } from './search.entity';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from 'src/users/users.module';
+import { SearchController } from './search.controller';
+import { SearchService } from './search.service';
+import { HttpModule } from '@nestjs/axios'
 
-// @Module({
-//   imports: [
-//     //  TypeOrmModule.forFeature([Search]),
-//     UsersModule,
-//   ],
-//   controllers: [SearchController],
-//   providers: [SearchService, SearchRepository],
-//   exports: [SearchService, SearchRepository],
-// })
-// export class SearchModule {}
+
+@Module({
+  imports: [
+    UsersModule,
+    HttpModule,
+  ],
+  controllers: [SearchController],
+  providers: [SearchService],
+  exports: [SearchModule],
+})
+export class SearchModule {}

@@ -4,11 +4,13 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { Report } from '../../reports/entities/report.entity';
 
 @Entity()
+@Unique(['email', 'nickname'])
 export class UserEntity {
   @PrimaryColumn()
   @IsNumber()
