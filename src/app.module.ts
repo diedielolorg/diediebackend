@@ -8,6 +8,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 //import { validationSchema } from './config/validationSchema';
 import * as redisStore from 'cache-manager-ioredis';
 import { SearchModule } from './search/search.module';
+import { RankModule } from './rank/rank.module';
+import { LoggingModule } from './logging/logging.module';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { SearchModule } from './search/search.module';
     TypeOrmModule.forRoot(dataSourceOptions),
     UsersModule,
     SearchModule,
+    RankModule,
+    LoggingModule,
   ],
 })
 export class AppModule {}

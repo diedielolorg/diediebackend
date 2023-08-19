@@ -27,6 +27,7 @@ export class SearchController {
   async search11SummonerName(): Promise<void> {
     // this.printWinstonLog(dto);
     console.log(1);
+    ('');
     return;
 
     //   const { name, email, password } = dto;
