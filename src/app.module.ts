@@ -4,14 +4,12 @@ import { ReportsModule } from './reports/reports.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from './config/data-source';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import authConfig from './config/authConfig';
 //import { validationSchema } from './config/validationSchema';
-import { EmailService } from './email/email.service';
 import { SearchModule } from './search/search.module';
-import { MailerModule } from '@nestjs-modules/mailer';
-import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 import { HttpModule } from '@nestjs/axios';
+import * as redisStore from 'cache-manager-ioredis';
 import { EmailModule } from './email/email.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -22,13 +20,20 @@ import { EmailModule } from './email/email.module';
       //ConfigModule을 다른 모든 모듈에서 불러와야하는 번거로움을 피하기 위함
       isGlobal: true,
     }),
+    CacheModule.register({
+      useFactory: () => ({
+        store: redisStore,
+        host: 'localhost',
+        port: 6379,
+      }),
+    }),
     ReportsModule,
     // AuthModule,
     TypeOrmModule.forRoot(dataSourceOptions),
     UsersModule,
     SearchModule,
     HttpModule,
+    EmailModule,
   ],
-  providers: [EmailService],
 })
 export class AppModule {}

@@ -46,6 +46,7 @@ export class UsersController {
   @Post('/authcodevalidation')
   async verifyEmail(@Body() verifyEmailDto: VerifyEmailCodeDto): Promise<void> {
     const { code } = verifyEmailDto;
+    console.log('1');
     return await this.emailSerivce.verifyEmail(code);
   }
 

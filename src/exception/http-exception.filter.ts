@@ -1,34 +1,39 @@
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
   HttpException,
+  InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
-@Catch(HttpException)
+@Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const status = exception.getStatus();
-    const err = exception.getResponse() as
-      | { message: any; statusCode: number }
-      | { error: string; statusCode: 400; message: string[] }; // class-validator 타이핑
+  constructor(private logger: Logger) {}
 
-    if (typeof err !== 'string' && err.statusCode === 400) {
-      // class-validator 에러
-      return response.status(status).json({
-        success: false,
-        code: status,
-        data: err.message,
-      });
+  catch(exception: Error, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const res = ctx.getResponse<Response>();
+    const req = ctx.getRequest<Request>();
+    //콜스택 변수에 할당
+    const stack = exception.stack;
+
+    if (!(exception instanceof HttpException)) {
+      exception = new InternalServerErrorException();
     }
 
-    response.status(status).json({
-      success: false,
-      code: status,
-      data: err.message,
-    });
+    const response = (exception as HttpException).getResponse();
+
+    const log = {
+      timestamp: new Date(),
+      url: req.url,
+      response,
+      //에러 로그에 콜스택 추가 디버깅
+      stack,
+    };
+    this.logger.log(log);
+
+    res.status((exception as HttpException).getStatus()).json(response);
   }
 }
