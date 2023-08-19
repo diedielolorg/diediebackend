@@ -7,6 +7,7 @@ import { dataSourceOptions } from './config/data-source';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 //import { validationSchema } from './config/validationSchema';
 import * as redisStore from 'cache-manager-ioredis';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import * as redisStore from 'cache-manager-ioredis';
     //외부 모듈을 사용할때 필요한 옵션들을 가져옴
     TypeOrmModule.forRoot(dataSourceOptions),
     UsersModule,
+    SearchModule,
   ],
 })
 export class AppModule {}
