@@ -7,10 +7,16 @@ import {
 } from '@nestjs/common';
 // import { UserInfo } from './UserInfo';
 // import { ConfigService } from '@nestjs/config';
+// import { UserEntity } from './entities/user.entity';
+import * as bcrypt from 'bcryptjs';
+// import { UserInfo } from './UserInfo';
+// import { ConfigService } from '@nestjs/config';
 import { AuthService } from '../auth/auth.service';
+// //import { EmailService } from 'src/email/email.service';
 import { UsersRepository } from './users.repository';
 import { CreateUsersDto } from './dto/create-user.dto';
 // import { UserEntity } from './entities/user.entity';
+// import { string } from 'joi';
 
 @Injectable()
 export class UsersService {
