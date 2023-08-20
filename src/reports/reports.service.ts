@@ -3,11 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { CreateReportDto } from './dto/create-report.dto';
 import { ReportEntity } from './entities/report.entity';
+import { HttpService } from '@nestjs/axios';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class ReportsService {
  
   constructor(
+    private httpService: HttpService,
     @InjectRepository(ReportEntity)
     private reportRepository: Repository<ReportEntity>
   ) {}
@@ -25,19 +29,24 @@ export class ReportsService {
     }
   }
    
-  create(createReportDto: CreateReportDto) {
-    return 'This action adds a new report';
-  }
+//  async findAll(createReportDto: CreateReportDto) {
+//     return 'This action adds a new report';
+//   }
 
-  findAll() {
-    return `This action returns all reports`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} report`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} report`;
+  async getUserInfoIngame (getId: string): Promise<any> {
+    try {
+      const response: Observable<any> = this.httpService.get(
+        `https://kr.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/${getId}`,
+        { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } },
+      )
+      const result = await response
+      .pipe(map((response) => response.data))
+      .toPromise();
+    
+      console.log(result)
+      return result
+      }catch(error){
+        console.error(error)
+      }
   }
 }
