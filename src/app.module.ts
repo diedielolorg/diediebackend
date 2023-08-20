@@ -21,13 +21,14 @@ import { LoggingModule } from './logging/logging.module';
       isGlobal: true,
       envFilePath: ['.env'],
     }),
-    CacheModule.register({
-      useFactory: () => ({
-        store: redisStore,
-        host: 'localhost',
-        port: 6379,
-      }),
-    }),
+    // CacheModule.register({
+    //   useFactory: () => ({
+    //     store: redisStore,
+    //     host: 'localhost',
+    //     port: 6379,
+    //     maxRetriesPerRequest: false, // 여기에 원하는 시도 횟수를 설정
+    //   }),
+    //}),
     ReportsModule,
     // AuthModule,
     //외부 모듈, api 주입 forRoot, forRootAsync 범위? forRoot, forFeature
