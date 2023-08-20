@@ -23,7 +23,8 @@ export class UsersRepository extends Repository<UserEntity> {
     //트랜잭션 시작
     await queryRunner.startTransaction();
     try {
-      const userObject = this.create({ email, nickname, password });
+      const userId = 2;
+      const userObject = this.create({userId, email, nickname, password });
       //정상동작 수행시 트랜잭션을 커밋하여 DB에 저장
       console.log(userObject);
       await this.save(userObject);
