@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsDateString, IsNumber, IsString } from 'class-validator';
 import { report } from 'process';
 import {
   Column,
@@ -8,8 +8,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
-export class Report {
+@Entity("Reports")
+export class ReportEntity {
   @PrimaryColumn()
   @IsNumber()
   reportId: number;
@@ -56,6 +56,10 @@ export class Report {
   @Column()
   @IsString()
   reportCapture: string;
+
+  @Column()
+  @IsDateString()
+  reportDate: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
