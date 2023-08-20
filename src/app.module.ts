@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from './config/data-source';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 //import { validationSchema } from './config/validationSchema';
-import { SearchModule } from './search/search.module';
-import { HttpModule } from '@nestjs/axios';
 import * as redisStore from 'cache-manager-ioredis';
-import { EmailModule } from './email/email.module';
-import { CacheModule } from '@nestjs/cache-manager';
+import { SearchModule } from './search/search.module';
+import { RankModule } from './rank/rank.module';
+import { LoggingModule } from './logging/logging.module';
 
 @Module({
   imports: [
@@ -19,6 +19,7 @@ import { CacheModule } from '@nestjs/cache-manager';
       cache: true,
       //ConfigModule을 다른 모든 모듈에서 불러와야하는 번거로움을 피하기 위함
       isGlobal: true,
+      envFilePath: ['.env'],
     }),
     CacheModule.register({
       useFactory: () => ({
@@ -29,11 +30,13 @@ import { CacheModule } from '@nestjs/cache-manager';
     }),
     ReportsModule,
     // AuthModule,
+    //외부 모듈, api 주입 forRoot, forRootAsync 범위? forRoot, forFeature
+    //외부 모듈을 사용할때 필요한 옵션들을 가져옴
     TypeOrmModule.forRoot(dataSourceOptions),
     UsersModule,
     SearchModule,
-    HttpModule,
-    EmailModule,
+    RankModule,
+    LoggingModule,
   ],
 })
 export class AppModule {}
