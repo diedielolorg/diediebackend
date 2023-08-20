@@ -22,16 +22,10 @@ export class SearchController {
     //   await this.usersService.createUser(name, email, password);
   }
 
-  @Get()
   //create-user.dto.ts
-  async search11SummonerName(): Promise<void> {
-    // this.printWinstonLog(dto);
-    console.log(1);
-    ('');
-    return;
+  // this.printWinstonLog(dto);
 
-    //   const { name, email, password } = dto;
+  //   const { name, email, password } = dto;
 
-    //   await this.usersService.createUser(name, email, password);
-  }
+  //   await this.usersService.createUser(name, email, password);
 }

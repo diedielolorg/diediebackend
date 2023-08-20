@@ -8,8 +8,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 //import { validationSchema } from './config/validationSchema';
 import * as redisStore from 'cache-manager-ioredis';
 import { SearchModule } from './search/search.module';
-import { RankModule } from './rank/rank.module';
+
 import { LoggingModule } from './logging/logging.module';
+import { RankModule } from './rank/rank.module';
 
 @Module({
   imports: [
@@ -29,14 +30,11 @@ import { LoggingModule } from './logging/logging.module';
       }),
     }),
     ReportsModule,
-    // AuthModule,
-    //외부 모듈, api 주입 forRoot, forRootAsync 범위? forRoot, forFeature
-    //외부 모듈을 사용할때 필요한 옵션들을 가져옴
     TypeOrmModule.forRoot(dataSourceOptions),
     UsersModule,
     SearchModule,
-    RankModule,
     LoggingModule,
+    //RankModule,
   ],
 })
 export class AppModule {}
