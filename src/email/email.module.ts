@@ -10,7 +10,6 @@ import { EmailService } from './email.service';
         store: redisStore,
         host: 'localhost',
         port: 6379,
-        maxRetriesPerRequest: false, // 여기에 원하는 시도 횟수를 설정
       }),
     }),
   ],

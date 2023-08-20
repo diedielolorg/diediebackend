@@ -1,9 +1,14 @@
 import { Module } from '@nestjs/common';
-import { RankService } from './rank.service';
 import { RankController } from './rank.controller';
+import { RankService } from './rank.service';
+import { RankRepository } from './rank.repository';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ReportEntity } from '../reports/entities/report.entity';
 
 @Module({
-  providers: [RankService],
-  controllers: [RankController]
+  imports: [TypeOrmModule.forFeature([ReportEntity])],
+  controllers: [RankController],
+  providers: [RankService, RankRepository],
+  exports: [RankService],
 })
 export class RankModule {}

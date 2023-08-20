@@ -38,7 +38,7 @@ export class ReportsController {
   }
   
 
-  @Get()
+  @Get('rank')
   findAll() {
     return this.reportsService.findAll();
   }

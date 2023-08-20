@@ -16,6 +16,8 @@ on:
 env:
   S3_BUCKET_NAME: diediebucket
   AWS_REGION: ap-northeast-2
+  CODE_DEPLOY_APP_NAME: diedie-deploy
+  DEPLOYMENT_GROUP_NAME: diedie-deploy-group
 
 # workflow는 한개 이상의 job을 가지며, 각 job은 여러 step에 따라 단계를 나눌 수 있습니다.
 jobs:
@@ -24,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [14.x, 16.x, 18.x, 20.x]
 
     # step은 작업의 일부로 실행될 일련의 작업을 나타냅니다.
     steps:
@@ -38,26 +40,33 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: 패키지 설치
+      - name: 종속성 설치
         working-directory: ./
-        run: npm install
+        run: npm ci
+      - run: echo "프로젝트 종속성 설치 성공"
 
-      - name: 빌드 과정을 시작
+      - name: 빌드 시작
         working-directory: ./
         run:
           npm run build --if-present
           #- run: npm test
+      - run: echo "프로젝트 빌드 성공"
 
-      - name: Make zip file
+      - name: 압축 파일 만들기
         run: zip -r ./$GITHUB_SHA.zip .
         shell: bash
+      - run: echo "압축파일 생성 성공"
 
-    #   - name: Configure AWS credentials
-    #     uses: aws-actions/configure-aws-credentials@v1
-    #     with:
-    #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    #       aws-region: ap-northeast-2
+      #   - name: AWS에 접속
+      #     uses: aws-actions/configure-aws-credentials@v1
+      #     with:
+      #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #       aws-region: ap-northeast-2
 
-    #   - name: Upload to S3
-    #     run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
+      #   - name: S3에 압축파일 업로드
+      #     run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
+
+      - name: codedeploy에 배포
+        run: |
+          aws deploy create-deployment --application-name $CODE_DEPLOY_APP_NAME --deployment-group-name $DEPLOYMENT_GROUP_NAME --s3-location bucket=$BUCKET_NAME,key=$PROJECT_NAME/70d3c129-6376-4fb9-ab45-ee978ee73cd8.zip,bundleType=zip
