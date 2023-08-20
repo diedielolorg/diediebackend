@@ -2,30 +2,15 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { SearchSummonerNameDto } from './dto/summoner-name.dto';
 import { SearchService } from './search.service';
 
-@Controller('main')
+@Controller('/api/main')
 export class SearchController {
   constructor(private searchService: SearchService) {}
 
-  //http://localhost:3000/search?summoner=축지법 아저씨
-  @Get('search')
-  //create-user.dto.ts
+  @Get('/search')
   async searchSummonerName(
     @Query() searchSummonerNameDto: SearchSummonerNameDto,
   ): Promise<void> {
-    // this.printWinstonLog(dto);
-    console.log(searchSummonerNameDto);
     const summonerName = searchSummonerNameDto.summonerName;
     return await this.searchService.searchSummonerName(summonerName);
-
-    //   const { name, email, password } = dto;
-
-    //   await this.usersService.createUser(name, email, password);
   }
-
-  //create-user.dto.ts
-  // this.printWinstonLog(dto);
-
-  //   const { name, email, password } = dto;
-
-  //   await this.usersService.createUser(name, email, password);
 }

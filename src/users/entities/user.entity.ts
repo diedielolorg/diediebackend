@@ -7,7 +7,7 @@ import {
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
-import { Report } from '../../reports/entities/report.entity';
+// import { Report } from '../../reports/entities/report.entity';
 
 @Entity('Users')
 @Unique(['email', 'nickname'])

@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
-import { Report } from '../reports/entities/report.entity';
+import { ReportEntity } from '../reports/entities/report.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class RankRepository {
   constructor(
     @InjectRepository(Report)
-    private reportReopsitory: Repository<Report>,
+    private reportReopsitory: Repository<ReportEntity>,
   ) {}
 
   async getRanking(month: number) {

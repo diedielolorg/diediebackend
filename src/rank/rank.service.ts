@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Report } from '../reports/entities/report.entity';
+import { ReportEntity } from '../reports/entities/report.entity';
 
 @Injectable()
 export class RankService {
-  constructor(private rankRepository: Repository<Report>) {}
+  constructor(private rankRepository: Repository<ReportEntity>) {}
 
   async getRanking(month: number) {
     try {
