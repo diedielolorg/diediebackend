@@ -3,11 +3,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryColumn,
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
-// import { Report } from '../../reports/entities/report.entity';
+import { ReportEntity } from '../../reports/entities/report.entity';
 
 @Entity('Users')
 @Unique(['email', 'nickname'])
@@ -38,6 +39,6 @@ export class UserEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  //   @OneToMany(() => Report, (report) => report.userId, { eager: true })
-  //   userId: Users[];
+  @OneToMany(() => ReportEntity, (report) => report.userId, { eager: true })
+  reports: UserEntity[];
 }
