@@ -1,21 +1,13 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  forwardRef,
-} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { CacheModule } from '@nestjs/cache-manager';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from './config/data-source';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-//import { validationSchema } from './config/validationSchema';
+import { ConfigModule } from '@nestjs/config';
 import * as redisStore from 'cache-manager-ioredis';
 import { SearchModule } from './search/search.module';
-
 import { LoggingModule } from './logging/logging.module';
-import { RankModule } from './rank/rank.module';
 import { LoggingInterceptor } from './logging/logging.interceptor';
 
 @Module({
@@ -40,7 +32,6 @@ import { LoggingInterceptor } from './logging/logging.interceptor';
     UsersModule,
     SearchModule,
     LoggingModule,
-    //RankModule,
   ],
 })
 export class AppModule implements NestModule {

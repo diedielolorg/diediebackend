@@ -4,11 +4,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserEntity } from 'src/users/entities/user.entity';
 
-@Entity("Reports")
+@Entity('Reports')
 export class ReportEntity {
   @PrimaryColumn()
   @IsNumber()
@@ -67,6 +69,10 @@ export class ReportEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  //   @OneToMany(() => User, (userId) => report.userId, { eager: true })
-  //   userId : Users[];
+  @ManyToOne(() => UserEntity, (user) => user.reports, {
+    eager: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  User: UserEntity;
 }
