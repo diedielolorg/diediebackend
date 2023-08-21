@@ -1,4 +1,4 @@
-import { IsString, IsDateString, IsArray, IsNotEmpty } from 'class-validator';
+import { IsString, IsDateString, IsArray, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateReportDto {
   @IsNotEmpty()
@@ -7,12 +7,6 @@ export class CreateReportDto {
 
   @IsDateString()
   reportDate: string;
-
-  @IsNotEmpty()
-  // @IsArray()
-  // reportCapture: string[];
-  @IsString()
-  reportCapture: string;
 
   @IsNotEmpty()
   // @IsArray()

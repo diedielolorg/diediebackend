@@ -27,31 +27,14 @@ export class ReportsController {
     private readonly searchService: SearchService,
   ) {}
 
-  // //신고 이미지 업로드 메소드
-  // @Post('reportuser')
-  // //인터셉터로 s3에 한번에 이미지 3장까지 업로드
-  // @UseInterceptors(S3FileInterceptor)
-  // async uploadFile(@UploadedFiles() files: Express.Multer.File[]) {
-  //   try {
-  //     const [url] = files;
-  //     console.log(files);
-  //     return '성공';
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
-  //로그인 안했을때 게시글 작성 시도시 에러 반환
-  //로그인 상태로 게시글 작성시 게시글작성가능
-  @UseGuards(AuthGuard)
-  @Post('reportuser') // userId 로그인 인증, reportId
+  // 유저 신고 등록
+  @Post('reportuser') // userId 로그인 인증
   @UseInterceptors(S3FileInterceptor)
   async createReportUsers(
-    @Body() createReportDto: CreateReportDto,
-    @UploadedFiles() files: Express.Multer.File[],
-  ): Promise<void> {
-    console.log(createReportDto);
-    return await this.reportsService.createReportUsers(createReportDto);
+    @Body() createReportDto: CreateReportDto, 
+    @UploadedFiles() files: Express.Multer.File[]
+    ): Promise<any> {
+    return await this.reportsService.createReportUsers(createReportDto, files);
   }
 
   //랭킹조회
@@ -72,6 +55,7 @@ export class ReportsController {
       summonerName,
     );
     const getId: string = getSummonerId['id'];
+
     const getMatch = await this.reportsService.getUserInfoIngame(getId);
     return getMatch;
   }

@@ -6,6 +6,7 @@ import { ReportEntity } from './entities/report.entity';
 import { HttpService } from '@nestjs/axios';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { v4 as uuidv4 } from 'uuid'; // uuid 패키지에서 v4 함수를 가져옴
 
 @Injectable()
 export class ReportsService {
@@ -15,30 +16,29 @@ export class ReportsService {
     private reportRepository: Repository<ReportEntity>,
   ) {}
 
-  async createReportUsers(createReportDto: CreateReportDto): Promise<any> {
+  async createReportUsers(createReportDto: CreateReportDto, files): Promise<any> {
     try {
-      const userId = 1;
-      const reportId = 123;
-      const {
-        summonerName,
-        category,
-        reportPayload,
-        reportCapture,
-        reportDate,
-      } = createReportDto;
-      const createReport = this.reportRepository.create({
-        reportId,
+      const userId = uuidv4();
+      
+      const { summonerName, category, reportPayload, reportDate } = createReportDto
+      
+      const reportCapture: string[] = [];
+      for(let i = 0; i <= files.length; i++){
+        reportCapture.push(files[i])
+      }
+  
+      const createReport = this.reportRepository.create({ 
         userId,
-        summonerName,
-        category,
-        reportPayload,
-        reportCapture,
-        reportDate,
+        summonerName, 
+        category, 
+        reportPayload, 
+        reportCapture, 
+        reportDate 
       });
-
-      return await this.reportRepository.save(createReport);
-    } catch (error) {
-      console.error(error);
+    
+      return await this.reportRepository.save(createReport)
+    } catch(error) {
+      console.error(error)
     }
   }
 
