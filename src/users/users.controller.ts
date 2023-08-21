@@ -11,8 +11,11 @@ import {
   UploadedFiles,
   UseInterceptors,
   UploadedFile,
+  Res,
+  Header,
 } from '@nestjs/common';
 //import { AuthService } from 'src/auth/auth.service';
+import { Response } from 'express';
 import { CreateUsersDto } from './dto/create-user.dto';
 import { UserLoginDto } from './dto/user-login.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
@@ -21,6 +24,7 @@ import { AuthGuard } from './auth.guard';
 import { ConfigService } from '@nestjs/config';
 import { EmailService } from 'src/email/email.service';
 import { VerifyEmailCodeDto } from './dto/verify-email-code.dto';
+import { response } from 'express';
 
 @Controller('/api/users')
 export class UsersController {
@@ -44,14 +48,20 @@ export class UsersController {
   }
 
   @Post('/authcodevalidation')
-  async verifyEmail(@Body() verifyEmailDto: VerifyEmailCodeDto): Promise<void> {
+  async verifyEmail(@Body() verifyEmailDto: VerifyEmailCodeDto) {
     const { code } = verifyEmailDto;
     return await this.emailSerivce.verifyEmail(code);
   }
 
   @Post('/login')
-  async login(@Body() userLoginDtodto: UserLoginDto): Promise<string> {
+  async login(
+    @Body() userLoginDtodto: UserLoginDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
     const { email, password } = userLoginDtodto;
-    return await this.usersService.login(email, password);
+    const accessToken = await this.usersService.login(email, password);
+    response.header('Hi-junsoo', 'junsoobabo');
+    response.cookie('accessToken', accessToken);
+    return accessToken;
   }
 }

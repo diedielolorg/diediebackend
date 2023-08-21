@@ -2,6 +2,7 @@ import * as jwt from 'jsonwebtoken';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import authConfig from 'src/config/authConfig';
 import { ConfigType } from '@nestjs/config';
+import { Response } from 'express';
 
 interface User {
   userId: number;
@@ -16,12 +17,17 @@ export class AuthService {
 
   login(user: User) {
     const payload = { ...user };
+    try {
+      const accessToken = jwt.sign(payload, this.config.jwtSecret, {
+        expiresIn: '2h',
+        audience: '다이다이',
+        issuer: '다이백엔드',
+      });
 
-    return jwt.sign(payload, this.config.jwtSecret, {
-      expiresIn: '1d',
-      audience: 'example.com',
-      issuer: 'example.com',
-    });
+      return accessToken;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   verify(jwtString: string) {
