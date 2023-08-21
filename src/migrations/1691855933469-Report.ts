@@ -63,7 +63,7 @@ import {
             },
             {
               name: 'reportCapture',
-              type: 'json',
+              type: 'jsonb[]',
               isNullable: true,
             },
           ],
