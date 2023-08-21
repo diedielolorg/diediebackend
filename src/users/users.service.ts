@@ -5,6 +5,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { Response } from 'express';
 // import { UserInfo } from './UserInfo';
 // import { ConfigService } from '@nestjs/config';
 // import { UserEntity } from './entities/user.entity';
@@ -40,7 +41,7 @@ export class UsersService {
     }
   }
 
-  async login(email: string, password: string): Promise<any> {
+  async login(email: string, password: string) {
     //userRepository를 사용해 사용자 검색
     const user = await this.usersRepository.loginUserExists(email, password);
     //존재하지 않을때 예외처리
@@ -48,9 +49,10 @@ export class UsersService {
       throw new NotFoundException('유저가 존재하지 않습니다');
     }
     //존재하면 해당 사용자 정보로 로그인 토큰 생성
-    return this.authService.login({
+    const accessToken = this.authService.login({
       userId: user.userId,
       email: user.email,
     });
+    return accessToken;
   }
 }

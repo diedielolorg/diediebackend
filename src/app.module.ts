@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  forwardRef,
+} from '@nestjs/common';
 import { CacheModule } from '@nestjs/cache-manager';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
@@ -11,6 +16,7 @@ import { SearchModule } from './search/search.module';
 
 import { LoggingModule } from './logging/logging.module';
 import { RankModule } from './rank/rank.module';
+import { LoggingInterceptor } from './logging/logging.interceptor';
 
 @Module({
   imports: [
@@ -37,4 +43,8 @@ import { RankModule } from './rank/rank.module';
     //RankModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggingInterceptor).forRoutes('*');
+  }
+}
