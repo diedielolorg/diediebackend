@@ -28,7 +28,7 @@ export class ReportsController {
     private readonly searchService: SearchService,
   ) {}
 
-  // 롤 api에서 경기 내역과 우리 db에 있는 데이터를 같이 불러와야 됨 
+  // 롤 api에서 경기 내역과 우리 db에 있는 데이터를 같이 불러와야 됨
   // @Get('userinfo/:summonerName')
   // @ApiOperation({
   //   summary: '유저 정보와, 전적 조회',
@@ -47,7 +47,6 @@ export class ReportsController {
   //   return getUserInfobyAPI;
   // }
 
-
   @Get('usermatchinfo/:summonerName')
   @ApiOperation({
     summary: '전적 상세 정보',
@@ -57,13 +56,18 @@ export class ReportsController {
   ): Promise<void> {
     //입력받은 소환사명으로 SearchService에 있는 searchSummonerName 실행
     //실행한 결과값으로 return 된 id=
-    const getSummonerId = await this.searchService.searchSummonerName(summonerName);
-    const getSummonerName: string = getSummonerId['name']
+    const getSummonerId = await this.searchService.searchSummonerName(
+      summonerName,
+    );
+    const getSummonerName: string = getSummonerId['name'];
 
     const getPuuid: string = getSummonerId['puuid'];
     const getMatchIdByApi = await this.reportsService.getUserInfo(getPuuid);
 
-    const getUserInfobyAPI = await this.reportsService.getUserInfoByMatchId(getMatchIdByApi, getSummonerName);
+    const getUserInfobyAPI = await this.reportsService.getUserInfoByMatchId(
+      getMatchIdByApi,
+      getSummonerName,
+    );
     return getUserInfobyAPI;
   }
 
@@ -74,9 +78,9 @@ export class ReportsController {
   })
   @UseInterceptors(S3FileInterceptor)
   async createReportUsers(
-    @Body() createReportDto: CreateReportDto, 
-    @UploadedFiles() files: Express.Multer.File[]
-    ): Promise<any> {
+    @Body() createReportDto: CreateReportDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ): Promise<any> {
     return await this.reportsService.createReportUsers(createReportDto, files);
   }
 
@@ -86,7 +90,7 @@ export class ReportsController {
     description: '롤에서 욕한 유저가 신고당한 횟수만큼 랭킹 매김',
   })
   async findAll(@Query('month', ParseIntPipe) month: number) {
-    // console.log(month);
+    console.log(month);
     return await this.reportsService.getRankUser(month);
   }
 
@@ -94,7 +98,8 @@ export class ReportsController {
   @Get('/userinfo/ingame/:summonerName')
   @ApiOperation({
     summary: '인게임 정보',
-    description: '롤 하고 있는 사람들의 인게임 정보와 diedie db에 있는 정보들을 종합하여 불러옴',
+    description:
+      '롤 하고 있는 사람들의 인게임 정보와 diedie db에 있는 정보들을 종합하여 불러옴',
   })
   async getUserInfoIngame(
     @Param('summonerName') summonerName: string,

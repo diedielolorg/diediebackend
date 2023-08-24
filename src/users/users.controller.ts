@@ -24,8 +24,9 @@ import { AuthGuard } from './auth.guard';
 import { ConfigService } from '@nestjs/config';
 import { EmailService } from 'src/email/email.service';
 import { VerifyEmailCodeDto } from './dto/verify-email-code.dto';
-import { response } from 'express';
+import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('USERS')
 @Controller('/api/users')
 export class UsersController {
   constructor(
@@ -59,7 +60,9 @@ export class UsersController {
     @Res({ passthrough: true }) response: Response,
   ) {
     const { email, password } = userLoginDtodto;
+    console.log(email, password);
     const accessToken = await this.usersService.login(email, password);
+    console.log(accessToken);
     response.header('Hi-junsoo', 'junsoobabo');
     response.cookie('accessToken', accessToken);
     return accessToken;

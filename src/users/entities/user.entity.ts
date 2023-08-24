@@ -8,7 +8,7 @@ import {
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
-import { ReportEntity } from '../../reports/entities/report.entity';
+import { Reports } from '../../reports/entities/report.entity';
 
 @Entity('Users')
 @Unique(['email', 'nickname'])
@@ -39,6 +39,6 @@ export class UserEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @OneToMany(() => ReportEntity, (report) => report.userId, { eager: true })
-  reports: UserEntity[];
+  @OneToMany(() => Reports, (report) => report.userId, { eager: true })
+  reports: Reports[];
 }

@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository, createQueryBuilder } from 'typeorm';
 import { CreateReportDto } from './dto/create-report.dto';
-import { ReportEntity } from './entities/report.entity';
+import { Reports } from './entities/report.entity';
 import { HttpService } from '@nestjs/axios';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -12,8 +12,8 @@ import { v4 as uuidv4 } from 'uuid'; // uuid 패키지에서 v4 함수를 가져
 export class ReportsService {
   constructor(
     private httpService: HttpService,
-    @InjectRepository(ReportEntity)
-    private reportRepository: Repository<ReportEntity>,
+    @InjectRepository(Reports)
+    private reportRepository: Repository<Reports>, //private dataSource: DataSource<Reports>,
   ) {}
 
   // async getUserInfoById(getId: string): Promise<void> {
@@ -235,10 +235,11 @@ export class ReportsService {
     return (
       this.reportRepository
         //Reports테이블에 대해 쿼리 수행
-        .createQueryBuilder('Reports')
-        //
-        .select()
-        .orderBy('reportCount', 'DESC')
+        //쿼리잘못
+        .createQueryBuilder()
+        .select('reportId')
+        .orderBy()
+        .getMany()
     );
   }
 
