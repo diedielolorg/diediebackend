@@ -58,7 +58,9 @@ export class ReportsController {
   @Get('rank')
   async findAll(@Query('month', ParseIntPipe) month: number) {
     console.log(month);
-    return await this.reportsService.getRankUser(month);
+    const a = await this.reportsService.getRankUser(month);
+    console.log(a);
+    return a;
   }
 
   //인게임 정보

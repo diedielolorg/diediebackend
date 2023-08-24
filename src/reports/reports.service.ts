@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository, createQueryBuilder } from 'typeorm';
 import { CreateReportDto } from './dto/create-report.dto';
-import { ReportEntity } from './entities/report.entity';
+import { Reports } from './entities/report.entity';
 import { HttpService } from '@nestjs/axios';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -11,8 +11,8 @@ import { map } from 'rxjs/operators';
 export class ReportsService {
   constructor(
     private httpService: HttpService,
-    @InjectRepository(ReportEntity)
-    private reportRepository: Repository<ReportEntity>,
+    @InjectRepository(Reports)
+    private reportRepository: Repository<Reports>, //private dataSource: DataSource<Reports>,
   ) {}
 
   async createReportUsers(createReportDto: CreateReportDto): Promise<any> {
@@ -50,10 +50,11 @@ export class ReportsService {
     return (
       this.reportRepository
         //Reports테이블에 대해 쿼리 수행
-        .createQueryBuilder('Reports')
-        //
-        .select()
-        .orderBy('reportCount', 'DESC')
+        //쿼리잘못
+        .createQueryBuilder()
+        .select('reportId')
+        .orderBy()
+        .getMany()
     );
   }
 

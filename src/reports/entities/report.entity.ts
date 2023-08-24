@@ -9,9 +9,11 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { UserEntity } from 'src/users/entities/user.entity';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 @Entity('Reports')
-export class ReportEntity {
+export class Reports {
   @PrimaryColumn()
   @IsNumber()
   reportId: number;
@@ -70,7 +72,6 @@ export class ReportEntity {
   updatedAt: Date;
 
   @ManyToOne(() => UserEntity, (user) => user.reports, {
-    eager: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
