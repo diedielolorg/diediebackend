@@ -6,6 +6,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserEntity } from 'src/users/entities/user.entity';
@@ -19,8 +20,8 @@ export class Reports {
   reportId: number;
 
   @Column()
-  @IsNumber()
-  userId: number;
+  @IsString()
+  userId: string;
 
   @Column()
   @IsString()
@@ -57,9 +58,8 @@ export class Reports {
   @IsString()
   reportPayload: string;
 
-  @Column()
-  @IsString()
-  reportCapture: string;
+  @Column({ type: 'json', nullable: true })
+  reportCapture: string[];
 
   @Column()
   @IsDateString()
@@ -72,6 +72,7 @@ export class Reports {
   updatedAt: Date;
 
   @ManyToOne(() => UserEntity, (user) => user.reports, {
+    eager: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
