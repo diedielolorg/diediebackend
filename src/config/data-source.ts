@@ -7,13 +7,13 @@ export const dataSourceOptions: DataSourceOptions = {
   password: '1q2w3e4r',
   database: 'diedie_backend',
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
-  synchronize: false, // true로 설정할 경우 서버가 구동될 때마다 테이블이 자동으로 생성됨
+  synchronize: true, // true로 설정할 경우 서버가 구동될 때마다 테이블이 자동으로 생성됨
   migrations: [__dirname + '/../migrations/*.{js,ts}'], // migration 수행할 파일
   // "migrations": ["dist/migrations/*{.ts,.js}"], // migration 수행할 파일
   // cli: {
   //   migrationsDir: "src/migrations" // migration 파일을 생성할 디렉토리
   // },
-  logging:true,
+  logging: true,
   migrationsTableName: 'migrations', // migration 내용이 기록될 테이블명(default = migration)
 };
 const dataSource = new DataSource(dataSourceOptions);

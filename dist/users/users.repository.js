@@ -15,7 +15,7 @@ const typeorm_1 = require("typeorm");
 const user_entity_1 = require("./entities/user.entity");
 let UsersRepository = exports.UsersRepository = class UsersRepository extends typeorm_1.Repository {
     constructor(dataSource) {
-        super(user_entity_1.UserEntity, dataSource.manager);
+        super(user_entity_1.Users, dataSource.manager);
         this.dataSource = dataSource;
     }
     async createUser(createUserdto) {

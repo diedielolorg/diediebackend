@@ -9,51 +9,46 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserEntity = void 0;
+exports.Users = void 0;
 const class_validator_1 = require("class-validator");
 const typeorm_1 = require("typeorm");
 const report_entity_1 = require("../../reports/entities/report.entity");
-let UserEntity = exports.UserEntity = class UserEntity {
+let Users = exports.Users = class Users extends typeorm_1.BaseEntity {
 };
 __decorate([
     (0, typeorm_1.PrimaryColumn)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], UserEntity.prototype, "userId", void 0);
+], Users.prototype, "userId", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UserEntity.prototype, "email", void 0);
+], Users.prototype, "email", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UserEntity.prototype, "nickname", void 0);
+], Users.prototype, "nickname", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UserEntity.prototype, "password", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ default: 0, nullable: true }),
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], UserEntity.prototype, "reportCount", void 0);
+], Users.prototype, "password", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)({ type: 'timestamp' }),
     __metadata("design:type", Date)
-], UserEntity.prototype, "createdAt", void 0);
+], Users.prototype, "createdAt", void 0);
 __decorate([
     (0, typeorm_1.UpdateDateColumn)({ type: 'timestamp' }),
     __metadata("design:type", Date)
-], UserEntity.prototype, "updatedAt", void 0);
+], Users.prototype, "updatedAt", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => report_entity_1.Reports, (report) => report, { eager: true }),
+    (0, typeorm_1.OneToMany)(() => report_entity_1.Reports, (report) => report.Users),
     __metadata("design:type", Array)
-], UserEntity.prototype, "reports", void 0);
-exports.UserEntity = UserEntity = __decorate([
-    (0, typeorm_1.Entity)('Users'),
+], Users.prototype, "reports", void 0);
+exports.Users = Users = __decorate([
+    (0, typeorm_1.Entity)({ name: 'Users' }),
     (0, typeorm_1.Unique)(['email', 'nickname'])
-], UserEntity);
+], Users);
 //# sourceMappingURL=user.entity.js.map

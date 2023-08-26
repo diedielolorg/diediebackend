@@ -1,6 +1,7 @@
 import { IsDateString, IsNumber, IsString } from 'class-validator';
 import { report } from 'process';
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -10,25 +11,23 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserEntity } from 'src/users/entities/user.entity';
+import { Users } from 'src/users/entities/user.entity';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-@Entity('Reports')
-export class Reports {
-  @PrimaryColumn()
+@Entity({ name: 'Reports' })
+export class Reports extends BaseEntity {
+  @PrimaryGeneratedColumn()
   @IsNumber()
   reportId: number;
-
-  @ManyToOne(() => UserEntity, (user) => user.reports, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  user: UserEntity;
 
   @Column()
   @IsString()
   userId: string;
+
+  @ManyToOne(() => Users, (Users) => Users.userId)
+  @JoinColumn({ name: 'userId' })
+  Users: Users;
 
   @Column()
   @IsString()
@@ -71,6 +70,10 @@ export class Reports {
   @Column()
   @IsDateString()
   reportDate: string;
+
+  @Column({ default: 0, nullable: true })
+  @IsNumber()
+  reportCount: number;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

@@ -1,10 +1,10 @@
 import { CreateUsersDto } from './dto/create-user.dto';
 import { DataSource, Repository } from 'typeorm';
-import { UserEntity } from './entities/user.entity';
-export declare class UsersRepository extends Repository<UserEntity> {
+import { Users } from './entities/user.entity';
+export declare class UsersRepository extends Repository<Users> {
     private dataSource;
     constructor(dataSource: DataSource);
     createUser(createUserdto: CreateUsersDto): Promise<void>;
     checkUserExists(email: string): Promise<boolean>;
-    loginUserExists(email: string, password: string): Promise<UserEntity>;
+    loginUserExists(email: string, password: string): Promise<Users>;
 }

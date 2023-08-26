@@ -10,7 +10,7 @@ exports.dataSourceOptions = {
     password: '1q2w3e4r',
     database: 'diedie_backend',
     entities: [__dirname + '/../**/*.entity.{js,ts}'],
-    synchronize: false,
+    synchronize: true,
     migrations: [__dirname + '/../migrations/*.{js,ts}'],
     logging: true,
     migrationsTableName: 'migrations',

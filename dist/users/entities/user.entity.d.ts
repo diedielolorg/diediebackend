@@ -1,11 +1,10 @@
-import { Reports } from '../../reports/entities/report.entity';
-export declare class UserEntity {
+import { BaseEntity } from 'typeorm';
+export declare class Users extends BaseEntity {
     userId: number;
     email: string;
     nickname: string;
     password: string;
-    reportCount: number;
     createdAt: Date;
     updatedAt: Date;
-    reports: Reports[];
+    reports: Report[];
 }
