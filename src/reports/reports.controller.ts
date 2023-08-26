@@ -71,7 +71,8 @@ export class ReportsController {
     return getUserInfobyAPI;
   }
 
-  @Post('reportuser') // userId 로그인 인증
+  @UseGuards(AuthGuard)
+  @Post('reportuser')
   @ApiOperation({
     summary: '유저 신고 등록',
     description: '롤에서 욕한 유저를 스샷과 함께 신고 가능',

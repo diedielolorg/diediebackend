@@ -211,20 +211,16 @@ export class ReportsService {
     files,
   ): Promise<any> {
     try {
-      const { summonerName, category, reportPayload, reportDate } =
-        createReportDto;
+      const { summonerName, category, reportPayload, reportDate } = createReportDto
 
-      const reportCapture: string[] = [];
-      for (let i = 0; i <= files.length; i++) {
-        reportCapture.push(files[i]);
-      }
-
-      const createReport = this.reportRepository.create({
-        summonerName,
-        category,
-        reportPayload,
-        reportCapture,
-        reportDate,
+      const reportCapture: string[] = files.map(file => file.location);
+  
+      const createReport = this.reportRepository.create({ 
+        summonerName, 
+        category, 
+        reportPayload, 
+        reportCapture, 
+        reportDate 
       });
 
       return await this.reportRepository.save(createReport);
