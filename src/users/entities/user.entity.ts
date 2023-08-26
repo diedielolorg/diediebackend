@@ -6,6 +6,7 @@ import {
   Entity,
   OneToMany,
   PrimaryColumn,
+  PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
@@ -15,8 +16,7 @@ import { Reports } from '../../reports/entities/report.entity';
 @Unique(['email', 'nickname'])
 export class Users extends BaseEntity {
   @PrimaryColumn()
-  @IsNumber()
-  userId: number;
+  userId: string;
 
   @Column()
   @IsString()
@@ -37,5 +37,5 @@ export class Users extends BaseEntity {
   updatedAt: Date;
 
   @OneToMany(() => Reports, (report) => report.Users)
-  reports: Report[];
+  reports: Reports[];
 }

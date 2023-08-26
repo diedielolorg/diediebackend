@@ -17,7 +17,7 @@ const common_1 = require("@nestjs/common");
 let Reports = exports.Reports = class Reports extends typeorm_1.BaseEntity {
 };
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
+    (0, typeorm_1.PrimaryColumn)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], Reports.prototype, "reportId", void 0);

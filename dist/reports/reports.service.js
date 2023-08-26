@@ -19,7 +19,6 @@ const typeorm_2 = require("typeorm");
 const report_entity_1 = require("./entities/report.entity");
 const axios_1 = require("@nestjs/axios");
 const operators_1 = require("rxjs/operators");
-const uuid_1 = require("uuid");
 let ReportsService = exports.ReportsService = class ReportsService {
     constructor(httpService, reportRepository) {
         this.httpService = httpService;
@@ -78,19 +77,17 @@ let ReportsService = exports.ReportsService = class ReportsService {
     }
     async createReportUsers(createReportDto, files) {
         try {
-            const userId = (0, uuid_1.v4)();
             const { summonerName, category, reportPayload, reportDate } = createReportDto;
             const reportCapture = [];
             for (let i = 0; i <= files.length; i++) {
                 reportCapture.push(files[i]);
             }
             const createReport = this.reportRepository.create({
-                userId,
                 summonerName,
                 category,
                 reportPayload,
                 reportCapture,
-                reportDate
+                reportDate,
             });
             return await this.reportRepository.save(createReport);
         }

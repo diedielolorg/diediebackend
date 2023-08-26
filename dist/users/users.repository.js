@@ -24,8 +24,7 @@ let UsersRepository = exports.UsersRepository = class UsersRepository extends ty
         await queryRunner.connect();
         await queryRunner.startTransaction();
         try {
-            const userId = 2;
-            const userObject = this.create({ userId, email, nickname, password });
+            const userObject = this.create({ email, nickname, password });
             console.log(userObject);
             await this.save(userObject);
         }

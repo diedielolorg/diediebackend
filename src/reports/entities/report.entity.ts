@@ -17,7 +17,7 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 @Entity({ name: 'Reports' })
 export class Reports extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   @IsNumber()
   reportId: number;
 

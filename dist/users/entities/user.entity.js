@@ -17,8 +17,7 @@ let Users = exports.Users = class Users extends typeorm_1.BaseEntity {
 };
 __decorate([
     (0, typeorm_1.PrimaryColumn)(),
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], Users.prototype, "userId", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
