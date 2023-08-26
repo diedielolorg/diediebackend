@@ -1,7 +1,7 @@
 import authConfig from 'src/config/authConfig';
 import { ConfigType } from '@nestjs/config';
 interface User {
-    userId: number;
+    userId: string;
     email: string;
 }
 export declare class AuthService {
@@ -9,7 +9,7 @@ export declare class AuthService {
     constructor(config: ConfigType<typeof authConfig>);
     login(user: User): string;
     verify(jwtString: string): {
-        userId: number;
+        userId: string;
         email: string;
     };
 }

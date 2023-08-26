@@ -6,7 +6,6 @@ import { Reports } from './entities/report.entity';
 import { HttpService } from '@nestjs/axios';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { v4 as uuidv4 } from 'uuid'; // uuid 패키지에서 v4 함수를 가져옴
 
 @Injectable()
 export class ReportsService {
@@ -25,7 +24,7 @@ export class ReportsService {
   //     const result = await response
   //       .pipe(map((response) => response.data))
   //       .toPromise();
-    
+
   //     return result;
   //   } catch(error) {
   //     console.error(error)
@@ -43,75 +42,81 @@ export class ReportsService {
         .toPromise();
 
       return result;
-    } catch(error) {
-      console.error(error)
+    } catch (error) {
+      console.error(error);
     }
   }
 
-  async getUserInfoByMatchId(getMatchIdByApi: string[], getSummonerName: string): Promise<any> {
+  async getUserInfoByMatchId(
+    getMatchIdByApi: string[],
+    getSummonerName: string,
+  ): Promise<any> {
     try {
       // 제일 최근 경기
       const getMatchIdByApi0 = getMatchIdByApi[10];
 
-        const response: Observable<any> = this.httpService.get(
-          `https://asia.api.riotgames.com/lol/match/v5/matches/${getMatchIdByApi0}`,
-          { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } },
-        );
+      const response: Observable<any> = this.httpService.get(
+        `https://asia.api.riotgames.com/lol/match/v5/matches/${getMatchIdByApi0}`,
+        { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } },
+      );
 
       const result = await response
         .pipe(map((response) => response.data))
         .toPromise();
-    //   const gameRecords: any[] = [];
+      //   const gameRecords: any[] = [];
 
-    // for (const matchId of getMatchIdByApi) {
-    //   const response: Observable<any> = this.httpService.get(
-    //     `https://asia.api.riotgames.com/lol/match/v5/matches/${matchId}`,
-    //     { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } },
-    //   );
+      // for (const matchId of getMatchIdByApi) {
+      //   const response: Observable<any> = this.httpService.get(
+      //     `https://asia.api.riotgames.com/lol/match/v5/matches/${matchId}`,
+      //     { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } },
+      //   );
 
-    //   const result = await response
-    //     .pipe(map((response) => response.data))
-    //     .toPromise();
+      //   const result = await response
+      //     .pipe(map((response) => response.data))
+      //     .toPromise();
 
-        // 게임 타입
+      // 게임 타입
       const gameRecord = result.info.participants
-      .filter((participant: any) => participant.summonerName === getSummonerName)
-      .map((participant: any) => {
-        const gameType = (gameQueueId: number) => {
-          switch (gameQueueId) {
-            case 420:
-              return '솔랭';
-            case 430:
-              return '일반게임';
-            case 440:
-              return '자유랭크';
-            case 450:
-              return '칼바람';
-            default:
-              return '일반게임';
-          }
-        };
+        .filter(
+          (participant: any) => participant.summonerName === getSummonerName,
+        )
+        .map((participant: any) => {
+          const gameType = (gameQueueId: number) => {
+            switch (gameQueueId) {
+              case 420:
+                return '솔랭';
+              case 430:
+                return '일반게임';
+              case 440:
+                return '자유랭크';
+              case 450:
+                return '칼바람';
+              default:
+                return '일반게임';
+            }
+          };
 
-        const gameEndTime = new Date(result.info.gameEndTimestamp).toLocaleString();
-      
-        return {
-          summonerName: participant.summonerName,
-          summonerId: participant.summonerId,
-          gameEndTime: gameEndTime,
-          gameType: gameType(result.info.queueId),
-          win: participant.win,
-        };
-      });
-    //   gameRecords.push(...gameRecord);
-    // }
+          const gameEndTime = new Date(
+            result.info.gameEndTimestamp,
+          ).toLocaleString();
 
-    // return gameRecords
+          return {
+            summonerName: participant.summonerName,
+            summonerId: participant.summonerId,
+            gameEndTime: gameEndTime,
+            gameType: gameType(result.info.queueId),
+            win: participant.win,
+          };
+        });
+      //   gameRecords.push(...gameRecord);
+      // }
+
+      // return gameRecords
       return gameRecord;
-    } catch(error) {
-      console.error(error)
+    } catch (error) {
+      console.error(error);
     }
   }
-
 
   //   async getUserInfo(getPuuid: string): Promise<any> {
   //   try {
@@ -158,7 +163,7 @@ export class ReportsService {
   //             return '일반게임';
   //         }
   //       };
-      
+
   //       return {
   //         gameStartTimestamp: result.info.gameStartTimestamp,
   //         gameEndTimestamp: result.info.gameEndTimestamp,
@@ -191,39 +196,40 @@ export class ReportsService {
   //         lane: participant.teamPosition,
   //         pinkWard: participant.visionWardsBoughtInGame,
   //         team: participant.teamId === 100 ? '블루팀' : '레드팀',
-  //         win: participant.win,        
+  //         win: participant.win,
   //       };
   //     });
-    
+
   //     return gameRecord;
   //   } catch(error) {
   //     console.error(error)
   //   }
   // }
 
-  async createReportUsers(createReportDto: CreateReportDto, files): Promise<any> {
+  async createReportUsers(
+    createReportDto: CreateReportDto,
+    files,
+  ): Promise<any> {
     try {
-      const userId = uuidv4();
-      
-      const { summonerName, category, reportPayload, reportDate } = createReportDto
-      
+      const { summonerName, category, reportPayload, reportDate } =
+        createReportDto;
+
       const reportCapture: string[] = [];
-      for(let i = 0; i <= files.length; i++){
-        reportCapture.push(files[i])
+      for (let i = 0; i <= files.length; i++) {
+        reportCapture.push(files[i]);
       }
-  
-      const createReport = this.reportRepository.create({ 
-        userId,
-        summonerName, 
-        category, 
-        reportPayload, 
-        reportCapture, 
-        reportDate 
+
+      const createReport = this.reportRepository.create({
+        summonerName,
+        category,
+        reportPayload,
+        reportCapture,
+        reportDate,
       });
-    
-      return await this.reportRepository.save(createReport)
-    } catch(error) {
-      console.error(error)
+
+      return await this.reportRepository.save(createReport);
+    } catch (error) {
+      console.error(error);
     }
   }
 
