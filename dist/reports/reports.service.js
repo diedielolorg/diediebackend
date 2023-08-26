@@ -78,16 +78,13 @@ let ReportsService = exports.ReportsService = class ReportsService {
     async createReportUsers(createReportDto, files) {
         try {
             const { summonerName, category, reportPayload, reportDate } = createReportDto;
-            const reportCapture = [];
-            for (let i = 0; i <= files.length; i++) {
-                reportCapture.push(files[i]);
-            }
+            const reportCapture = files.map(file => file.location);
             const createReport = this.reportRepository.create({
                 summonerName,
                 category,
                 reportPayload,
                 reportCapture,
-                reportDate,
+                reportDate
             });
             return await this.reportRepository.save(createReport);
         }

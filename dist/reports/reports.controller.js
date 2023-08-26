@@ -18,6 +18,7 @@ const reports_service_1 = require("./reports.service");
 const create_report_dto_1 = require("./dto/create-report.dto");
 const S3FileInterceptor_1 = require("../utils/S3FileInterceptor");
 const search_service_1 = require("../search/search.service");
+const auth_guard_1 = require("../users/auth.guard");
 const swagger_1 = require("@nestjs/swagger");
 let ReportsController = exports.ReportsController = class ReportsController {
     constructor(reportsService, searchService) {
@@ -57,6 +58,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ReportsController.prototype, "getMatchUserInfo", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Post)('reportuser'),
     (0, swagger_1.ApiOperation)({
         summary: '유저 신고 등록',
