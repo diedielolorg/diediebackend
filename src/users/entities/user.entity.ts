@@ -39,6 +39,6 @@ export class UserEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @OneToMany(() => Reports, (report) => report.userId, { eager: true })
+  @OneToMany(() => Reports, (report) => report, { eager: true })
   reports: Reports[];
 }

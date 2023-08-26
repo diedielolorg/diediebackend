@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
@@ -18,6 +19,12 @@ export class Reports {
   @PrimaryColumn()
   @IsNumber()
   reportId: number;
+
+  @ManyToOne(() => UserEntity, (user) => user.reports, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  user: UserEntity;
 
   @Column()
   @IsString()
@@ -70,11 +77,4 @@ export class Reports {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
-
-  @ManyToOne(() => UserEntity, (user) => user.reports, {
-    eager: true,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  User: UserEntity;
 }
