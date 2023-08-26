@@ -1,5 +1,6 @@
 import { IsNumber, IsString, IsOptional } from 'class-validator';
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -10,9 +11,9 @@ import {
 } from 'typeorm';
 import { Reports } from '../../reports/entities/report.entity';
 
-@Entity('Users')
+@Entity({ name: 'Users' })
 @Unique(['email', 'nickname'])
-export class UserEntity {
+export class Users extends BaseEntity {
   @PrimaryColumn()
   @IsNumber()
   userId: number;
@@ -29,16 +30,12 @@ export class UserEntity {
   @IsString()
   password: string;
 
-  @Column({ default: 0, nullable: true })
-  @IsNumber()
-  reportCount: number;
-
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @OneToMany(() => Reports, (report) => report, { eager: true })
-  reports: Reports[];
+  @OneToMany(() => Reports, (report) => report.Users)
+  reports: Report[];
 }

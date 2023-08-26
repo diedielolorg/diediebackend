@@ -41,9 +41,7 @@ let UsersController = exports.UsersController = class UsersController {
     }
     async login(userLoginDtodto, response) {
         const { email, password } = userLoginDtodto;
-        console.log(email, password);
         const accessToken = await this.usersService.login(email, password);
-        console.log(accessToken);
         response.header('Hi-junsoo', 'junsoobabo');
         response.cookie('accessToken', accessToken);
         return accessToken;

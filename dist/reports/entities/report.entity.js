@@ -14,25 +14,23 @@ const class_validator_1 = require("class-validator");
 const typeorm_1 = require("typeorm");
 const user_entity_1 = require("../../users/entities/user.entity");
 const common_1 = require("@nestjs/common");
-let Reports = exports.Reports = class Reports {
+let Reports = exports.Reports = class Reports extends typeorm_1.BaseEntity {
 };
 __decorate([
-    (0, typeorm_1.PrimaryColumn)(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], Reports.prototype, "reportId", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => user_entity_1.UserEntity, (user) => user.reports, {
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-    }),
-    __metadata("design:type", user_entity_1.UserEntity)
-], Reports.prototype, "user", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], Reports.prototype, "userId", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.Users, (Users) => Users.userId),
+    (0, typeorm_1.JoinColumn)({ name: 'userId' }),
+    __metadata("design:type", user_entity_1.Users)
+], Reports.prototype, "Users", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     (0, class_validator_1.IsString)(),
@@ -73,6 +71,11 @@ __decorate([
     __metadata("design:type", String)
 ], Reports.prototype, "reportDate", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ default: 0, nullable: true }),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], Reports.prototype, "reportCount", void 0);
+__decorate([
     (0, typeorm_1.CreateDateColumn)({ type: 'timestamp' }),
     __metadata("design:type", Date)
 ], Reports.prototype, "createdAt", void 0);
@@ -82,6 +85,6 @@ __decorate([
 ], Reports.prototype, "updatedAt", void 0);
 exports.Reports = Reports = __decorate([
     (0, common_1.Injectable)(),
-    (0, typeorm_1.Entity)('Reports')
+    (0, typeorm_1.Entity)({ name: 'Reports' })
 ], Reports);
 //# sourceMappingURL=report.entity.js.map

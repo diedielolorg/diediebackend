@@ -1,8 +1,9 @@
-import { UserEntity } from 'src/users/entities/user.entity';
-export declare class Reports {
+import { BaseEntity } from 'typeorm';
+import { Users } from 'src/users/entities/user.entity';
+export declare class Reports extends BaseEntity {
     reportId: number;
-    user: UserEntity;
     userId: string;
+    Users: Users;
     summonerName: string;
     summonerPhoto: string;
     rank: number;
@@ -11,6 +12,7 @@ export declare class Reports {
     reportPayload: string;
     reportCapture: string[];
     reportDate: string;
+    reportCount: number;
     createdAt: Date;
     updatedAt: Date;
 }

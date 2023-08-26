@@ -5,13 +5,13 @@ import {
 } from '@nestjs/common';
 import { CreateUsersDto } from './dto/create-user.dto';
 import { DataSource, Repository } from 'typeorm';
-import { UserEntity } from './entities/user.entity';
+import { Users } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
-export class UsersRepository extends Repository<UserEntity> {
+export class UsersRepository extends Repository<Users> {
   constructor(private dataSource: DataSource) {
-    super(UserEntity, dataSource.manager);
+    super(Users, dataSource.manager);
   }
 
   async createUser(createUserdto: CreateUsersDto): Promise<void> {
@@ -24,7 +24,7 @@ export class UsersRepository extends Repository<UserEntity> {
     await queryRunner.startTransaction();
     try {
       const userId = 2;
-      const userObject = this.create({userId, email, nickname, password });
+      const userObject = this.create({ userId, email, nickname, password });
       //정상동작 수행시 트랜잭션을 커밋하여 DB에 저장
       console.log(userObject);
       await this.save(userObject);
@@ -43,7 +43,7 @@ export class UsersRepository extends Repository<UserEntity> {
     return user !== null;
   }
 
-  async loginUserExists(email: string, password: string): Promise<UserEntity> {
+  async loginUserExists(email: string, password: string): Promise<Users> {
     const user = await this.findOne({ where: { email, password } });
     return user;
   }
