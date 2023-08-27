@@ -17,14 +17,12 @@ const common_1 = require("@nestjs/common");
 let Reports = exports.Reports = class Reports extends typeorm_1.BaseEntity {
 };
 __decorate([
-    (0, typeorm_1.PrimaryColumn)(),
-    (0, class_validator_1.IsNumber)(),
+    (0, typeorm_1.PrimaryGeneratedColumn)('increment'),
     __metadata("design:type", Number)
 ], Reports.prototype, "reportId", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], Reports.prototype, "userId", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => user_entity_1.Users, (Users) => Users.userId),

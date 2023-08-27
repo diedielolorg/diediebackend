@@ -13,6 +13,7 @@ import {
   Query,
   ValidationPipe,
   ParseIntPipe,
+  Req,
 } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/create-report.dto';
@@ -20,6 +21,7 @@ import { S3FileInterceptor } from 'src/utils/S3FileInterceptor';
 import { SearchService } from 'src/search/search.service';
 import { AuthGuard } from 'src/users/auth.guard';
 import { ApiOperation } from '@nestjs/swagger';
+import { Request } from 'express';
 
 @Controller('/api')
 export class ReportsController {
@@ -71,6 +73,7 @@ export class ReportsController {
     return getUserInfobyAPI;
   }
 
+  @UseGuards(AuthGuard)
   @Post('reportuser') // userId 로그인 인증
   @ApiOperation({
     summary: '유저 신고 등록',
@@ -78,10 +81,17 @@ export class ReportsController {
   })
   @UseInterceptors(S3FileInterceptor)
   async createReportUsers(
+    @UploadedFiles() file: Express.Multer.File[],
     @Body() createReportDto: CreateReportDto,
-    @UploadedFiles() files: Express.Multer.File[],
+    @Req() request: Request,
   ): Promise<any> {
-    return await this.reportsService.createReportUsers(createReportDto, files);
+    const userId = request['user'].userId;
+    console.log(file);
+    return await this.reportsService.createReportUsers(
+      userId,
+      createReportDto,
+      file,
+    );
   }
 
   @Get('rank')

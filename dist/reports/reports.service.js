@@ -75,14 +75,13 @@ let ReportsService = exports.ReportsService = class ReportsService {
             console.error(error);
         }
     }
-    async createReportUsers(createReportDto, files) {
+    async createReportUsers(userId, createReportDto, file) {
         try {
             const { summonerName, category, reportPayload, reportDate } = createReportDto;
-            const reportCapture = [];
-            for (let i = 0; i <= files.length; i++) {
-                reportCapture.push(files[i]);
-            }
+            const fileArray = file;
+            const reportCapture = fileArray.map((fileInfo) => fileInfo.location);
             const createReport = this.reportRepository.create({
+                userId,
                 summonerName,
                 category,
                 reportPayload,
@@ -100,11 +99,14 @@ let ReportsService = exports.ReportsService = class ReportsService {
         if (month > 12 || month < 1) {
             throw new common_1.BadRequestException('검색하려는 월을 입력해주세요');
         }
-        return (this.reportRepository
-            .createQueryBuilder()
-            .select('reportId')
-            .orderBy()
-            .getMany());
+        const rankResult = this.reportRepository.find({
+            take: 100,
+            order: {
+                reportCount: 'ASC',
+            },
+        });
+        console.log(rankResult);
+        return rankResult;
     }
     async getUserInfoIngame(getId) {
         try {

@@ -18,6 +18,7 @@ const reports_service_1 = require("./reports.service");
 const create_report_dto_1 = require("./dto/create-report.dto");
 const S3FileInterceptor_1 = require("../utils/S3FileInterceptor");
 const search_service_1 = require("../search/search.service");
+const auth_guard_1 = require("../users/auth.guard");
 const swagger_1 = require("@nestjs/swagger");
 let ReportsController = exports.ReportsController = class ReportsController {
     constructor(reportsService, searchService) {
@@ -32,8 +33,10 @@ let ReportsController = exports.ReportsController = class ReportsController {
         const getUserInfobyAPI = await this.reportsService.getUserInfoByMatchId(getMatchIdByApi, getSummonerName);
         return getUserInfobyAPI;
     }
-    async createReportUsers(createReportDto, files) {
-        return await this.reportsService.createReportUsers(createReportDto, files);
+    async createReportUsers(file, createReportDto, request) {
+        const userId = request['user'].userId;
+        console.log(file);
+        return await this.reportsService.createReportUsers(userId, createReportDto, file);
     }
     async findAll(month) {
         console.log(month);
@@ -57,16 +60,18 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ReportsController.prototype, "getMatchUserInfo", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Post)('reportuser'),
     (0, swagger_1.ApiOperation)({
         summary: '유저 신고 등록',
         description: '롤에서 욕한 유저를 스샷과 함께 신고 가능',
     }),
     (0, common_1.UseInterceptors)(S3FileInterceptor_1.S3FileInterceptor),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.UploadedFiles)()),
+    __param(0, (0, common_1.UploadedFiles)()),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_report_dto_1.CreateReportDto, Array]),
+    __metadata("design:paramtypes", [Array, create_report_dto_1.CreateReportDto, Object]),
     __metadata("design:returntype", Promise)
 ], ReportsController.prototype, "createReportUsers", null);
 __decorate([

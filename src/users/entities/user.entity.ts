@@ -15,8 +15,8 @@ import { Reports } from '../../reports/entities/report.entity';
 @Entity({ name: 'Users' })
 @Unique(['email', 'nickname'])
 export class Users extends BaseEntity {
-  @PrimaryColumn()
-  userId: string;
+  @PrimaryGeneratedColumn()
+  userId: number;
 
   @Column()
   @IsString()

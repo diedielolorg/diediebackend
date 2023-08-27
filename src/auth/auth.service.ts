@@ -5,7 +5,7 @@ import { ConfigType } from '@nestjs/config';
 import { Response } from 'express';
 
 interface User {
-  userId: string;
+  userId: number;
   email: string;
 }
 
