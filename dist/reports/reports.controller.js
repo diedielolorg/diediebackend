@@ -46,7 +46,28 @@ let ReportsController = exports.ReportsController = class ReportsController {
         const getSummonerId = await this.searchService.searchSummonerName(summonerName);
         const getId = getSummonerId['id'];
         const getMatch = await this.reportsService.getUserInfoIngame(getId);
-        return getMatch;
+        const getUsersId = getMatch.participants;
+        const getUsersNameByMapping = await this.reportsService.getUserName(getUsersId);
+        const getUsersTierByAPI = await this.reportsService.getUserTierByApi(getUsersNameByMapping);
+        const summonerNames = getUsersId.map(participant => participant.summonerName);
+        const getReportsInfoBySummonerName = await this.reportsService.getReportsInfo(summonerNames);
+        const participantsWithReportData = await this.reportsService.attachReportDataToParticipants(summonerNames, getReportsInfoBySummonerName);
+        const combinedResponse = {
+            gameId: getMatch.gameId,
+            mapId: getMatch.mapId,
+            gameMode: getMatch.gameMode,
+            gameType: getMatch.gameType,
+            gameQueueConfigId: getMatch.gameQueueConfigId,
+            platformId: getMatch.platformId,
+            gameStartTime: getMatch.gameStartTime,
+            gameLength: getMatch.gameLength,
+            participants: getUsersTierByAPI.map((tierInfo, index) => ({
+                ...getUsersId[index],
+                tierInfo,
+            })),
+            reportsData: participantsWithReportData
+        };
+        return combinedResponse;
     }
 };
 __decorate([

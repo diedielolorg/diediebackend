@@ -10,5 +10,5 @@ export declare class ReportsController {
     getMatchUserInfo(summonerName: string): Promise<void>;
     createReportUsers(file: Express.Multer.File[], createReportDto: CreateReportDto, request: Request): Promise<any>;
     findAll(month: number): Promise<import("./entities/report.entity").Reports[]>;
-    getUserInfoIngame(summonerName: string): Promise<void>;
+    getUserInfoIngame(summonerName: string): Promise<any>;
 }
