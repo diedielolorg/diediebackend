@@ -212,6 +212,7 @@ export class ReportsService {
     file,
   ): Promise<any> {
     try {
+
       const { summonerName, category, reportPayload, reportDate } =
         createReportDto;
       const fileArray = file;
@@ -224,6 +225,7 @@ export class ReportsService {
         reportPayload,
         reportCapture,
         reportDate,
+
       });
 
       return await this.reportRepository.save(createReport);
