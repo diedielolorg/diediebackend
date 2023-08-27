@@ -33,8 +33,10 @@ let ReportsController = exports.ReportsController = class ReportsController {
         const getUserInfobyAPI = await this.reportsService.getUserInfoByMatchId(getMatchIdByApi, getSummonerName);
         return getUserInfobyAPI;
     }
-    async createReportUsers(createReportDto, files) {
-        return await this.reportsService.createReportUsers(createReportDto, files);
+    async createReportUsers(file, createReportDto, request) {
+        const userId = request['user'].userId;
+        console.log(file);
+        return await this.reportsService.createReportUsers(userId, createReportDto, file);
     }
     async findAll(month) {
         console.log(month);
@@ -65,10 +67,11 @@ __decorate([
         description: '롤에서 욕한 유저를 스샷과 함께 신고 가능',
     }),
     (0, common_1.UseInterceptors)(S3FileInterceptor_1.S3FileInterceptor),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.UploadedFiles)()),
+    __param(0, (0, common_1.UploadedFiles)()),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_report_dto_1.CreateReportDto, Array]),
+    __metadata("design:paramtypes", [Array, create_report_dto_1.CreateReportDto, Object]),
     __metadata("design:returntype", Promise)
 ], ReportsController.prototype, "createReportUsers", null);
 __decorate([

@@ -17,13 +17,11 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 @Entity({ name: 'Reports' })
 export class Reports extends BaseEntity {
-  @PrimaryColumn()
-  @IsNumber()
+  @PrimaryGeneratedColumn('increment')
   reportId: number;
 
   @Column()
-  @IsString()
-  userId: string;
+  userId: number;
 
   @ManyToOne(() => Users, (Users) => Users.userId)
   @JoinColumn({ name: 'userId' })

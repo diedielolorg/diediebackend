@@ -207,20 +207,25 @@ export class ReportsService {
   // }
 
   async createReportUsers(
+    userId,
     createReportDto: CreateReportDto,
-    files,
+    file,
   ): Promise<any> {
     try {
-      const { summonerName, category, reportPayload, reportDate } = createReportDto
 
-      const reportCapture: string[] = files.map(file => file.location);
-  
-      const createReport = this.reportRepository.create({ 
-        summonerName, 
-        category, 
-        reportPayload, 
-        reportCapture, 
-        reportDate 
+      const { summonerName, category, reportPayload, reportDate } =
+        createReportDto;
+      const fileArray = file;
+      const reportCapture = fileArray.map((fileInfo) => fileInfo.location);
+
+      const createReport = this.reportRepository.create({
+        userId,
+        summonerName,
+        category,
+        reportPayload,
+        reportCapture,
+        reportDate,
+
       });
 
       return await this.reportRepository.save(createReport);
@@ -234,15 +239,14 @@ export class ReportsService {
     if (month > 12 || month < 1) {
       throw new BadRequestException('검색하려는 월을 입력해주세요');
     }
-    return (
-      this.reportRepository
-        //Reports테이블에 대해 쿼리 수행
-        //쿼리잘못
-        .createQueryBuilder()
-        .select('reportId')
-        .orderBy()
-        .getMany()
-    );
+    const rankResult = this.reportRepository.find({
+      take: 100,
+      order: {
+        reportCount: 'ASC',
+      },
+    });
+    console.log(rankResult);
+    return rankResult;
   }
 
   async getUserInfoIngame(getId: string): Promise<any> {

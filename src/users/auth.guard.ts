@@ -27,15 +27,19 @@ export class AuthGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
+
     //토큰 추출
-    const token = this.extractTokenFromHeader(request);
-    if (!token) {
+    //const accessToken = this.extractTokenFromHeader(request);
+
+    const accessToken = request.cookies.accessToken;
+
+    if (!accessToken) {
       throw new UnauthorizedException();
     }
     try {
       //토큰분해해서 나온 사용자 정보 변수에 할당
-      const payload = await this.jwtService.verifyAsync(token, {
-        //  secret: jwtConstants.secret,
+      const payload = await this.jwtService.verifyAsync(accessToken, {
+        secret: process.env.JWT_SECRET,
       });
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers

@@ -1,7 +1,7 @@
 import { BaseEntity } from 'typeorm';
 import { Reports } from '../../reports/entities/report.entity';
 export declare class Users extends BaseEntity {
-    userId: string;
+    userId: number;
     email: string;
     nickname: string;
     password: string;
