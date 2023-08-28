@@ -48,7 +48,7 @@ let ReportsController = exports.ReportsController = class ReportsController {
         const getUsersId = getMatch.participants;
         const getUsersNameByMapping = await this.reportsService.getUserName(getUsersId);
         const getUsersTierByAPI = await this.reportsService.getUserTierByApi(getUsersNameByMapping);
-        const summonerNames = getUsersId.map(participant => participant.summonerName);
+        const summonerNames = getUsersId.map((participant) => participant.summonerName);
         const getReportsInfoBySummonerName = await this.reportsService.getReportsInfo(summonerNames);
         const participantsWithReportData = await this.reportsService.attachReportDataToParticipants(summonerNames, getReportsInfoBySummonerName);
         const combinedResponse = {
@@ -64,7 +64,7 @@ let ReportsController = exports.ReportsController = class ReportsController {
                 ...getUsersId[index],
                 tierInfo,
             })),
-            reportsData: participantsWithReportData
+            reportsData: participantsWithReportData,
         };
         return combinedResponse;
     }
@@ -73,6 +73,7 @@ __decorate([
     (0, common_1.Get)('usermatchinfo/:summonerName'),
     (0, swagger_1.ApiOperation)({
         summary: '전적 상세 정보',
+        description: '소환사의 최근 게임 전적을 조회하기',
     }),
     __param(0, (0, common_1.Param)('summonerName')),
     __metadata("design:type", Function),
@@ -117,6 +118,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ReportsController.prototype, "getUserInfoIngame", null);
 exports.ReportsController = ReportsController = __decorate([
+    (0, swagger_1.ApiTags)('REPORTS'),
     (0, common_1.Controller)('/api'),
     __metadata("design:paramtypes", [reports_service_1.ReportsService,
         search_service_1.SearchService])
