@@ -47,6 +47,7 @@ let EmailService = exports.EmailService = class EmailService {
             };
             await this.transporter.sendMail(mailOptions);
             await this.cacheManager.set(authcode, email, 0.5);
+            return { msg: '인증번호 발송 완료' };
         }
         catch (error) {
             console.error(error);
@@ -57,6 +58,7 @@ let EmailService = exports.EmailService = class EmailService {
         if (value === null) {
             throw new common_1.BadRequestException(`인증번호가 일치하지 않습니다.`);
         }
+        return { msg: '인증번호 확인 완료' };
     }
 };
 exports.EmailService = EmailService = __decorate([

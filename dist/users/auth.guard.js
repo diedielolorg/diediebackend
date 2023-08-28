@@ -28,7 +28,8 @@ let AuthGuard = exports.AuthGuard = class AuthGuard {
             return true;
         }
         const request = context.switchToHttp().getRequest();
-        const accessToken = request.cookies.accessToken;
+        const accessToken = this.extractTokenFromHeader(request);
+        console.log(accessToken);
         if (!accessToken) {
             throw new common_1.UnauthorizedException();
         }
@@ -39,13 +40,20 @@ let AuthGuard = exports.AuthGuard = class AuthGuard {
             request['user'] = payload;
         }
         catch {
-            throw new common_1.UnauthorizedException();
+            throw new common_1.UnauthorizedException('로그인 후 이용할 수 있습니다.');
         }
         return true;
     }
     extractTokenFromHeader(request) {
-        const [type, token] = request.headers.authorization?.split(' ') ?? [];
-        return type === 'Bearer' ? token : undefined;
+        const authorizationHeader = request.headers.authorization;
+        console.log(authorizationHeader);
+        if (authorizationHeader) {
+            const [type, token] = authorizationHeader.split(' ');
+            if (type === 'Bearer') {
+                return token;
+            }
+            return undefined;
+        }
     }
 };
 exports.AuthGuard = AuthGuard = __decorate([

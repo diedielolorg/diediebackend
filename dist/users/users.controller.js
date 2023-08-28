@@ -43,8 +43,9 @@ let UsersController = exports.UsersController = class UsersController {
         const { email, password } = userLoginDtodto;
         const accessToken = await this.usersService.login(email, password);
         response.header('Hi-junsoo', 'junsoobabo');
-        response.cookie('accessToken', accessToken);
-        return accessToken;
+        console.log(accessToken);
+        response.header('authorization', `Bearer ${accessToken}`);
+        return { msg: '로그인 성공' };
     }
 };
 __decorate([

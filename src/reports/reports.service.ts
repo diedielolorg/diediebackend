@@ -137,10 +137,7 @@ export class ReportsService {
         const customString = isoString.replace('T', ' ').split('.')[0];
         return customString;
       }
-
       const formattedTime = formatDateToCustomString(lastAccessTime);
-
-      console.log(formattedTime);
       //존재하면 소환사 아이콘 url db에 저
       const createReport = this.reportRepository.create({
         userId,
@@ -156,9 +153,11 @@ export class ReportsService {
         reportDate,
       });
 
-      return await this.reportRepository.save(createReport);
+      await this.reportRepository.save(createReport);
+      return { msg: '신고 등록이 완료되었습니다.' };
     } catch (error) {
       console.error(error);
+      throw new BadRequestException('존재하지 않는 소환사입니다.');
     }
   }
 
@@ -173,6 +172,8 @@ export class ReportsService {
         'summonerPhoto',
         'reportCount',
         'lastAccessTime',
+        'wins',
+        'losses',
         'winRate',
         'rank',
         'cussWordStats',

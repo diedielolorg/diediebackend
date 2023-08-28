@@ -4,6 +4,6 @@ export declare class EmailService {
     private readonly transporter;
     constructor(cacheManager: Cache);
     generateRandomCode(): Promise<string>;
-    sendConfirmationEmail(email: string): Promise<void>;
-    verifyEmail(code: number): Promise<void>;
+    sendConfirmationEmail(email: string): Promise<any>;
+    verifyEmail(code: number): Promise<any>;
 }
