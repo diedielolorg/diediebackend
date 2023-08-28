@@ -28,10 +28,10 @@ export class AuthGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
 
-    //토큰 추출
-    //const accessToken = this.extractTokenFromHeader(request);
+    const accessToken = this.extractTokenFromHeader(request);
 
-    const accessToken = request.cookies.accessToken;
+    console.log(accessToken);
+    //const accessToken = request.cookies.accessToken;
 
     if (!accessToken) {
       throw new UnauthorizedException();
@@ -46,14 +46,21 @@ export class AuthGuard implements CanActivate {
       //request['user']에 할당
       request['user'] = payload;
     } catch {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('로그인 후 이용할 수 있습니다.');
     }
     return true;
   }
 
   //토큰 추출 함수
   private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+    const authorizationHeader = request.headers.authorization;
+    console.log(authorizationHeader);
+    if (authorizationHeader) {
+      const [type, token] = authorizationHeader.split(' ');
+      if (type === 'Bearer') {
+        return token;
+      }
+      return undefined;
+    }
   }
 }

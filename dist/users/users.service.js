@@ -26,6 +26,7 @@ let UsersService = exports.UsersService = class UsersService {
                 throw new common_1.UnprocessableEntityException('해당 이메일로는 가입할 수 없습니다.');
             }
             await this.usersRepository.createUser(createUserdto);
+            return { msg: '회원가입 성공' };
         }
         catch (error) {
             console.error(error);
