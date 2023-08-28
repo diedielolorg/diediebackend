@@ -113,7 +113,9 @@ let ReportsService = exports.ReportsService = class ReportsService {
             const response = this.httpService.get(`https://kr.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/${getId}`, { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } });
             const result = await response
                 .pipe((0, operators_1.map)((response) => {
-                const { gameId, mapId, gameType, gameQueueConfigId, platformId, gameStartTime, gameLength, participants, } = response.data;
+                const { gameId, mapId, gameType, gameQueueConfigId, platformId, gameLength, participants, } = response.data;
+                const minutes = Math.floor(gameLength / 60);
+                const seconds = gameLength % 60;
                 let gameMode = '';
                 switch (gameQueueConfigId) {
                     case 420:
@@ -142,13 +144,33 @@ let ReportsService = exports.ReportsService = class ReportsService {
                     gameType,
                     gameQueueConfigId,
                     platformId,
-                    gameStartTime,
-                    gameLength,
+                    gameLength: minutes + "분" + seconds + "초",
                     participants: simplifiedParticipants,
                 };
             }))
                 .toPromise();
-            return result;
+            const champId = result.participants;
+            const champIds = champId.map(data => data.championId);
+            const fetchResponse = await fetch(`http://ddragon.leagueoflegends.com/cdn/13.16.1/data/en_US/champion.json`);
+            const data = await fetchResponse.json();
+            const champions = data.data;
+            const championImageUrls = champIds.map(championId => {
+                const champion = champions[Object.keys(champions).find(key => champions[key].key === championId.toString())];
+                const championImageUrl = `http://ddragon.leagueoflegends.com/cdn/13.16.1/img/champion/${champion.image.full}`;
+                return championImageUrl;
+            });
+            const participantsImageUrls = result.participants.map((participant, index) => {
+                return {
+                    ...participant,
+                    championImageUrl: championImageUrls[index]
+                };
+            });
+            const finalResult = {
+                ...result,
+                participants: participantsImageUrls
+            };
+            console.log(finalResult);
+            return finalResult;
         }
         catch (error) {
             console.error(error);
