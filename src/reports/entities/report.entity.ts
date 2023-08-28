@@ -43,6 +43,11 @@ export class Reports extends BaseEntity {
   @IsString()
   cussWordStats: string;
 
+  @Column()
+  lastAccessTime: Date;
+
+  @Column()
+  winRate: number;
   //   @Column({
   //     type: 'varchar',
   //     length: 16,
@@ -57,6 +62,12 @@ export class Reports extends BaseEntity {
   @Column()
   @IsString()
   category: string;
+
+  @Column()
+  wins: number;
+
+  @Column()
+  losses: number;
 
   @Column()
   @IsString()

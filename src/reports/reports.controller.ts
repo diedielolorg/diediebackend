@@ -87,7 +87,6 @@ export class ReportsController {
     @Req() request: Request,
   ): Promise<any> {
     const userId = request['user'].userId;
-    console.log(file);
     return await this.reportsService.createReportUsers(
       userId,
       createReportDto,
@@ -101,8 +100,8 @@ export class ReportsController {
     description: '롤에서 욕한 유저가 신고당한 횟수만큼 랭킹 매김',
   })
   async findAll(@Query('month', ParseIntPipe) month: number) {
-    console.log(month);
-    return await this.reportsService.getRankUser(month);
+    const data = await this.reportsService.getRankUser(month);
+    return { data: data };
   }
 
   //인게임 정보
