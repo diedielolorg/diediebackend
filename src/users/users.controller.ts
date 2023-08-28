@@ -36,6 +36,10 @@ export class UsersController {
   ) {}
 
   @Post('/signup')
+  @ApiOperation({
+    summary: '회원가입',
+    description: '회원가입',
+  })
   async createUser(
     @Body(ValidationPipe) createUserdto: CreateUsersDto,
   ): Promise<void> {
@@ -43,18 +47,30 @@ export class UsersController {
   }
 
   @Post('/authcode')
+  @ApiOperation({
+    summary: '이메일 인증 번호 4자리 발송',
+    description: '인증번호 4자리 발송',
+  })
   async verifyEmailSend(@Body() verifyEmailDto: VerifyEmailDto): Promise<void> {
     const { email } = verifyEmailDto;
     return await this.emailSerivce.sendConfirmationEmail(email);
   }
 
   @Post('/authcodevalidation')
+  @ApiOperation({
+    summary: '이메일 인증 번호 4자리 검증',
+    description: '인증번호 4자리 검증',
+  })
   async verifyEmail(@Body() verifyEmailDto: VerifyEmailCodeDto) {
     const { code } = verifyEmailDto;
     return await this.emailSerivce.verifyEmail(code);
   }
 
   @Post('/login')
+  @ApiOperation({
+    summary: '로그인',
+    description: '로그인',
+  })
   async login(
     @Body() userLoginDtodto: UserLoginDto,
     @Res({ passthrough: true }) response: Response,
@@ -62,7 +78,8 @@ export class UsersController {
     const { email, password } = userLoginDtodto;
     const accessToken = await this.usersService.login(email, password);
     response.header('Hi-junsoo', 'junsoobabo');
-    response.cookie('accessToken', accessToken);
-    return accessToken;
+    console.log(accessToken);
+    response.header('authorization', `Bearer ${accessToken}`);
+    return { msg: '로그인 성공' };
   }
 }

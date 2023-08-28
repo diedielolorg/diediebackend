@@ -1,13 +1,15 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { SearchSummonerNameDto } from './dto/summoner-name.dto';
 import { SearchService } from './search.service';
 
+@ApiTags('SEARCH')
 @Controller('/api/main')
 export class SearchController {
   constructor(private searchService: SearchService) {}
 
   @Get('/search')
+  @ApiQuery({ name: 'summonerName', required: true, description: '소환사이름' })
   @ApiOperation({
     summary: '소환사 검색',
   })

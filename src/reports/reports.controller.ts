@@ -20,10 +20,11 @@ import { CreateReportDto } from './dto/create-report.dto';
 import { S3FileInterceptor } from 'src/utils/S3FileInterceptor';
 import { SearchService } from 'src/search/search.service';
 import { AuthGuard } from 'src/users/auth.guard';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { ILike } from 'typeorm';
 
+@ApiTags('REPORTS')
 @Controller('/api')
 export class ReportsController {
   constructor(
@@ -53,6 +54,7 @@ export class ReportsController {
   @Get('usermatchinfo/:summonerName')
   @ApiOperation({
     summary: '전적 상세 정보',
+    description: '소환사의 최근 게임 전적을 조회하기',
   })
   async getMatchUserInfo(
     @Param('summonerName') summonerName: string,
@@ -72,7 +74,7 @@ export class ReportsController {
       getSummonerName,
     );
     return getUserInfobyAPI;
-  } 
+  }
 
   @UseGuards(AuthGuard)
   @Post('reportuser')
@@ -87,7 +89,6 @@ export class ReportsController {
     @Req() request: Request,
   ): Promise<any> {
     const userId = request['user'].userId;
-    console.log(file);
     return await this.reportsService.createReportUsers(
       userId,
       createReportDto,
@@ -101,8 +102,8 @@ export class ReportsController {
     description: '롤에서 욕한 유저가 신고당한 횟수만큼 랭킹 매김',
   })
   async findAll(@Query('month', ParseIntPipe) month: number) {
-    console.log(month);
-    return await this.reportsService.getRankUser(month);
+    const data = await this.reportsService.getRankUser(month);
+    return { data: data };
   }
 
   //인게임 정보
@@ -120,7 +121,7 @@ export class ReportsController {
     const getSummonerId = await this.searchService.searchSummonerName(
       summonerName,
     );
-    
+
     // 롤 인게임 정보 api에서 불러온 정보들
     const getId: string = getSummonerId['id'];
     const getMatch = await this.reportsService.getUserInfoIngame(getId);
@@ -128,19 +129,30 @@ export class ReportsController {
 
     // 인게임 정보의 유저들의 id값 추출
     const getUsersId = getMatch.participants;
-    const getUsersNameByMapping = await this.reportsService.getUserName(getUsersId);
+    const getUsersNameByMapping = await this.reportsService.getUserName(
+      getUsersId,
+    );
     // console.log(getUsersId)
-    
+
     // 추출한 id값으로 롤 티어 확인
-    const getUsersTierByAPI = await this.reportsService.getUserTierByApi(getUsersNameByMapping);
+    const getUsersTierByAPI = await this.reportsService.getUserTierByApi(
+      getUsersNameByMapping,
+    );
     // console.log(getUsersTierByAPI)
 
     // 데이터베이스에서 신고된 목록 갖고오기
-    const summonerNames = getUsersId.map(participant => participant.summonerName);
+    const summonerNames = getUsersId.map(
+      (participant) => participant.summonerName,
+    );
     // console.log(summonerNames)
-    const getReportsInfoBySummonerName = await this.reportsService.getReportsInfo(summonerNames);
+    const getReportsInfoBySummonerName =
+      await this.reportsService.getReportsInfo(summonerNames);
 
-    const participantsWithReportData = await this.reportsService.attachReportDataToParticipants(summonerNames, getReportsInfoBySummonerName);
+    const participantsWithReportData =
+      await this.reportsService.attachReportDataToParticipants(
+        summonerNames,
+        getReportsInfoBySummonerName,
+      );
 
     const combinedResponse = {
       gameId: getMatch.gameId,
@@ -155,9 +167,8 @@ export class ReportsController {
         ...getUsersId[index],
         tierInfo,
       })),
-      reportsData: participantsWithReportData
-    }
+      reportsData: participantsWithReportData,
+    };
     return combinedResponse;
   }
-
 }

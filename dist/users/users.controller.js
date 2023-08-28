@@ -43,12 +43,17 @@ let UsersController = exports.UsersController = class UsersController {
         const { email, password } = userLoginDtodto;
         const accessToken = await this.usersService.login(email, password);
         response.header('Hi-junsoo', 'junsoobabo');
-        response.cookie('accessToken', accessToken);
-        return accessToken;
+        console.log(accessToken);
+        response.header('authorization', `Bearer ${accessToken}`);
+        return { msg: '로그인 성공' };
     }
 };
 __decorate([
     (0, common_1.Post)('/signup'),
+    (0, swagger_1.ApiOperation)({
+        summary: '회원가입',
+        description: '회원가입',
+    }),
     __param(0, (0, common_1.Body)(common_1.ValidationPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_user_dto_1.CreateUsersDto]),
@@ -56,6 +61,10 @@ __decorate([
 ], UsersController.prototype, "createUser", null);
 __decorate([
     (0, common_1.Post)('/authcode'),
+    (0, swagger_1.ApiOperation)({
+        summary: '이메일 인증 번호 4자리 발송',
+        description: '인증번호 4자리 발송',
+    }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [verify_email_dto_1.VerifyEmailDto]),
@@ -63,6 +72,10 @@ __decorate([
 ], UsersController.prototype, "verifyEmailSend", null);
 __decorate([
     (0, common_1.Post)('/authcodevalidation'),
+    (0, swagger_1.ApiOperation)({
+        summary: '이메일 인증 번호 4자리 검증',
+        description: '인증번호 4자리 검증',
+    }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [verify_email_code_dto_1.VerifyEmailCodeDto]),
@@ -70,6 +83,10 @@ __decorate([
 ], UsersController.prototype, "verifyEmail", null);
 __decorate([
     (0, common_1.Post)('/login'),
+    (0, swagger_1.ApiOperation)({
+        summary: '로그인',
+        description: '로그인',
+    }),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),

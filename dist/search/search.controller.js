@@ -28,6 +28,7 @@ let SearchController = exports.SearchController = class SearchController {
 };
 __decorate([
     (0, common_1.Get)('/search'),
+    (0, swagger_1.ApiQuery)({ name: 'summonerName', required: true, description: '소환사이름' }),
     (0, swagger_1.ApiOperation)({
         summary: '소환사 검색',
     }),
@@ -37,6 +38,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SearchController.prototype, "searchSummonerName", null);
 exports.SearchController = SearchController = __decorate([
+    (0, swagger_1.ApiTags)('SEARCH'),
     (0, common_1.Controller)('/api/main'),
     __metadata("design:paramtypes", [search_service_1.SearchService])
 ], SearchController);

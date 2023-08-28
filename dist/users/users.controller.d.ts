@@ -13,6 +13,8 @@ export declare class UsersController {
     constructor(configService: ConfigService, emailSerivce: EmailService, usersService: UsersService);
     createUser(createUserdto: CreateUsersDto): Promise<void>;
     verifyEmailSend(verifyEmailDto: VerifyEmailDto): Promise<void>;
-    verifyEmail(verifyEmailDto: VerifyEmailCodeDto): Promise<void>;
-    login(userLoginDtodto: UserLoginDto, response: Response): Promise<string>;
+    verifyEmail(verifyEmailDto: VerifyEmailCodeDto): Promise<any>;
+    login(userLoginDtodto: UserLoginDto, response: Response): Promise<{
+        msg: string;
+    }>;
 }

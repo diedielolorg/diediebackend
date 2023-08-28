@@ -5,6 +5,6 @@ export declare class UsersService {
     private usersRepository;
     private authService;
     constructor(usersRepository: UsersRepository, authService: AuthService);
-    createUser(createUserdto: CreateUsersDto): Promise<void>;
+    createUser(createUserdto: CreateUsersDto): Promise<any>;
     login(email: string, password: string): Promise<string>;
 }

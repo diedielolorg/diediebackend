@@ -26,7 +26,7 @@ export class UsersService {
     private authService: AuthService,
   ) {}
 
-  async createUser(createUserdto: CreateUsersDto): Promise<void> {
+  async createUser(createUserdto: CreateUsersDto): Promise<any> {
     try {
       const { email } = createUserdto;
       const userExist = await this.usersRepository.checkUserExists(email);
@@ -36,6 +36,7 @@ export class UsersService {
         );
       }
       await this.usersRepository.createUser(createUserdto);
+      return { msg: '회원가입 성공' };
     } catch (error) {
       console.error(error);
     }

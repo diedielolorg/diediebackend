@@ -78,34 +78,71 @@ let ReportsService = exports.ReportsService = class ReportsService {
     async createReportUsers(userId, createReportDto, file) {
         try {
             const { summonerName, category, reportPayload, reportDate } = createReportDto;
-            const fileArray = file;
-            const reportCapture = fileArray.map((fileInfo) => fileInfo.location);
+            const reportCapture = file.map((fileInfo) => fileInfo.location);
+            const response = this.httpService.get(`https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summonerName}`, { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } });
+            const result = await response
+                .pipe((0, operators_1.map)((response) => response.data))
+                .toPromise();
+            const profileIconId = result.profileIconId;
+            const id = result.id;
+            const profileIconIdUrl = `https://ddragon.leagueoflegends.com/cdn/11.1.1/img/profileicon/${profileIconId}.png`;
+            const response1 = this.httpService.get(`https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${id}`, { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } });
+            const result1 = await response1
+                .pipe((0, operators_1.map)((response) => response.data))
+                .toPromise();
+            const wins = result1[0].wins;
+            const losses = result1[0].losses;
+            const totalGames = wins + losses;
+            const winRate = Number(((wins / totalGames) * 100).toFixed(1));
+            const lastAccessTime = new Date(result.revisionDate);
+            function formatDateToCustomString(date) {
+                const isoString = date.toISOString();
+                const customString = isoString.replace('T', ' ').split('.')[0];
+                return customString;
+            }
+            const formattedTime = formatDateToCustomString(lastAccessTime);
             const createReport = this.reportRepository.create({
                 userId,
                 summonerName,
+                summonerPhoto: profileIconIdUrl,
                 category,
                 reportPayload,
+                lastAccessTime,
+                wins,
+                losses,
+                winRate,
                 reportCapture,
                 reportDate,
             });
-            return await this.reportRepository.save(createReport);
+            await this.reportRepository.save(createReport);
+            return { msg: '신고 등록이 완료되었습니다.' };
         }
         catch (error) {
             console.error(error);
+            throw new common_1.BadRequestException('존재하지 않는 소환사입니다.');
         }
     }
     async getRankUser(month) {
-        console.log(month);
         if (month > 12 || month < 1) {
             throw new common_1.BadRequestException('검색하려는 월을 입력해주세요');
         }
         const rankResult = this.reportRepository.find({
             take: 100,
+            select: [
+                'summonerName',
+                'summonerPhoto',
+                'reportCount',
+                'lastAccessTime',
+                'wins',
+                'losses',
+                'winRate',
+                'rank',
+                'cussWordStats',
+            ],
             order: {
                 reportCount: 'ASC',
             },
         });
-        console.log(rankResult);
         return rankResult;
     }
     async getUserInfoIngame(getId) {
@@ -134,7 +171,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
                         gameMode = '일반게임';
                 }
                 const simplifiedParticipants = participants.map((participant) => {
-                    const { teamId, summonerName, championId, summonerId, } = participant;
+                    const { teamId, summonerName, championId, summonerId } = participant;
                     return { teamId, summonerName, championId, summonerId };
                 });
                 return {
@@ -189,7 +226,9 @@ let ReportsService = exports.ReportsService = class ReportsService {
         try {
             const promises = getUsersNameByMapping.map(async (summonerId) => {
                 const response = this.httpService.get(`https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${summonerId}`, { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } });
-                const result = await response.pipe((0, operators_1.map)((response) => response.data)).toPromise();
+                const result = await response
+                    .pipe((0, operators_1.map)((response) => response.data))
+                    .toPromise();
                 const queueTypes = result.map((tierInfo) => tierInfo.queueType);
                 for (let i = 0; i <= queueTypes.length; i++) {
                     if (queueTypes[i] === 'RANKED_SOLO_5x5') {
@@ -198,11 +237,11 @@ let ReportsService = exports.ReportsService = class ReportsService {
                             leagueId: tierInfo.leagueId,
                             queueType: tierInfo.queueType,
                             tier: tierInfo.tier,
-                            rank: tierInfo.rank
+                            rank: tierInfo.rank,
                         };
                     }
                     else {
-                        return "언랭";
+                        return '언랭';
                     }
                 }
                 return result;
@@ -235,7 +274,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
                     attachedReports.push({
                         summonerName: summonerNames[i],
                         category: reports[j].category,
-                        reportCount: reports[j].reportCount
+                        reportCount: reports[j].reportCount,
                     });
                     break;
                 }

@@ -51,9 +51,25 @@ __decorate([
 ], Reports.prototype, "cussWordStats", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
+    __metadata("design:type", Date)
+], Reports.prototype, "lastAccessTime", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Reports.prototype, "winRate", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], Reports.prototype, "category", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Reports.prototype, "wins", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Reports.prototype, "losses", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     (0, class_validator_1.IsString)(),
