@@ -78,13 +78,40 @@ let ReportsService = exports.ReportsService = class ReportsService {
     async createReportUsers(userId, createReportDto, file) {
         try {
             const { summonerName, category, reportPayload, reportDate } = createReportDto;
-            const fileArray = file;
-            const reportCapture = fileArray.map((fileInfo) => fileInfo.location);
+            const reportCapture = file.map((fileInfo) => fileInfo.location);
+            const response = this.httpService.get(`https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summonerName}`, { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } });
+            const result = await response
+                .pipe((0, operators_1.map)((response) => response.data))
+                .toPromise();
+            const profileIconId = result.profileIconId;
+            const id = result.id;
+            const profileIconIdUrl = `https://ddragon.leagueoflegends.com/cdn/11.1.1/img/profileicon/${profileIconId}.png`;
+            const response1 = this.httpService.get(`https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${id}`, { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } });
+            const result1 = await response1
+                .pipe((0, operators_1.map)((response) => response.data))
+                .toPromise();
+            const wins = result1[0].wins;
+            const losses = result1[0].losses;
+            const totalGames = wins + losses;
+            const winRate = Number(((wins / totalGames) * 100).toFixed(1));
+            const lastAccessTime = new Date(result.revisionDate);
+            function formatDateToCustomString(date) {
+                const isoString = date.toISOString();
+                const customString = isoString.replace('T', ' ').split('.')[0];
+                return customString;
+            }
+            const formattedTime = formatDateToCustomString(lastAccessTime);
+            console.log(formattedTime);
             const createReport = this.reportRepository.create({
                 userId,
                 summonerName,
+                summonerPhoto: profileIconIdUrl,
                 category,
                 reportPayload,
+                lastAccessTime,
+                wins,
+                losses,
+                winRate,
                 reportCapture,
                 reportDate,
             });
@@ -95,17 +122,24 @@ let ReportsService = exports.ReportsService = class ReportsService {
         }
     }
     async getRankUser(month) {
-        console.log(month);
         if (month > 12 || month < 1) {
             throw new common_1.BadRequestException('검색하려는 월을 입력해주세요');
         }
         const rankResult = this.reportRepository.find({
             take: 100,
+            select: [
+                'summonerName',
+                'summonerPhoto',
+                'reportCount',
+                'lastAccessTime',
+                'winRate',
+                'rank',
+                'cussWordStats',
+            ],
             order: {
                 reportCount: 'ASC',
             },
         });
-        console.log(rankResult);
         return rankResult;
     }
     async getUserInfoIngame(getId) {

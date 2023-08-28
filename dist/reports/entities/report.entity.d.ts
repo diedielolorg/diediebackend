@@ -8,7 +8,11 @@ export declare class Reports extends BaseEntity {
     summonerPhoto: string;
     rank: number;
     cussWordStats: string;
+    lastAccessTime: Date;
+    winRate: number;
     category: string;
+    wins: number;
+    losses: number;
     reportPayload: string;
     reportCapture: string[];
     reportDate: string;

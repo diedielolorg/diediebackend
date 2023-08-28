@@ -4,8 +4,8 @@ import { DataSource, Repository, createQueryBuilder } from 'typeorm';
 import { CreateReportDto } from './dto/create-report.dto';
 import { Reports } from './entities/report.entity';
 import { HttpService } from '@nestjs/axios';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable()
 export class ReportsService {
@@ -214,14 +214,59 @@ export class ReportsService {
     try {
       const { summonerName, category, reportPayload, reportDate } =
         createReportDto;
-      const fileArray = file;
-      const reportCapture = fileArray.map((fileInfo) => fileInfo.location);
+      const reportCapture = file.map((fileInfo) => fileInfo.location);
 
+      //라이엇 api 조회, 소환사가 존재하는 소환사인지 확인
+      const response: Observable<any> = this.httpService.get<any>(
+        `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summonerName}`,
+        { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } },
+      );
+
+      //존재하지 않는 소환사일때 에러처리
+
+      const result = await response
+        .pipe(map((response) => response.data))
+        .toPromise();
+      const profileIconId = result.profileIconId;
+      const id = result.id;
+      const profileIconIdUrl = `https://ddragon.leagueoflegends.com/cdn/11.1.1/img/profileicon/${profileIconId}.png`;
+
+      const response1: Observable<any> = this.httpService.get<any>(
+        `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${id}`,
+        { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } },
+      );
+
+      const result1 = await response1
+        .pipe(map((response) => response.data))
+        .toPromise();
+
+      const wins = result1[0].wins;
+      const losses = result1[0].losses;
+      const totalGames = wins + losses;
+      const winRate = Number(((wins / totalGames) * 100).toFixed(1));
+
+      const lastAccessTime = new Date(result.revisionDate);
+
+      function formatDateToCustomString(date) {
+        const isoString = date.toISOString();
+        const customString = isoString.replace('T', ' ').split('.')[0];
+        return customString;
+      }
+
+      const formattedTime = formatDateToCustomString(lastAccessTime);
+
+      console.log(formattedTime);
+      //존재하면 소환사 아이콘 url db에 저
       const createReport = this.reportRepository.create({
         userId,
         summonerName,
+        summonerPhoto: profileIconIdUrl,
         category,
         reportPayload,
+        lastAccessTime,
+        wins,
+        losses,
+        winRate,
         reportCapture,
         reportDate,
       });
@@ -233,17 +278,24 @@ export class ReportsService {
   }
 
   async getRankUser(month: number) {
-    console.log(month);
     if (month > 12 || month < 1) {
       throw new BadRequestException('검색하려는 월을 입력해주세요');
     }
     const rankResult = this.reportRepository.find({
       take: 100,
+      select: [
+        'summonerName',
+        'summonerPhoto',
+        'reportCount',
+        'lastAccessTime',
+        'winRate',
+        'rank',
+        'cussWordStats',
+      ],
       order: {
         reportCount: 'ASC',
       },
     });
-    console.log(rankResult);
     return rankResult;
   }
 

@@ -35,12 +35,11 @@ let ReportsController = exports.ReportsController = class ReportsController {
     }
     async createReportUsers(file, createReportDto, request) {
         const userId = request['user'].userId;
-        console.log(file);
         return await this.reportsService.createReportUsers(userId, createReportDto, file);
     }
     async findAll(month) {
-        console.log(month);
-        return await this.reportsService.getRankUser(month);
+        const data = await this.reportsService.getRankUser(month);
+        return { data: data };
     }
     async getUserInfoIngame(summonerName) {
         const getSummonerId = await this.searchService.searchSummonerName(summonerName);
