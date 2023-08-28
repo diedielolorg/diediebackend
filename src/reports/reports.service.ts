@@ -201,10 +201,13 @@ export class ReportsService {
               gameType,
               gameQueueConfigId,
               platformId,
-              gameStartTime,
+              // gameStartTime,
               gameLength,
               participants,
             } = response.data;
+
+            const minutes = Math.floor(gameLength / 60);
+            const seconds = gameLength % 60;
 
             let gameMode = '';
             switch (gameQueueConfigId) {
@@ -238,15 +241,42 @@ export class ReportsService {
               gameType,
               gameQueueConfigId,
               platformId,
-              gameStartTime,
-              gameLength,
+              // gameStartTime,
+              gameLength: minutes + "분" + seconds + "초",
               participants: simplifiedParticipants,
             };
           }),
         )
-        .toPromise();
+        .toPromise();      
+      const champId = result.participants
+      const champIds = champId.map(data => data.championId)
 
-      return result;
+      const fetchResponse = await fetch(`http://ddragon.leagueoflegends.com/cdn/13.16.1/data/en_US/champion.json`);
+        const data = await fetchResponse.json();
+
+        const champions = data.data;
+
+        const championImageUrls = champIds.map(championId => {
+            const champion = champions[Object.keys(champions).find(key => champions[key].key === championId.toString())];
+            const championImageUrl = `http://ddragon.leagueoflegends.com/cdn/13.16.1/img/champion/${champion.image.full}`;
+            return championImageUrl
+        });
+
+        const participantsImageUrls = result.participants.map((participant, index) => {
+            return {
+                ...participant,
+                championImageUrl: championImageUrls[index]
+            };
+        });
+
+        const finalResult = {
+            ...result,
+            participants: participantsImageUrls
+        };
+
+        console.log(finalResult);
+        return finalResult;
+
     } catch (error) {
       console.error(error);
     }

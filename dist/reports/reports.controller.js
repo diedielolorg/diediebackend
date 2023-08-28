@@ -58,7 +58,6 @@ let ReportsController = exports.ReportsController = class ReportsController {
             gameType: getMatch.gameType,
             gameQueueConfigId: getMatch.gameQueueConfigId,
             platformId: getMatch.platformId,
-            gameStartTime: getMatch.gameStartTime,
             gameLength: getMatch.gameLength,
             participants: getUsersTierByAPI.map((tierInfo, index) => ({
                 ...getUsersId[index],
