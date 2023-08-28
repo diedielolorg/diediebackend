@@ -11,4 +11,8 @@ export declare class ReportsService {
     createReportUsers(userId: any, createReportDto: CreateReportDto, file: any): Promise<any>;
     getRankUser(month: number): Promise<Reports[]>;
     getUserInfoIngame(getId: string): Promise<any>;
+    getUserName(getUsersId: any[]): Promise<any>;
+    getUserTierByApi(getUsersNameByMapping: string[]): Promise<any>;
+    getReportsInfo(summonerNames: string[]): Promise<any[]>;
+    attachReportDataToParticipants(summonerNames: string[], reports: any[]): Promise<any[]>;
 }

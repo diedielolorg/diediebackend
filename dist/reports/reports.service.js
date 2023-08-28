@@ -146,13 +146,114 @@ let ReportsService = exports.ReportsService = class ReportsService {
         try {
             const response = this.httpService.get(`https://kr.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/${getId}`, { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } });
             const result = await response
-                .pipe((0, operators_1.map)((response) => response.data))
+                .pipe((0, operators_1.map)((response) => {
+                const { gameId, mapId, gameType, gameQueueConfigId, platformId, gameStartTime, gameLength, participants, } = response.data;
+                let gameMode = '';
+                switch (gameQueueConfigId) {
+                    case 420:
+                        gameMode = '솔랭';
+                        break;
+                    case 430:
+                        gameMode = '일반게임';
+                        break;
+                    case 440:
+                        gameMode = '자유랭크';
+                        break;
+                    case 450:
+                        gameMode = '칼바람';
+                        break;
+                    default:
+                        gameMode = '일반게임';
+                }
+                const simplifiedParticipants = participants.map((participant) => {
+                    const { teamId, summonerName, championId, summonerId, } = participant;
+                    return { teamId, summonerName, championId, summonerId };
+                });
+                return {
+                    gameId,
+                    mapId,
+                    gameMode,
+                    gameType,
+                    gameQueueConfigId,
+                    platformId,
+                    gameStartTime,
+                    gameLength,
+                    participants: simplifiedParticipants,
+                };
+            }))
                 .toPromise();
             return result;
         }
         catch (error) {
             console.error(error);
         }
+    }
+    async getUserName(getUsersId) {
+        try {
+            const UsersTierMapping = await Promise.all(getUsersId.map((data) => data.summonerId));
+            return UsersTierMapping;
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+    async getUserTierByApi(getUsersNameByMapping) {
+        try {
+            const promises = getUsersNameByMapping.map(async (summonerId) => {
+                const response = this.httpService.get(`https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${summonerId}`, { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } });
+                const result = await response.pipe((0, operators_1.map)((response) => response.data)).toPromise();
+                const queueTypes = result.map((tierInfo) => tierInfo.queueType);
+                for (let i = 0; i <= queueTypes.length; i++) {
+                    if (queueTypes[i] === 'RANKED_SOLO_5x5') {
+                        const tierInfo = result[0];
+                        return {
+                            leagueId: tierInfo.leagueId,
+                            queueType: tierInfo.queueType,
+                            tier: tierInfo.tier,
+                            rank: tierInfo.rank
+                        };
+                    }
+                    else {
+                        return "언랭";
+                    }
+                }
+                return result;
+            });
+            return Promise.all(promises);
+        }
+        catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+    async getReportsInfo(summonerNames) {
+        try {
+            const reports = await this.reportRepository.find({
+                where: { summonerName: (0, typeorm_2.In)(summonerNames) },
+                select: ['summonerName', 'category', 'reportCount'],
+            });
+            return reports;
+        }
+        catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+    async attachReportDataToParticipants(summonerNames, reports) {
+        const attachedReports = [];
+        for (let i = 0; i < summonerNames.length; i++) {
+            for (let j = 0; j < reports.length; j++) {
+                if (summonerNames[i] === reports[j].summonerName) {
+                    attachedReports.push({
+                        summonerName: summonerNames[i],
+                        category: reports[j].category,
+                        reportCount: reports[j].reportCount
+                    });
+                    break;
+                }
+            }
+        }
+        return attachedReports;
     }
 };
 exports.ReportsService = ReportsService = __decorate([

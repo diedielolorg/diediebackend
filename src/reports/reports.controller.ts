@@ -22,6 +22,7 @@ import { SearchService } from 'src/search/search.service';
 import { AuthGuard } from 'src/users/auth.guard';
 import { ApiOperation } from '@nestjs/swagger';
 import { Request } from 'express';
+import { ILike } from 'typeorm';
 
 @Controller('/api')
 export class ReportsController {
@@ -71,10 +72,10 @@ export class ReportsController {
       getSummonerName,
     );
     return getUserInfobyAPI;
-  }
+  } 
 
   @UseGuards(AuthGuard)
-  @Post('reportuser') // userId 로그인 인증
+  @Post('reportuser')
   @ApiOperation({
     summary: '유저 신고 등록',
     description: '롤에서 욕한 유저를 스샷과 함께 신고 가능',
@@ -112,15 +113,50 @@ export class ReportsController {
   })
   async getUserInfoIngame(
     @Param('summonerName') summonerName: string,
-  ): Promise<void> {
+  ): Promise<any> {
     //입력받은 소환사명으로 SearchService에 있는 searchSummonerName 실행
     //실행한 결과값으로 return 된 id=
     const getSummonerId = await this.searchService.searchSummonerName(
       summonerName,
     );
+    
+    // 롤 인게임 정보 api에서 불러온 정보들
     const getId: string = getSummonerId['id'];
-
     const getMatch = await this.reportsService.getUserInfoIngame(getId);
-    return getMatch;
+    // console.log(getMatch)
+
+    // 인게임 정보의 유저들의 id값 추출
+    const getUsersId = getMatch.participants;
+    const getUsersNameByMapping = await this.reportsService.getUserName(getUsersId);
+    // console.log(getUsersId)
+    
+    // 추출한 id값으로 롤 티어 확인
+    const getUsersTierByAPI = await this.reportsService.getUserTierByApi(getUsersNameByMapping);
+    // console.log(getUsersTierByAPI)
+
+    // 데이터베이스에서 신고된 목록 갖고오기
+    const summonerNames = getUsersId.map(participant => participant.summonerName);
+    // console.log(summonerNames)
+    const getReportsInfoBySummonerName = await this.reportsService.getReportsInfo(summonerNames);
+
+    const participantsWithReportData = await this.reportsService.attachReportDataToParticipants(summonerNames, getReportsInfoBySummonerName);
+
+    const combinedResponse = {
+      gameId: getMatch.gameId,
+      mapId: getMatch.mapId,
+      gameMode: getMatch.gameMode,
+      gameType: getMatch.gameType,
+      gameQueueConfigId: getMatch.gameQueueConfigId,
+      platformId: getMatch.platformId,
+      gameStartTime: getMatch.gameStartTime,
+      gameLength: getMatch.gameLength,
+      participants: getUsersTierByAPI.map((tierInfo, index) => ({
+        ...getUsersId[index],
+        tierInfo,
+      })),
+      reportsData: participantsWithReportData
+    }
+    return combinedResponse;
   }
+
 }
