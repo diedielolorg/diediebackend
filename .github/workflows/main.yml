@@ -35,7 +35,7 @@ jobs:
           host: ${{ secrets.AWS_SSH_HOST }} # 원격 서버의 호스트명 또는 IP 주소
           username: ${{ secrets.AWS_SSH_USERNAME }} # SSH 인증을 위한 사용자 이름
           key: ${{ secrets.DIEDIE_BACKEND_PRIVATE_KEY }}
-          password: ${{ secrets.AWS_SSH_PASSWORD }} # SSH 인증을 위한 비밀번호
+          # password: ${{ secrets.AWS_SSH_PASSWORD }} # SSH 인증을 위한 비밀번호
           port: 22 # SSH 포트
           script: |
             cd diediebackend
