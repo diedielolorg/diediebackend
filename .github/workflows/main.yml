@@ -2,8 +2,8 @@ name: NODE 설치
 
 on:
   push:
-    branches:
-      - development
+    branches: [development]
+  workflow_dispatch:
 
 jobs:
   start:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout 브랜치
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Node.js 설치
         uses: actions/setup-node@v2
