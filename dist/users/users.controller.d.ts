@@ -16,6 +16,5 @@ export declare class UsersController {
     verifyEmail(verifyEmailDto: VerifyEmailCodeDto): Promise<any>;
     login(userLoginDtodto: UserLoginDto, response: Response): Promise<{
         msg: string;
-        authorization: string;
     }>;
 }
