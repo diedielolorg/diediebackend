@@ -175,10 +175,12 @@ export class ReportsService {
     }
 
     const reportCount = reports.length;
+    const rank = 0
     
     return {
       categoryCounts,
-      reportCount
+      reportCount,
+      rank
     }
 
   } catch(error){
