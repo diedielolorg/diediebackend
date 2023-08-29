@@ -7,7 +7,9 @@ export declare class ReportsService {
     private reportRepository;
     constructor(httpService: HttpService, reportRepository: Repository<Reports>);
     getUserInfo(getPuuid: string): Promise<any>;
-    getUserLeagueInfo(getSummonerName: string): Promise<any>;
+    getUserLeagueInfo(getSummonerID: string, getSummonerName: string): Promise<any>;
+    getLastPlayTime(getMatchIdByApi: string[]): Promise<any>;
+    getReportData(getSummonerName: any): Promise<any>;
     createReportUsers(userId: any, createReportDto: CreateReportDto, file: any): Promise<any>;
     getRankUser(month: number): Promise<Reports[]>;
     getUserInfoIngame(getId: string): Promise<any>;

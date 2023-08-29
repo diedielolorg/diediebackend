@@ -31,26 +31,43 @@ export class ReportsService {
     }
   }
 
-  async getUserLeagueInfo(getSummonerName: string): Promise<any> {
+  async getUserLeagueInfo(getSummonerID: string, getSummonerName: string): Promise<any> {
     try {
       const response: Observable<any> = this.httpService.get(
-        `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${getSummonerName}`,
+        `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${getSummonerID}`,
         { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } },
       );
       const result = await response
         .pipe(map((response) => response.data))
         .toPromise();
+
+      
+        const responses: Observable<any> = this.httpService.get(
+          `https://kr.api.riotgames.com/tft/league/v1/entries/by-summoner/${getSummonerID}`,
+          { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } },
+        );
+        const results = await responses
+          .pipe(map((responses) => responses.data))
+          .toPromise();
+        
+      
+      const popResults = results.pop()
+      result.push(popResults)  
+      // console.log(result)
+      // console.log(results)
   
       const leagueInfo = {
         winRate: '',
       };
-  
+      
       const queueInfo = {};
       let mostPlayedGame = '';
       let maxGameCount = 0;
   
       for (const data of result) {
-        const queueType = data.queueType;
+        if(data && data.queueType) { // Check if data and queueType exist
+          const queueType = data.queueType;
+        // const queueType = data.queueType;
         const wins = data.wins;
         const losses = data.losses;
         const totalGames = wins + losses;
@@ -73,123 +90,84 @@ export class ReportsService {
             mostPlayedGame = "아레나";
           } else if(mostPlayedGame == "RANKED_FLEX_SR"){
             mostPlayedGame = "자유 랭크";
+          } else if(mostPlayedGame == "RANKED_TFT"){
+            mostPlayedGame = "TFT"
           }
         }
       }
-  
+      }
+      
+      leagueInfo['summonerName'] = getSummonerName
       leagueInfo['mostPlayedGame'] = mostPlayedGame;
       leagueInfo['RANKED_SOLO_5x5'] = queueInfo['RANKED_SOLO_5x5'] || { gameCount: 0 };
       leagueInfo['Arena'] = queueInfo['CHERRY'] || { gameCount: 0 };
       leagueInfo['RANKED_FLEX_SR'] = queueInfo['RANKED_FLEX_SR'] || { gameCount: 0 };
+      leagueInfo['RANKED_TFT'] = queueInfo['RANKED_TFT'] || { gameCount: 0 };
+
+      if(leagueInfo['RANKED_SOLO_5x5'].gameCount == 0){
+        leagueInfo.winRate = "언랭"
+      }
+
+      if(mostPlayedGame.length == 0){
+        leagueInfo['mostPlayedGame'] = "이사람 겨울잠 자러감"
+      }
   
       return leagueInfo;
     } catch (error) {
       console.error(error);
     }
   }
-  
 
-  // async getUserLeagueInfo(getSummonerName: string): Promise<any> {
-  //   try {
-  //     const response: Observable<any> = this.httpService.get(
-  //       `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${getSummonerName}`,
-  //       { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } },
-  //     );
-  //     const result = await response
-  //       .pipe(map((response) => response.data))
-  //       .toPromise();
-  
-  //     const leagueInfo = {
-  //       winRate: '',
-  //     };
-  
-  //     const queueInfo = {};
-  
-  //     for (const data of result) {
-  //       const queueType = data.queueType;
-  //       const wins = data.wins;
-  //       const losses = data.losses;
-  //       const totalGames = wins + losses;
-  //       const winRate = ((wins / totalGames) * 100).toFixed(1) + '%';
-  
-  //       if (queueType === 'RANKED_SOLO_5x5') {
-  //         leagueInfo.winRate = winRate;
-  //       }
-  
-  //       queueInfo[queueType] = {
-  //         gameCount: totalGames,
-  //       };
-  //     }
-  
-  //     leagueInfo['솔로 랭크'] = queueInfo['RANKED_SOLO_5x5'] || { gameCount: 0 };
-  //     leagueInfo['아레나'] = queueInfo['CHERRY'] || { gameCount: 0 };
-  //     leagueInfo['자유 랭크'] = queueInfo['RANKED_FLEX_SR'] || { gameCount: 0 };
-      
-  //     return leagueInfo;
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
+    async getLastPlayTime(
+    getMatchIdByApi: string[],
+  ): Promise<any> {
+    try {
+      // 제일 최근 경기
+      const getMatchIdByApi0 = getMatchIdByApi[0];
 
-  // async getUserInfoByMatchId(
-  //   getMatchIdByApi: string[],
-  //   getSummonerName: string,
-  // ): Promise<any> {
-  //   try {
-  //     // 제일 최근 경기
-  //     const getMatchIdByApi0 = getMatchIdByApi[10];
+      const response: Observable<any> = this.httpService.get(
+        `https://asia.api.riotgames.com/lol/match/v5/matches/${getMatchIdByApi0}`,
+        { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } },
+      );
 
-  //     const response: Observable<any> = this.httpService.get(
-  //       `https://asia.api.riotgames.com/lol/match/v5/matches/${getMatchIdByApi0}`,
-  //       { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } },
-  //     );
+      const result = await response
+        .pipe(map((response) => response.data))
+        .toPromise();
 
-  //     const result = await response
-  //       .pipe(map((response) => response.data))
-  //       .toPromise();
+      // 게임 타입
+      const gameRecord = result.info.gameEndTimestamp
 
-  //     // 게임 타입
-  //     const gameRecord = result.info.participants
-  //       .filter(
-  //         (participant: any) => participant.summonerName === getSummonerName,
-  //       )
-  //       .map((participant: any) => {
-  //         const gameType = (gameQueueId: number) => {
-  //           switch (gameQueueId) {
-  //             case 420:
-  //               return '솔랭';
-  //             case 430:
-  //               return '일반게임';
-  //             case 440:
-  //               return '자유랭크';
-  //             case 450:
-  //               return '칼바람';
-  //             default:
-  //               return '일반게임';
-  //           }
-  //         };
+      const lastPlayTime = new Date(
+        gameRecord
+      ).toLocaleString();
 
-  //         const gameEndTime = new Date(
-  //           result.info.gameEndTimestamp,
-  //         ).toLocaleString();
+      return {
+        lastPlayTime: lastPlayTime,
+      };
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
-  //         return {
-  //           summonerName: participant.summonerName,
-  //           summonerId: participant.summonerId,
-  //           gameEndTime: gameEndTime,
-  //           gameType: gameType(result.info.queueId),
-  //           win: participant.win,
-  //         };
-  //       });
-  //     //   gameRecords.push(...gameRecord);
-  //     // }
+  async getReportData(getSummonerName: any): Promise<any> {
+    try {
+      const reports = await this.reportRepository.find({
+        where: { summonerName: getSummonerName },
+        select: ['summonerName', 'reportId', 'category', 'reportDate', 'reportPayload', 'reportCapture'],
+      });
+      // summonerName
+      // reportId
+      // category
+      // reportDate
+      // reportPayload
+      // reportCapture
 
-  //     // return gameRecords
-  //     return gameRecord;
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
+      return reports;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 
   async createReportUsers(
     userId,
