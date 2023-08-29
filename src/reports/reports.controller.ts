@@ -59,11 +59,17 @@ export class ReportsController {
       getMatchIdByApi
       );
 
+    //db에서 reportCount, category 갖고 오기
+    const getCussWordData = await this.reportsService.getCussWordData(getSummonerName);
+
+    // db에서 rank 조회하기
+    // const getRank = await this.reportsService.getRank(getSummonerName)
+
     // db에서 신고 당한 내역 갖고오기
-    const reportData = await this.reportsService.getReportData(getSummonerName)
+    const reportData = await this.reportsService.getReportData(getSummonerName);
 
     getUserLeagueInfo.lastPlayTime = getLastPlayTime.lastPlayTime;
-    
+    getUserLeagueInfo.getCussWordData = getCussWordData;
     getUserLeagueInfo.reportData = reportData;
 
     return getUserLeagueInfo

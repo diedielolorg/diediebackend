@@ -9,8 +9,6 @@ export class CreateReportDto {
   reportDate: string;
 
   @IsNotEmpty()
-  // @IsArray()
-  // category: string[];
   @IsString()
   category: string;
 

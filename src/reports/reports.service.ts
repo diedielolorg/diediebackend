@@ -149,18 +149,69 @@ export class ReportsService {
     }
   }
 
+  async getCussWordData(getSummonerName: any): Promise<any> {
+    try{
+    const reports = await this.reportRepository.find({
+      where: { summonerName: getSummonerName},
+      select: ['category'],
+    });
+
+    const categoryCounts = {
+      "쌍욕": 0,
+      "패드립": 0,
+      "기타": 0,
+      "인신공격": 0,
+      "성희롱": 0,
+      "혐오성 발언": 0,
+    };
+ 
+    for (const report of reports) {
+      const categories = report.category.split(', ');
+      for (const category of categories) {
+        if (categoryCounts.hasOwnProperty(category)) {
+          categoryCounts[category]++;
+        }
+      }
+    }
+
+    const reportCount = reports.length;
+    
+    return {
+      categoryCounts,
+      reportCount
+    }
+
+  } catch(error){
+    console.error(error);
+  }
+  }
+
+  // async getRank(getSummonerName: string): Promise<any>{
+  //   try{
+  //     const reports = await this.reportRepository.find({
+  //       // where: { summonerName: getSummonerName },
+  //       select: ['summonerName']
+  //     });
+
+  //     const summonerNames = reports.map(report => report.summonerName);
+
+  //     summonerNames.sort();
+
+  //     const top100 = summonerNames.slice(0, 100);
+  //     console.log(top100)
+
+  //     return top100;
+  //   } catch(error) {
+  //     console.error(error);
+  //   }
+  // }
+
   async getReportData(getSummonerName: any): Promise<any> {
     try {
       const reports = await this.reportRepository.find({
         where: { summonerName: getSummonerName },
         select: ['summonerName', 'reportId', 'category', 'reportDate', 'reportPayload', 'reportCapture'],
       });
-      // summonerName
-      // reportId
-      // category
-      // reportDate
-      // reportPayload
-      // reportCapture
 
       return reports;
     } catch (error) {
@@ -170,9 +221,9 @@ export class ReportsService {
   }
 
   async createReportUsers(
-    userId,
+    userId: any,
     createReportDto: CreateReportDto,
-    file,
+    file: any,
   ): Promise<any> {
     try {
       const { summonerName, category, reportPayload, reportDate } =
