@@ -27,8 +27,15 @@ let ReportsController = exports.ReportsController = class ReportsController {
     }
     async getMatchUserInfo(summonerName) {
         const getSummonerId = await this.searchService.searchSummonerName(summonerName);
-        const getSummonerName = getSummonerId['id'];
-        const getUserLeagueInfo = await this.reportsService.getUserLeagueInfo(getSummonerName);
+        const getSummonerID = getSummonerId['id'];
+        const getSummonerName = getSummonerId['name'];
+        const getUserLeagueInfo = await this.reportsService.getUserLeagueInfo(getSummonerID, getSummonerName);
+        const getPuuid = getSummonerId['puuid'];
+        const getMatchIdByApi = await this.reportsService.getUserInfo(getPuuid);
+        const getLastPlayTime = await this.reportsService.getLastPlayTime(getMatchIdByApi);
+        const reportData = await this.reportsService.getReportData(getSummonerName);
+        getUserLeagueInfo.lastPlayTime = getLastPlayTime.lastPlayTime;
+        getUserLeagueInfo.reportData = reportData;
         return getUserLeagueInfo;
     }
     async createReportUsers(file, createReportDto, request) {

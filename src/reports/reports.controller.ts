@@ -32,25 +32,6 @@ export class ReportsController {
     private readonly searchService: SearchService,
   ) {}
 
-  // 롤 api에서 경기 내역과 우리 db에 있는 데이터를 같이 불러와야 됨
-  // @Get('userinfo/:summonerName')
-  // @ApiOperation({
-  //   summary: '유저 정보와, 전적 조회',
-  //   description: '암호화된 소환사 아이디를 사용한 해당 소환사 리그정보 조회,',
-  // })
-  // async getUserInfoById(
-  //   @Param('summonerName') summonerName: string,
-  // ): Promise<void> {
-  //   //입력받은 소환사명으로 SearchService에 있는 searchSummonerName 실행
-  //   //실행한 결과값으로 return 된 id=
-  //   const getSummonerId = await this.searchService.searchSummonerName(summonerName);
-
-  //   const getId: string = getSummonerId['id'];
-  //   const getUserInfobyAPI = await this.reportsService.getUserInfoById(getId);
-
-  //   return getUserInfobyAPI;
-  // }
-
   @Get('userinfo/:summonerName')
   @ApiOperation({
     summary: '전적 상세 정보',
@@ -58,27 +39,34 @@ export class ReportsController {
   })
   async getMatchUserInfo(
     @Param('summonerName') summonerName: string,
-  ): Promise<void> {
+  ): Promise<any> {
     //입력받은 소환사명으로 SearchService에 있는 searchSummonerName 실행
     //실행한 결과값으로 return 된 id=
     const getSummonerId = await this.searchService.searchSummonerName(
       summonerName,
     );
-    const getSummonerName: string = getSummonerId['id'];
 
-    const getUserLeagueInfo = await this.reportsService.getUserLeagueInfo(getSummonerName)
+    const getSummonerID: string = getSummonerId['id'];
+    const getSummonerName: string = getSummonerId['name']
+    // 솔랭 승률, 소환사 이름, 제일 많이 한 게임 종류, 한 게임 종류당 얼마나 했는지 count
+    const getUserLeagueInfo = await this.reportsService.getUserLeagueInfo(getSummonerID, getSummonerName)
+
+    const getPuuid: string = getSummonerId['puuid'];
+    const getMatchIdByApi = await this.reportsService.getUserInfo(getPuuid);
+
+    // 마지막으로 게임 언제 했는지 확인
+    const getLastPlayTime = await this.reportsService.getLastPlayTime(
+      getMatchIdByApi
+      );
+
+    // db에서 신고 당한 내역 갖고오기
+    const reportData = await this.reportsService.getReportData(getSummonerName)
+
+    getUserLeagueInfo.lastPlayTime = getLastPlayTime.lastPlayTime;
+    
+    getUserLeagueInfo.reportData = reportData;
+
     return getUserLeagueInfo
-
-    // const getPuuid: string = getSummonerId['puuid'];
-    // const getMatchIdByApi = await this.reportsService.getUserInfo(getPuuid);
-
-    // const getUserInfobyAPI = await this.reportsService.getUserInfoByMatchId(
-    //   getMatchIdByApi,
-    //   getSummonerName,
-    // );
-    // console.log(getUserInfobyAPI)
-
-    // return getUserInfobyAPI;
   }
 
   @UseGuards(AuthGuard)
