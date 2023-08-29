@@ -1,6 +1,6 @@
 module.exports = {
     apps: [{
-        name: 'diedie-app',
+        name: 'main',
         script: 'dist/main.js',
 
         // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
