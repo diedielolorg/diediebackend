@@ -1,8 +1,9 @@
-name: AWS SSM Send-Command Example
+name: NODE 설치
 
 on:
   push:
-    branches: [development]
+    branches:
+      - development
 
 jobs:
   start:
