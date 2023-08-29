@@ -19,10 +19,9 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Start Nest.js with PM2
         run: |
-          npm install -g pm2
           pm2 delete main || true
           pm2 start ecosystem.config.js
