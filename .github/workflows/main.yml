@@ -39,6 +39,8 @@ jobs:
           # password: ${{ secrets.AWS_SSH_PASSWORD }} # SSH 인증을 위한 비밀번호
           port: 22 # SSH 포트
           script: |
+            whoami
+            ls -al 
             cd diediebackend
             git pull
             npm ci
