@@ -27,11 +27,9 @@ let ReportsController = exports.ReportsController = class ReportsController {
     }
     async getMatchUserInfo(summonerName) {
         const getSummonerId = await this.searchService.searchSummonerName(summonerName);
-        const getSummonerName = getSummonerId['name'];
-        const getPuuid = getSummonerId['puuid'];
-        const getMatchIdByApi = await this.reportsService.getUserInfo(getPuuid);
-        const getUserInfobyAPI = await this.reportsService.getUserInfoByMatchId(getMatchIdByApi, getSummonerName);
-        return getUserInfobyAPI;
+        const getSummonerName = getSummonerId['id'];
+        const getUserLeagueInfo = await this.reportsService.getUserLeagueInfo(getSummonerName);
+        return getUserLeagueInfo;
     }
     async createReportUsers(file, createReportDto, request) {
         const userId = request['user'].userId;
@@ -69,7 +67,7 @@ let ReportsController = exports.ReportsController = class ReportsController {
     }
 };
 __decorate([
-    (0, common_1.Get)('usermatchinfo/:summonerName'),
+    (0, common_1.Get)('userinfo/:summonerName'),
     (0, swagger_1.ApiOperation)({
         summary: '전적 상세 정보',
         description: '소환사의 최근 게임 전적을 조회하기',

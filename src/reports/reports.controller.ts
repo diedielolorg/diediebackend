@@ -51,7 +51,7 @@ export class ReportsController {
   //   return getUserInfobyAPI;
   // }
 
-  @Get('usermatchinfo/:summonerName')
+  @Get('userinfo/:summonerName')
   @ApiOperation({
     summary: '전적 상세 정보',
     description: '소환사의 최근 게임 전적을 조회하기',
@@ -64,16 +64,21 @@ export class ReportsController {
     const getSummonerId = await this.searchService.searchSummonerName(
       summonerName,
     );
-    const getSummonerName: string = getSummonerId['name'];
+    const getSummonerName: string = getSummonerId['id'];
 
-    const getPuuid: string = getSummonerId['puuid'];
-    const getMatchIdByApi = await this.reportsService.getUserInfo(getPuuid);
+    const getUserLeagueInfo = await this.reportsService.getUserLeagueInfo(getSummonerName)
+    return getUserLeagueInfo
 
-    const getUserInfobyAPI = await this.reportsService.getUserInfoByMatchId(
-      getMatchIdByApi,
-      getSummonerName,
-    );
-    return getUserInfobyAPI;
+    // const getPuuid: string = getSummonerId['puuid'];
+    // const getMatchIdByApi = await this.reportsService.getUserInfo(getPuuid);
+
+    // const getUserInfobyAPI = await this.reportsService.getUserInfoByMatchId(
+    //   getMatchIdByApi,
+    //   getSummonerName,
+    // );
+    // console.log(getUserInfobyAPI)
+
+    // return getUserInfobyAPI;
   }
 
   @UseGuards(AuthGuard)
@@ -147,6 +152,7 @@ export class ReportsController {
     // console.log(summonerNames)
     const getReportsInfoBySummonerName =
       await this.reportsService.getReportsInfo(summonerNames);
+    // console.log(getReportsInfoBySummonerName)
 
     const participantsWithReportData =
       await this.reportsService.attachReportDataToParticipants(
