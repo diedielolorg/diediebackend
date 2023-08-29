@@ -78,6 +78,7 @@ export class UsersController {
     const { email, password } = userLoginDtodto;
     const accessToken = await this.usersService.login(email, password);
     response.header('Hi-junsoo', 'junsoobabo');
-    return { msg: '로그인 성공', authorization: `Bearer ${accessToken}` };
+    response.header('authorization', `Bearer ${accessToken}`);
+    return { msg: '로그인 성공' };
   }
 }
