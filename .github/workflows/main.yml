@@ -9,21 +9,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout 브랜치
+        uses: actions/checkout@v2
 
-      - name: AWS SSM Send-Command
-        uses: peterkimzz/aws-ssm-send-command@master
-        id: ssm
+      - name: Node.js 설치
+        uses: actions/setup-node@v2
         with:
-          aws-region: ${{ secrets.AWS_REGION }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          instance-ids: ${{ secrets.INSTANCE_ID }}
+          node-version: 18
 
-          working-directory: /home/ubuntu/application
-          command: ls -al
-          comment: Hello world!
+      - name: Install dependencies
+        run: npm install
 
-      # Catch SSM outputs
-      - name: Get the outputs
-        run: echo "The Command id is ${{ steps.ssm.outputs.command-id }}"
+      - name: Start Nest.js with PM2
+        run: |
+          npm install -g pm2
+          pm2 delete main || true
+          pm2 start ecosystem.config.js
