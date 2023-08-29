@@ -2,7 +2,7 @@ name: Nest.JS 통합
 
 on:
   push:
-    branches: [development]
+    branches: [Development]
   workflow_dispatch:
 
 jobs:
