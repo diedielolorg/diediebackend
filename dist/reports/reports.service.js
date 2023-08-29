@@ -120,6 +120,38 @@ let ReportsService = exports.ReportsService = class ReportsService {
             console.error(error);
         }
     }
+    async getCussWordData(getSummonerName) {
+        try {
+            const reports = await this.reportRepository.find({
+                where: { summonerName: getSummonerName },
+                select: ['category'],
+            });
+            const categoryCounts = {
+                "쌍욕": 0,
+                "패드립": 0,
+                "기타": 0,
+                "인신공격": 0,
+                "성희롱": 0,
+                "혐오성 발언": 0,
+            };
+            for (const report of reports) {
+                const categories = report.category.split(', ');
+                for (const category of categories) {
+                    if (categoryCounts.hasOwnProperty(category)) {
+                        categoryCounts[category]++;
+                    }
+                }
+            }
+            const reportCount = reports.length;
+            return {
+                categoryCounts,
+                reportCount
+            };
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
     async getReportData(getSummonerName) {
         try {
             const reports = await this.reportRepository.find({
