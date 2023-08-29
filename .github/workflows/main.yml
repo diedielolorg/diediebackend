@@ -1,47 +1,47 @@
-name: Nest.JS 통합
+# name: Nest.JS 통합
 
-on:
-  push:
-    branches: [Development]
-  workflow_dispatch:
+# on:
+#   push:
+#     branches: [Development]
+#   workflow_dispatch:
 
-jobs:
-  start:
-    runs-on: ubuntu-latest
+# jobs:
+#   start:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout 브랜치
-        uses: actions/checkout@v3
+#     steps:
+#       - name: Checkout 브랜치
+#         uses: actions/checkout@v3
 
-      - name: Node.js 설치
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+#       - name: Node.js 설치
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: '18'
 
-      - name: Install dependencies
-        run: npm ci
+#       - name: Install dependencies
+#         run: npm ci
 
-      - name: Install PM2
-        run: npm install -g pm2
+#       - name: Install PM2
+#         run: npm install -g pm2
 
-      - name: Start Nest.js with PM2
-        run: |
-          pm2 delete main || true
-          pm2 start ecosystem.config.js
+#       - name: Start Nest.js with PM2
+#         run: |
+#           pm2 delete main || true
+#           pm2 start ecosystem.config.js
 
-      - name: 원격 접속 배포
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.AWS_SSH_HOST }} # 원격 서버의 호스트명 또는 IP 주소
-          username: ${{ secrets.AWS_SSH_USERNAME }} # SSH 인증을 위한 사용자 이름
-          key: ${{ secrets.DIEDIE_BACKEND_PRIVATE_KEY }}
-          passphrase: ${{ secrets.AWS_SSH_PASSWORD }}
-          # password: ${{ secrets.AWS_SSH_PASSWORD }} # SSH 인증을 위한 비밀번호
-          port: 22 # SSH 포트
-          script: |
-            whoami
-            ls -al 
-            cd diediebackend
-            git pull
-            npm ci
-            pm2 reload ecosystem.config.js
+#       - name: 원격 접속 배포
+#         uses: appleboy/ssh-action@v0.1.6
+#         with:
+#           host: ${{ secrets.AWS_SSH_HOST }} # 원격 서버의 호스트명 또는 IP 주소
+#           username: ${{ secrets.AWS_SSH_USERNAME }} # SSH 인증을 위한 사용자 이름
+#           key: ${{ secrets.DIEDIE_BACKEND_PRIVATE_KEY }}
+#           passphrase: ${{ secrets.AWS_SSH_PASSWORD }}
+#           # password: ${{ secrets.AWS_SSH_PASSWORD }} # SSH 인증을 위한 비밀번호
+#           port: 22 # SSH 포트
+#           script: |
+#             whoami
+#             ls -al
+#             cd diediebackend
+#             git pull
+#             npm ci
+#             pm2 reload ecosystem.config.js
