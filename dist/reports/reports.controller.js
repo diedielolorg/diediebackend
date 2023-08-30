@@ -33,8 +33,10 @@ let ReportsController = exports.ReportsController = class ReportsController {
         const getPuuid = getSummonerId['puuid'];
         const getMatchIdByApi = await this.reportsService.getUserInfo(getPuuid);
         const getLastPlayTime = await this.reportsService.getLastPlayTime(getMatchIdByApi);
+        const getCussWordData = await this.reportsService.getCussWordData(getSummonerName);
         const reportData = await this.reportsService.getReportData(getSummonerName);
         getUserLeagueInfo.lastPlayTime = getLastPlayTime.lastPlayTime;
+        getUserLeagueInfo.getCussWordData = getCussWordData;
         getUserLeagueInfo.reportData = reportData;
         return getUserLeagueInfo;
     }

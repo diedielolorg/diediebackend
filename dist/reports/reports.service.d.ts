@@ -9,6 +9,7 @@ export declare class ReportsService {
     getUserInfo(getPuuid: string): Promise<any>;
     getUserLeagueInfo(getSummonerID: string, getSummonerName: string): Promise<any>;
     getLastPlayTime(getMatchIdByApi: string[]): Promise<any>;
+    getCussWordData(getSummonerName: any): Promise<any>;
     getReportData(getSummonerName: any): Promise<any>;
     createReportUsers(userId: any, createReportDto: CreateReportDto, file: any): Promise<any>;
     getRankUser(month: number): Promise<Reports[]>;
