@@ -25,6 +25,7 @@ import { ConfigService } from '@nestjs/config';
 import { EmailService } from 'src/email/email.service';
 import { VerifyEmailCodeDto } from './dto/verify-email-code.dto';
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CheckNickDto } from './dto/check-nick.dto';
 
 @ApiTags('USERS')
 @Controller('/api/users')
@@ -44,6 +45,16 @@ export class UsersController {
     @Body(ValidationPipe) createUserdto: CreateUsersDto,
   ): Promise<void> {
     return await this.usersService.createUser(createUserdto);
+  }
+
+  @Get('/checknick')
+  @ApiOperation({
+    summary: '닉네임 중복확인',
+    description: '중복확인',
+  })
+  async checknickname(@Body() checkNickDto: CheckNickDto) {
+    const { nickname } = checkNickDto;
+    return await this.usersService.checknickname(nickname);
   }
 
   @Post('/authcode')

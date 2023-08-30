@@ -38,6 +38,11 @@ export class UsersRepository extends Repository<Users> {
     }
   }
 
+  async checknickname(nickname: string): Promise<boolean> {
+    const checknick = await this.findOne({ where: { nickname } });
+    return checknick !== null;
+  }
+
   async checkUserExists(email: string): Promise<boolean> {
     const user = await this.findOne({ where: { email } });
     return user !== null;

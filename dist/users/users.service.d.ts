@@ -6,5 +6,8 @@ export declare class UsersService {
     private authService;
     constructor(usersRepository: UsersRepository, authService: AuthService);
     createUser(createUserdto: CreateUsersDto): Promise<any>;
+    checknickname(nickname: string): Promise<{
+        msg: string;
+    }>;
     login(email: string, password: string): Promise<string>;
 }

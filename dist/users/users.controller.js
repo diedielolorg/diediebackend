@@ -22,6 +22,7 @@ const config_1 = require("@nestjs/config");
 const email_service_1 = require("../email/email.service");
 const verify_email_code_dto_1 = require("./dto/verify-email-code.dto");
 const swagger_1 = require("@nestjs/swagger");
+const check_nick_dto_1 = require("./dto/check-nick.dto");
 let UsersController = exports.UsersController = class UsersController {
     constructor(configService, emailSerivce, usersService) {
         this.configService = configService;
@@ -30,6 +31,10 @@ let UsersController = exports.UsersController = class UsersController {
     }
     async createUser(createUserdto) {
         return await this.usersService.createUser(createUserdto);
+    }
+    async checknickname(checkNickDto) {
+        const { nickname } = checkNickDto;
+        return await this.usersService.checknickname(nickname);
     }
     async verifyEmailSend(verifyEmailDto) {
         const { email } = verifyEmailDto;
@@ -43,7 +48,8 @@ let UsersController = exports.UsersController = class UsersController {
         const { email, password } = userLoginDtodto;
         const accessToken = await this.usersService.login(email, password);
         response.header('Hi-junsoo', 'junsoobabo');
-        return { msg: '로그인 성공', authorization: `Bearer ${accessToken}` };
+        response.header('authorization', `Bearer ${accessToken}`);
+        return { msg: '로그인 성공' };
     }
 };
 __decorate([
@@ -57,6 +63,17 @@ __decorate([
     __metadata("design:paramtypes", [create_user_dto_1.CreateUsersDto]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "createUser", null);
+__decorate([
+    (0, common_1.Get)('/checknick'),
+    (0, swagger_1.ApiOperation)({
+        summary: '닉네임 중복확인',
+        description: '중복확인',
+    }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [check_nick_dto_1.CheckNickDto]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "checknickname", null);
 __decorate([
     (0, common_1.Post)('/authcode'),
     (0, swagger_1.ApiOperation)({

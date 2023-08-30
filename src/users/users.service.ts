@@ -42,6 +42,15 @@ export class UsersService {
     }
   }
 
+  async checknickname(nickname: string) {
+    const nickBool = await this.usersRepository.checknickname(nickname);
+    if (nickBool) {
+      return { msg: '중복된 닉네임 입니다.' };
+    } else {
+      return { msg: '사용 가능한 닉네임 입니다.' };
+    }
+  }
+
   async login(email: string, password: string) {
     //userRepository를 사용해 사용자 검색
     const user = await this.usersRepository.loginUserExists(email, password);
