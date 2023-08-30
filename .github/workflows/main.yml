@@ -1,5 +1,4 @@
-# name: Nest.JS 통합
-
+name: Nest.JS 통합
 # on:
 #   push:
 #     branches: [Development]

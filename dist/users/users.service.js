@@ -32,6 +32,15 @@ let UsersService = exports.UsersService = class UsersService {
             console.error(error);
         }
     }
+    async checknickname(nickname) {
+        const nickBool = await this.usersRepository.checknickname(nickname);
+        if (nickBool) {
+            return { msg: '중복된 닉네임 입니다.' };
+        }
+        else {
+            return { msg: '사용 가능한 닉네임 입니다.' };
+        }
+    }
     async login(email, password) {
         const user = await this.usersRepository.loginUserExists(email, password);
         if (!user) {

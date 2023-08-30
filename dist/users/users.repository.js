@@ -36,6 +36,10 @@ let UsersRepository = exports.UsersRepository = class UsersRepository extends ty
             await queryRunner.release();
         }
     }
+    async checknickname(nickname) {
+        const checknick = await this.findOne({ where: { nickname } });
+        return checknick !== null;
+    }
     async checkUserExists(email) {
         const user = await this.findOne({ where: { email } });
         return user !== null;
