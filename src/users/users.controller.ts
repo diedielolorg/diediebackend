@@ -47,15 +47,15 @@ export class UsersController {
     return await this.usersService.createUser(createUserdto);
   }
 
-  @Get('/duplicationcheck')
-  @ApiOperation({
-    summary: '닉네임 중복확인',
-    description: '중복확인',
-  })
-  async checknickname(@Body() checkNickDto: CheckNickDto) {
-    const { nickname } = checkNickDto;
-    return await this.usersService.checknickname(nickname);
-  }
+  // @Get('/duplicationcheck')
+  // @ApiOperation({
+  //   summary: '닉네임 중복확인',
+  //   description: '중복확인',
+  // })
+  // async checknickname(@Body() checkNickDto: CheckNickDto) {
+  //   const { nickname } = checkNickDto;
+  //   return await this.usersService.checknickname(nickname);
+  // }
 
   @Post('/authcode')
   @ApiOperation({
