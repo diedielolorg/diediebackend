@@ -47,7 +47,7 @@ export class UsersController {
     return await this.usersService.createUser(createUserdto);
   }
 
-  @Get('/checknick')
+  @Get('/duplicationcheck')
   @ApiOperation({
     summary: '닉네임 중복확인',
     description: '중복확인',
