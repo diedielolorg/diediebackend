@@ -25,7 +25,7 @@ import { ConfigService } from '@nestjs/config';
 import { EmailService } from 'src/email/email.service';
 import { VerifyEmailCodeDto } from './dto/verify-email-code.dto';
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CheckNickDto } from './dto/check-nick.dto';
+//import { CheckNickDto } from './dto/check-nick.dto';
 
 @ApiTags('USERS')
 @Controller('/api/users')
