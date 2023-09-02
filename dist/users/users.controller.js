@@ -64,7 +64,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "createUser", null);
 __decorate([
-    (0, common_1.Get)('/checknick'),
+    (0, common_1.Get)('/duplicationcheck'),
     (0, swagger_1.ApiOperation)({
         summary: '닉네임 중복확인',
         description: '중복확인',

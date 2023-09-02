@@ -24,6 +24,7 @@ async function bootstrap() {
     const config = new swagger_1.DocumentBuilder()
         .setTitle('diedie API')
         .setDescription('diedie 개발을 위한 API 문서입니다.')
+        .addTag('diediebackend')
         .setVersion('1.0')
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, config);
