@@ -74,7 +74,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
                             mostPlayedGame = "솔로 랭크";
                         }
                         else if (mostPlayedGame == "CHERRY") {
-                            mostPlayedGame = "아레나";
+                            mostPlayedGame = "이벤트 게임";
                         }
                         else if (mostPlayedGame == "RANKED_FLEX_SR") {
                             mostPlayedGame = "자유 랭크";
@@ -88,7 +88,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
             leagueInfo['summonerName'] = getSummonerName;
             leagueInfo['mostPlayedGame'] = mostPlayedGame;
             leagueInfo['RANKED_SOLO_5x5'] = queueInfo['RANKED_SOLO_5x5'] || { gameCount: 0 };
-            leagueInfo['Arena'] = queueInfo['CHERRY'] || { gameCount: 0 };
+            leagueInfo['Event_Game'] = queueInfo['CHERRY'] || { gameCount: 0 };
             leagueInfo['RANKED_FLEX_SR'] = queueInfo['RANKED_FLEX_SR'] || { gameCount: 0 };
             leagueInfo['RANKED_TFT'] = queueInfo['RANKED_TFT'] || { gameCount: 0 };
             if (leagueInfo['RANKED_SOLO_5x5'].gameCount == 0) {

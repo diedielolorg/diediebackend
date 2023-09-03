@@ -45,7 +45,7 @@ export class ReportsController {
     const getSummonerId = await this.searchService.searchSummonerName(
       summonerName,
     );
-
+ 
     const getSummonerID: string = getSummonerId['id'];
     const getSummonerName: string = getSummonerId['name']
     // 솔랭 승률, 소환사 이름, 제일 많이 한 게임 종류, 한 게임 종류당 얼마나 했는지 count
@@ -53,11 +53,12 @@ export class ReportsController {
 
     const getPuuid: string = getSummonerId['puuid'];
     const getMatchIdByApi = await this.reportsService.getUserInfo(getPuuid);
+    // console.log(getMatchIdByApi)
 
     // 마지막으로 게임 언제 했는지 확인
     const getLastPlayTime = await this.reportsService.getLastPlayTime(
       getMatchIdByApi
-      );
+    );
 
     //db에서 reportCount, category 갖고 오기
     const getCussWordData = await this.reportsService.getCussWordData(getSummonerName);
