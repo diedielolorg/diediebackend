@@ -24,7 +24,7 @@ export class ReportsService {
       const result = await response
         .pipe(map((response) => response.data))
         .toPromise();
-
+      
       return result;
     } catch (error) {
       console.error(error);
@@ -87,7 +87,7 @@ export class ReportsService {
           if(mostPlayedGame == "RANKED_SOLO_5x5"){
             mostPlayedGame = "솔로 랭크";
           } else if(mostPlayedGame == "CHERRY"){
-            mostPlayedGame = "아레나";
+            mostPlayedGame = "이벤트 게임";
           } else if(mostPlayedGame == "RANKED_FLEX_SR"){
             mostPlayedGame = "자유 랭크";
           } else if(mostPlayedGame == "RANKED_TFT"){
@@ -100,7 +100,7 @@ export class ReportsService {
       leagueInfo['summonerName'] = getSummonerName
       leagueInfo['mostPlayedGame'] = mostPlayedGame;
       leagueInfo['RANKED_SOLO_5x5'] = queueInfo['RANKED_SOLO_5x5'] || { gameCount: 0 };
-      leagueInfo['Arena'] = queueInfo['CHERRY'] || { gameCount: 0 };
+      leagueInfo['Event_Game'] = queueInfo['CHERRY'] || { gameCount: 0 };
       leagueInfo['RANKED_FLEX_SR'] = queueInfo['RANKED_FLEX_SR'] || { gameCount: 0 };
       leagueInfo['RANKED_TFT'] = queueInfo['RANKED_TFT'] || { gameCount: 0 };
 
