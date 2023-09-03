@@ -248,28 +248,40 @@ let ReportsService = exports.ReportsService = class ReportsService {
                 let gameMode = '';
                 switch (gameQueueConfigId) {
                     case 420:
-                        gameMode = '솔랭';
+                        gameMode = "솔랭";
                         break;
                     case 430:
-                        gameMode = '일반게임';
+                        gameMode = "일반게임";
                         break;
                     case 440:
-                        gameMode = '자유랭크';
+                        gameMode = "자유랭크";
                         break;
                     case 450:
-                        gameMode = '칼바람';
+                        gameMode = "칼바람";
                         break;
                     default:
-                        gameMode = '일반게임';
+                        gameMode = "이벤트 게임";
                 }
                 const simplifiedParticipants = participants.map((participant) => {
                     const { teamId, summonerName, championId, summonerId } = participant;
                     return { teamId, summonerName, championId, summonerId };
                 });
+                let gameName = '';
+                switch (gameMode) {
+                    case "솔랭" || "일반게임" || "자유랭크":
+                        gameName = "소환사 협곡";
+                        break;
+                    case "칼바람":
+                        gameName = "칼바람 나락";
+                        break;
+                    default:
+                        gameName = "이벤트 협곡";
+                }
                 return {
                     gameId,
                     mapId,
                     gameMode,
+                    gameName,
                     gameType,
                     gameQueueConfigId,
                     platformId,
