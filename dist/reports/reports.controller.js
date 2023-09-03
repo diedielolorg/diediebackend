@@ -27,6 +27,7 @@ let ReportsController = exports.ReportsController = class ReportsController {
     }
     async getMatchUserInfo(summonerName) {
         const getSummonerId = await this.searchService.searchSummonerName(summonerName);
+        const getSummonerProfileIconUrl = getSummonerId['profileIconIdUrl'];
         const getSummonerID = getSummonerId['id'];
         const getSummonerName = getSummonerId['name'];
         const getUserLeagueInfo = await this.reportsService.getUserLeagueInfo(getSummonerID, getSummonerName);
@@ -35,6 +36,7 @@ let ReportsController = exports.ReportsController = class ReportsController {
         const getLastPlayTime = await this.reportsService.getLastPlayTime(getMatchIdByApi);
         const getCussWordData = await this.reportsService.getCussWordData(getSummonerName);
         const reportData = await this.reportsService.getReportData(getSummonerName);
+        getUserLeagueInfo.profileIconIdUrl = getSummonerProfileIconUrl;
         getUserLeagueInfo.lastPlayTime = getLastPlayTime.lastPlayTime;
         getUserLeagueInfo.getCussWordData = getCussWordData;
         getUserLeagueInfo.reportData = reportData;
@@ -62,6 +64,7 @@ let ReportsController = exports.ReportsController = class ReportsController {
             gameId: getMatch.gameId,
             mapId: getMatch.mapId,
             gameMode: getMatch.gameMode,
+            gameName: getMatch.gameName,
             gameType: getMatch.gameType,
             gameQueueConfigId: getMatch.gameQueueConfigId,
             platformId: getMatch.platformId,

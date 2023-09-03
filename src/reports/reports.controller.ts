@@ -43,8 +43,10 @@ export class ReportsController {
     //입력받은 소환사명으로 SearchService에 있는 searchSummonerName 실행
     //실행한 결과값으로 return 된 id=
     const getSummonerId = await this.searchService.searchSummonerName(
-      summonerName,
+      summonerName
     );
+    const getSummonerProfileIconUrl = getSummonerId['profileIconIdUrl']
+    // console.log(getSummonerProfileIconUrl)
  
     const getSummonerID: string = getSummonerId['id'];
     const getSummonerName: string = getSummonerId['name']
@@ -69,6 +71,7 @@ export class ReportsController {
     // db에서 신고 당한 내역 갖고오기
     const reportData = await this.reportsService.getReportData(getSummonerName);
 
+    getUserLeagueInfo.profileIconIdUrl = getSummonerProfileIconUrl
     getUserLeagueInfo.lastPlayTime = getLastPlayTime.lastPlayTime;
     getUserLeagueInfo.getCussWordData = getCussWordData;
     getUserLeagueInfo.reportData = reportData;
@@ -159,6 +162,7 @@ export class ReportsController {
       gameId: getMatch.gameId,
       mapId: getMatch.mapId,
       gameMode: getMatch.gameMode,
+      gameName: getMatch.gameName,
       gameType: getMatch.gameType,
       gameQueueConfigId: getMatch.gameQueueConfigId,
       platformId: getMatch.platformId,

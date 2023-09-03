@@ -65,36 +65,35 @@ export class ReportsService {
       let maxGameCount = 0;
   
       for (const data of result) {
-        if(data && data.queueType) { // Check if data and queueType exist
+        if(data && data.queueType) {
           const queueType = data.queueType;
-        // const queueType = data.queueType;
-        const wins = data.wins;
-        const losses = data.losses;
-        const totalGames = wins + losses;
-        const winRate = ((wins / totalGames) * 100).toFixed(1) + '%';
+          const wins = data.wins;
+          const losses = data.losses;
+          const totalGames = wins + losses;
+          const winRate = ((wins / totalGames) * 100).toFixed(1) + '%';
   
-        if (queueType === 'RANKED_SOLO_5x5') {
-          leagueInfo.winRate = winRate;
-        }
+          if (queueType === 'RANKED_SOLO_5x5') {
+            leagueInfo.winRate = winRate;
+          }
   
-        queueInfo[queueType] = {
-          gameCount: totalGames,
-        };
-  
-        if (totalGames > maxGameCount) {
-          maxGameCount = totalGames;
-          mostPlayedGame = queueType;
-          if(mostPlayedGame == "RANKED_SOLO_5x5"){
-            mostPlayedGame = "솔로 랭크";
-          } else if(mostPlayedGame == "CHERRY"){
-            mostPlayedGame = "이벤트 게임";
-          } else if(mostPlayedGame == "RANKED_FLEX_SR"){
-            mostPlayedGame = "자유 랭크";
-          } else if(mostPlayedGame == "RANKED_TFT"){
-            mostPlayedGame = "TFT"
+          queueInfo[queueType] = {
+            gameCount: totalGames,
+          };
+    
+          if (totalGames > maxGameCount) {
+            maxGameCount = totalGames;
+            mostPlayedGame = queueType;
+            if(mostPlayedGame == "RANKED_SOLO_5x5"){
+              mostPlayedGame = "솔로 랭크";
+            } else if(mostPlayedGame == "CHERRY"){
+              mostPlayedGame = "이벤트 게임";
+            } else if(mostPlayedGame == "RANKED_FLEX_SR"){
+              mostPlayedGame = "자유 랭크";
+            } else if(mostPlayedGame == "RANKED_TFT"){
+              mostPlayedGame = "TFT"
+            }
           }
         }
-      }
       }
       
       leagueInfo['summonerName'] = getSummonerName
@@ -343,19 +342,19 @@ export class ReportsService {
             let gameMode = '';
             switch (gameQueueConfigId) {
               case 420:
-                gameMode = '솔랭';
+                gameMode = "솔랭";
                 break;
               case 430:
-                gameMode = '일반게임';
+                gameMode = "일반게임";
                 break;
               case 440:
-                gameMode = '자유랭크';
+                gameMode = "자유랭크";
                 break;
               case 450:
-                gameMode = '칼바람';
+                gameMode = "칼바람";
                 break;
               default:
-                gameMode = '일반게임';
+                gameMode = "이벤트 게임";
             }
 
             const simplifiedParticipants = participants.map((participant) => {
@@ -365,14 +364,26 @@ export class ReportsService {
               return { teamId, summonerName, championId, summonerId };
             });
 
+            let gameName = '';
+            switch (gameMode) {
+              case "솔랭" || "일반게임" || "자유랭크":
+                gameName = "소환사 협곡";
+                break;
+              case "칼바람":
+                gameName = "칼바람 나락";
+                break;
+              default:
+                gameName = "이벤트 협곡";
+            }
+
             return {
               gameId,
               mapId,
               gameMode,
+              gameName,
               gameType,
               gameQueueConfigId,
               platformId,
-              // gameStartTime,
               gameLength: minutes + "분" + seconds + "초",
               participants: simplifiedParticipants,
             };
