@@ -59,7 +59,7 @@ let ReportsController = exports.ReportsController = class ReportsController {
         const getUsersTierByAPI = await this.reportsService.getUserTierByApi(getUsersNameByMapping);
         const summonerNames = getUsersId.map((participant) => participant.summonerName);
         const getReportsInfoBySummonerName = await this.reportsService.getReportsInfo(summonerNames);
-        const participantsWithReportData = await this.reportsService.attachReportDataToParticipants(summonerNames, getReportsInfoBySummonerName);
+        const combinedParticipants = await this.reportsService.combinedParticipants(getUsersTierByAPI, getUsersId, getReportsInfoBySummonerName);
         const combinedResponse = {
             gameId: getMatch.gameId,
             mapId: getMatch.mapId,
@@ -69,11 +69,7 @@ let ReportsController = exports.ReportsController = class ReportsController {
             gameQueueConfigId: getMatch.gameQueueConfigId,
             platformId: getMatch.platformId,
             gameLength: getMatch.gameLength,
-            participants: getUsersTierByAPI.map((tierInfo, index) => ({
-                ...getUsersId[index],
-                tierInfo,
-            })),
-            reportsData: participantsWithReportData,
+            participants: combinedParticipants,
         };
         return combinedResponse;
     }

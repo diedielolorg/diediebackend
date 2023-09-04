@@ -17,5 +17,5 @@ export declare class ReportsService {
     getUserName(getUsersId: any[]): Promise<any>;
     getUserTierByApi(getUsersNameByMapping: string[]): Promise<any>;
     getReportsInfo(summonerNames: string[]): Promise<any[]>;
-    attachReportDataToParticipants(summonerNames: string[], reports: any[]): Promise<any[]>;
+    combinedParticipants(getUsersTierByAPI: any, getUsersId: any, getReportsInfoBySummonerName: any): Promise<any>;
 }
