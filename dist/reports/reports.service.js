@@ -135,7 +135,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
                 "혐오성 발언": 0,
             };
             for (const report of reports) {
-                const categories = report.category.split(', ');
+                const categories = report.category.split(',');
                 for (const category of categories) {
                     if (categoryCounts.hasOwnProperty(category)) {
                         categoryCounts[category]++;
@@ -369,21 +369,24 @@ let ReportsService = exports.ReportsService = class ReportsService {
             throw error;
         }
     }
-    async attachReportDataToParticipants(summonerNames, reports) {
-        const attachedReports = [];
-        for (let i = 0; i < summonerNames.length; i++) {
-            for (let j = 0; j < reports.length; j++) {
-                if (summonerNames[i] === reports[j].summonerName) {
-                    attachedReports.push({
-                        summonerName: summonerNames[i],
-                        category: reports[j].category,
-                        reportCount: reports[j].reportCount,
-                    });
-                    break;
-                }
+    async combinedParticipants(getUsersTierByAPI, getUsersId, getReportsInfoBySummonerName) {
+        return getUsersTierByAPI.map((tierInfo, index) => {
+            const participant = getUsersId[index];
+            const matchingReport = getReportsInfoBySummonerName.find((report) => report.summonerName === participant.summonerName);
+            if (matchingReport) {
+                return {
+                    ...participant,
+                    tierInfo,
+                    reportsData: matchingReport,
+                };
             }
-        }
-        return attachedReports;
+            else {
+                return {
+                    ...participant,
+                    tierInfo,
+                };
+            }
+        });
     }
 };
 exports.ReportsService = ReportsService = __decorate([

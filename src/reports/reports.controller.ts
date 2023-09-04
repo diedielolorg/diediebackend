@@ -143,20 +143,23 @@ export class ReportsController {
     );
     // console.log(getUsersTierByAPI)
 
-    // 데이터베이스에서 신고된 목록 갖고오기
     const summonerNames = getUsersId.map(
       (participant) => participant.summonerName,
     );
     // console.log(summonerNames)
+    // 데이터베이스에서 신고된 목록 갖고오기
     const getReportsInfoBySummonerName =
       await this.reportsService.getReportsInfo(summonerNames);
     // console.log(getReportsInfoBySummonerName)
 
-    const participantsWithReportData =
-      await this.reportsService.attachReportDataToParticipants(
-        summonerNames,
-        getReportsInfoBySummonerName,
-      );
+    // const participantsWithReportData =
+    //   await this.reportsService.attachReportDataToParticipants(
+    //     summonerNames,
+    //     getReportsInfoBySummonerName,
+    //   );
+    // console.log(participantsWithReportData)
+
+    const combinedParticipants = await this.reportsService.combinedParticipants(getUsersTierByAPI, getUsersId, getReportsInfoBySummonerName)
 
     const combinedResponse = {
       gameId: getMatch.gameId,
@@ -166,14 +169,10 @@ export class ReportsController {
       gameType: getMatch.gameType,
       gameQueueConfigId: getMatch.gameQueueConfigId,
       platformId: getMatch.platformId,
-      // gameStartTime: getMatch.gameStartTime,
       gameLength: getMatch.gameLength,
-      participants: getUsersTierByAPI.map((tierInfo, index) => ({
-        ...getUsersId[index],
-        tierInfo,
-      })),
-      reportsData: participantsWithReportData,
+      participants: combinedParticipants,
     };
+  
     return combinedResponse;
   }
 }

@@ -146,7 +146,7 @@ export class ReportsService {
     } catch (error) {
       console.error(error);
     }
-  }
+  } 
 
   async getCussWordData(getSummonerName: any): Promise<any> {
     try{
@@ -165,7 +165,7 @@ export class ReportsService {
     };
  
     for (const report of reports) {
-      const categories = report.category.split(', ');
+      const categories = report.category.split(',');
       for (const category of categories) {
         if (categoryCounts.hasOwnProperty(category)) {
           categoryCounts[category]++;
@@ -484,27 +484,47 @@ export class ReportsService {
     }
   }
 
-  async attachReportDataToParticipants(
-    summonerNames: string[],
-    reports: any[],
-  ): Promise<any[]> {
-    const attachedReports = [];
+  // async attachReportDataToParticipants(
+  //   summonerNames: string,
+  //   reports: any[],
+  // ): Promise<any[]> {
+  //   const attachedReports = [];
+  //   for (let i = 0; i < summonerNames.length; i++) {
+  //     for (let j = 0; j < reports.length; j++) {
+  //       if (summonerNames[i] === reports[j].summonerName) {
+  //         // summonerName을 reports[j].summonerName으로 수정
+  //         attachedReports.push({
+  //           summonerName: summonerNames[i],
+  //           category: reports[j].category,
+  //           reportCount: reports[j].reportCount,
+  //         });
+  //         break; // 이미 해당 보고서를 찾았으면 루프 중단
+  //       }
+  //     }
+  //   }
+  //   // console.log("사라있네사라있네사라있네사라있네사라있네사라있네",attachedReports)
+  //   return attachedReports;
+  // }
 
-    for (let i = 0; i < summonerNames.length; i++) {
-      for (let j = 0; j < reports.length; j++) {
-        // j++가 아닌 j++로 수정
-        if (summonerNames[i] === reports[j].summonerName) {
-          // summonerName을 reports[j].summonerName으로 수정
-          attachedReports.push({
-            summonerName: summonerNames[i],
-            category: reports[j].category,
-            reportCount: reports[j].reportCount,
-          });
-          break; // 이미 해당 보고서를 찾았으면 루프 중단
-        }
-      }
+    async combinedParticipants(getUsersTierByAPI, getUsersId, getReportsInfoBySummonerName){
+      return getUsersTierByAPI.map((tierInfo, index) => {
+          const participant = getUsersId[index];
+          const matchingReport = getReportsInfoBySummonerName.find(
+            (report) => report.summonerName === participant.summonerName
+          );
+      
+          if (matchingReport) {
+            return {
+              ...participant,
+              tierInfo,
+              reportsData: matchingReport,
+            };
+          } else {
+            return {
+              ...participant,
+              tierInfo,
+            };
+          }
+        });
     }
-    // console.log("사라있네사라있네사라있네사라있네사라있네사라있네",attachedReports)
-    return attachedReports;
-  }
 }
