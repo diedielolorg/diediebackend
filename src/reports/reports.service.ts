@@ -477,28 +477,6 @@ export class ReportsService {
     }
   }
 
-  // async getReportsInfo(summonerNames: string[]): Promise<any> {
-  //   try {
-  //     const reports = await this.reportRepository.find({
-  //       where: { summonerName: In(summonerNames) }, // 현재 게임 중인 유저의 목록 중 우리 DB에 있는 유저와 비교하여 있으면 데이터 추출
-  //       select: [
-  //         'summonerName',
-  //         'category', 
-  //       ],
-  //     });
-  //     // console.log(reports)
-  //     // reportCount는 Reports DB에 있는 같은 이름만 몇개인지 추출
-  //     // category는 Reports DB에 있는 같은 이름으로만 한 배열에 정리 후 제일 많이 있는 단어 하나 추출
-  //     // summonerName 내보내기
-
-
-  //     return reports
-  //   } catch (error) {
-  //     console.error(error);
-  //     throw error;
-  //   }
-  // }
-
   async getReportsInfo(summonerNames: string[]): Promise<any> {
     try {
       const reports = await this.reportRepository.find({
