@@ -152,21 +152,31 @@ export class UsersController {
     return { msg: '로그인 성공' };
   }
 
+  // @Delete('/logout')
+  // @ApiOperation({
+  //   summary: '로그아웃',
+  // })
+  // @UseGuards(AuthGuard)
+  // async logOut(@Req() req) {
+  //   // const logout = await this.usersService.logOut(userId)
+  //   // console.log(logout)
+  //   //
+  //   // 딜리트
+  //   // 헤더에 토큰 담아서 요청 보내보새요
+  //   console.log(req.header)
+
+  //   delete req.header['authorization']; 
+
+  //   return { msg: "로그아웃 완료"}
+  // }
+
   @Delete('/logout')
-  @ApiOperation({
-    summary: '로그아웃',
-  })
-  @UseGuards(AuthGuard)
-  async logOut(@Req() req) {
-    // const logout = await this.usersService.logOut(userId)
-    // console.log(logout)
-    //
-    // 딜리트
-    // 헤더에 토큰 담아서 요청 보내보새요
-    console.log(req.header)
+  async logOut(@Req() req: Request) {
+    // Remove the 'Authorization' header from the response
+    if (req.headers && req.headers['authorization']) {
+      delete req.headers['authorization'];
+    }
 
-    delete req.header['authorization']; 
-
-    return { msg: "로그아웃 완료"}
+    return { msg: '로그아웃 완료' };
   }
 }

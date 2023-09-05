@@ -154,19 +154,12 @@ export class ReportsController {
       await this.reportsService.getReportsInfo(summonerNames);
     // console.log(getReportsInfoBySummonerName)
 
-    // const participantsWithReportData =
-    //   await this.reportsService.attachReportDataToParticipants(
-    //     summonerNames,
-    //     getReportsInfoBySummonerName,
-    //   );
-    // console.log(participantsWithReportData)
-
     const combinedParticipants = await this.reportsService.combinedParticipants(
       getUsersTierByAPI, 
       getUsersId, 
       getReportsInfoBySummonerName
-      );
-
+    );
+    
     const combinedResponse = {
       gameId: getMatch.gameId,
       mapId: getMatch.mapId,
