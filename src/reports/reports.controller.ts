@@ -39,6 +39,7 @@ export class ReportsController {
   })
   async getMatchUserInfo(
     @Param('summonerName') summonerName: string,
+    @Query('page') page: number,
   ): Promise<any> {
     //입력받은 소환사명으로 SearchService에 있는 searchSummonerName 실행
     //실행한 결과값으로 return 된 id=
@@ -69,7 +70,8 @@ export class ReportsController {
     // const getRank = await this.reportsService.getRank(getSummonerName)
 
     // db에서 신고 당한 내역 갖고오기
-    const reportData = await this.reportsService.getReportData(getSummonerName);
+    const reportData = await this.reportsService.getReportData(getSummonerName, page);
+    console.log(reportData)
 
     getUserLeagueInfo.profileIconIdUrl = getSummonerProfileIconUrl
     getUserLeagueInfo.lastPlayTime = getLastPlayTime.lastPlayTime;
@@ -159,7 +161,11 @@ export class ReportsController {
     //   );
     // console.log(participantsWithReportData)
 
-    const combinedParticipants = await this.reportsService.combinedParticipants(getUsersTierByAPI, getUsersId, getReportsInfoBySummonerName)
+    const combinedParticipants = await this.reportsService.combinedParticipants(
+      getUsersTierByAPI, 
+      getUsersId, 
+      getReportsInfoBySummonerName
+      );
 
     const combinedResponse = {
       gameId: getMatch.gameId,

@@ -154,11 +154,16 @@ let ReportsService = exports.ReportsService = class ReportsService {
             console.error(error);
         }
     }
-    async getReportData(getSummonerName) {
+    async getReportData(getSummonerName, page = 1) {
         try {
+            const limit = 5;
+            const skip = (page - 1) * limit;
+            const take = limit;
             const reports = await this.reportRepository.find({
                 where: { summonerName: getSummonerName },
                 select: ['summonerName', 'reportId', 'category', 'reportDate', 'reportPayload', 'reportCapture'],
+                skip,
+                take
             });
             return reports;
         }
