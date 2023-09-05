@@ -25,7 +25,7 @@ let ReportsController = exports.ReportsController = class ReportsController {
         this.reportsService = reportsService;
         this.searchService = searchService;
     }
-    async getMatchUserInfo(summonerName) {
+    async getMatchUserInfo(summonerName, page) {
         const getSummonerId = await this.searchService.searchSummonerName(summonerName);
         const getSummonerProfileIconUrl = getSummonerId['profileIconIdUrl'];
         const getSummonerID = getSummonerId['id'];
@@ -35,7 +35,8 @@ let ReportsController = exports.ReportsController = class ReportsController {
         const getMatchIdByApi = await this.reportsService.getUserInfo(getPuuid);
         const getLastPlayTime = await this.reportsService.getLastPlayTime(getMatchIdByApi);
         const getCussWordData = await this.reportsService.getCussWordData(getSummonerName);
-        const reportData = await this.reportsService.getReportData(getSummonerName);
+        const reportData = await this.reportsService.getReportData(getSummonerName, page);
+        console.log(reportData);
         getUserLeagueInfo.profileIconIdUrl = getSummonerProfileIconUrl;
         getUserLeagueInfo.lastPlayTime = getLastPlayTime.lastPlayTime;
         getUserLeagueInfo.getCussWordData = getCussWordData;
@@ -81,8 +82,9 @@ __decorate([
         description: '소환사의 최근 게임 전적을 조회하기',
     }),
     __param(0, (0, common_1.Param)('summonerName')),
+    __param(1, (0, common_1.Query)('page')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Number]),
     __metadata("design:returntype", Promise)
 ], ReportsController.prototype, "getMatchUserInfo", null);
 __decorate([

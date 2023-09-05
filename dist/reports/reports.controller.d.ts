@@ -7,7 +7,7 @@ export declare class ReportsController {
     private readonly reportsService;
     private readonly searchService;
     constructor(reportsService: ReportsService, searchService: SearchService);
-    getMatchUserInfo(summonerName: string): Promise<any>;
+    getMatchUserInfo(summonerName: string, page: number): Promise<any>;
     createReportUsers(file: Express.Multer.File[], createReportDto: CreateReportDto, request: Request): Promise<any>;
     findAll(month: number): Promise<{
         data: import("./entities/report.entity").Reports[];

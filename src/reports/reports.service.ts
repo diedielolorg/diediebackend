@@ -207,11 +207,17 @@ export class ReportsService {
   //   }
   // }
 
-  async getReportData(getSummonerName: any): Promise<any> {
+  async getReportData(getSummonerName: any, page: number = 1): Promise<any> {
     try {
+      const limit = 5;
+      const skip = (page - 1) * limit;
+      const take = limit
+
       const reports = await this.reportRepository.find({
         where: { summonerName: getSummonerName },
         select: ['summonerName', 'reportId', 'category', 'reportDate', 'reportPayload', 'reportCapture'],
+        skip,
+        take
       });
 
       return reports;
