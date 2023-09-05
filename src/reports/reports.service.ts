@@ -24,7 +24,7 @@ export class ReportsService {
       const result = await response
         .pipe(map((response) => response.data))
         .toPromise();
-
+      
       return result;
     } catch (error) {
       console.error(error);
@@ -65,42 +65,41 @@ export class ReportsService {
       let maxGameCount = 0;
   
       for (const data of result) {
-        if(data && data.queueType) { // Check if data and queueType exist
+        if(data && data.queueType) {
           const queueType = data.queueType;
-        // const queueType = data.queueType;
-        const wins = data.wins;
-        const losses = data.losses;
-        const totalGames = wins + losses;
-        const winRate = ((wins / totalGames) * 100).toFixed(1) + '%';
+          const wins = data.wins;
+          const losses = data.losses;
+          const totalGames = wins + losses;
+          const winRate = ((wins / totalGames) * 100).toFixed(1) + '%';
   
-        if (queueType === 'RANKED_SOLO_5x5') {
-          leagueInfo.winRate = winRate;
-        }
+          if (queueType === 'RANKED_SOLO_5x5') {
+            leagueInfo.winRate = winRate;
+          }
   
-        queueInfo[queueType] = {
-          gameCount: totalGames,
-        };
-  
-        if (totalGames > maxGameCount) {
-          maxGameCount = totalGames;
-          mostPlayedGame = queueType;
-          if(mostPlayedGame == "RANKED_SOLO_5x5"){
-            mostPlayedGame = "솔로 랭크";
-          } else if(mostPlayedGame == "CHERRY"){
-            mostPlayedGame = "아레나";
-          } else if(mostPlayedGame == "RANKED_FLEX_SR"){
-            mostPlayedGame = "자유 랭크";
-          } else if(mostPlayedGame == "RANKED_TFT"){
-            mostPlayedGame = "TFT"
+          queueInfo[queueType] = {
+            gameCount: totalGames,
+          };
+    
+          if (totalGames > maxGameCount) {
+            maxGameCount = totalGames;
+            mostPlayedGame = queueType;
+            if(mostPlayedGame == "RANKED_SOLO_5x5"){
+              mostPlayedGame = "솔로 랭크";
+            } else if(mostPlayedGame == "CHERRY"){
+              mostPlayedGame = "이벤트 게임";
+            } else if(mostPlayedGame == "RANKED_FLEX_SR"){
+              mostPlayedGame = "자유 랭크";
+            } else if(mostPlayedGame == "RANKED_TFT"){
+              mostPlayedGame = "TFT"
+            }
           }
         }
-      }
       }
       
       leagueInfo['summonerName'] = getSummonerName
       leagueInfo['mostPlayedGame'] = mostPlayedGame;
       leagueInfo['RANKED_SOLO_5x5'] = queueInfo['RANKED_SOLO_5x5'] || { gameCount: 0 };
-      leagueInfo['Arena'] = queueInfo['CHERRY'] || { gameCount: 0 };
+      leagueInfo['Event_Game'] = queueInfo['CHERRY'] || { gameCount: 0 };
       leagueInfo['RANKED_FLEX_SR'] = queueInfo['RANKED_FLEX_SR'] || { gameCount: 0 };
       leagueInfo['RANKED_TFT'] = queueInfo['RANKED_TFT'] || { gameCount: 0 };
 
@@ -147,7 +146,7 @@ export class ReportsService {
     } catch (error) {
       console.error(error);
     }
-  }
+  } 
 
   async getCussWordData(getSummonerName: any): Promise<any> {
     try{
@@ -166,7 +165,7 @@ export class ReportsService {
     };
  
     for (const report of reports) {
-      const categories = report.category.split(', ');
+      const categories = report.category.split(',');
       for (const category of categories) {
         if (categoryCounts.hasOwnProperty(category)) {
           categoryCounts[category]++;
@@ -208,11 +207,17 @@ export class ReportsService {
   //   }
   // }
 
-  async getReportData(getSummonerName: any): Promise<any> {
+  async getReportData(getSummonerName: any, page: number = 1): Promise<any> {
     try {
+      const limit = 5;
+      const skip = (page - 1) * limit;
+      const take = limit
+
       const reports = await this.reportRepository.find({
         where: { summonerName: getSummonerName },
         select: ['summonerName', 'reportId', 'category', 'reportDate', 'reportPayload', 'reportCapture'],
+        skip,
+        take
       });
 
       return reports;
@@ -343,19 +348,19 @@ export class ReportsService {
             let gameMode = '';
             switch (gameQueueConfigId) {
               case 420:
-                gameMode = '솔랭';
+                gameMode = "솔랭";
                 break;
               case 430:
-                gameMode = '일반게임';
+                gameMode = "일반게임";
                 break;
               case 440:
-                gameMode = '자유랭크';
+                gameMode = "자유랭크";
                 break;
               case 450:
-                gameMode = '칼바람';
+                gameMode = "칼바람";
                 break;
               default:
-                gameMode = '일반게임';
+                gameMode = "이벤트 게임";
             }
 
             const simplifiedParticipants = participants.map((participant) => {
@@ -365,14 +370,26 @@ export class ReportsService {
               return { teamId, summonerName, championId, summonerId };
             });
 
+            let gameName = '';
+            switch (gameMode) {
+              case "솔랭" || "일반게임" || "자유랭크":
+                gameName = "소환사 협곡";
+                break;
+              case "칼바람":
+                gameName = "칼바람 나락";
+                break;
+              default:
+                gameName = "이벤트 협곡";
+            }
+
             return {
               gameId,
               mapId,
               gameMode,
+              gameName,
               gameType,
               gameQueueConfigId,
               platformId,
-              // gameStartTime,
               gameLength: minutes + "분" + seconds + "초",
               participants: simplifiedParticipants,
             };
@@ -473,27 +490,47 @@ export class ReportsService {
     }
   }
 
-  async attachReportDataToParticipants(
-    summonerNames: string[],
-    reports: any[],
-  ): Promise<any[]> {
-    const attachedReports = [];
+  // async attachReportDataToParticipants(
+  //   summonerNames: string,
+  //   reports: any[],
+  // ): Promise<any[]> {
+  //   const attachedReports = [];
+  //   for (let i = 0; i < summonerNames.length; i++) {
+  //     for (let j = 0; j < reports.length; j++) {
+  //       if (summonerNames[i] === reports[j].summonerName) {
+  //         // summonerName을 reports[j].summonerName으로 수정
+  //         attachedReports.push({
+  //           summonerName: summonerNames[i],
+  //           category: reports[j].category,
+  //           reportCount: reports[j].reportCount,
+  //         });
+  //         break; // 이미 해당 보고서를 찾았으면 루프 중단
+  //       }
+  //     }
+  //   }
+  //   // console.log("사라있네사라있네사라있네사라있네사라있네사라있네",attachedReports)
+  //   return attachedReports;
+  // }
 
-    for (let i = 0; i < summonerNames.length; i++) {
-      for (let j = 0; j < reports.length; j++) {
-        // j++가 아닌 j++로 수정
-        if (summonerNames[i] === reports[j].summonerName) {
-          // summonerName을 reports[j].summonerName으로 수정
-          attachedReports.push({
-            summonerName: summonerNames[i],
-            category: reports[j].category,
-            reportCount: reports[j].reportCount,
-          });
-          break; // 이미 해당 보고서를 찾았으면 루프 중단
-        }
-      }
+    async combinedParticipants(getUsersTierByAPI, getUsersId, getReportsInfoBySummonerName){
+      return getUsersTierByAPI.map((tierInfo, index) => {
+          const participant = getUsersId[index];
+          const matchingReport = getReportsInfoBySummonerName.find(
+            (report) => report.summonerName === participant.summonerName
+          );
+      
+          if (matchingReport) {
+            return {
+              ...participant,
+              tierInfo,
+              reportsData: matchingReport,
+            };
+          } else {
+            return {
+              ...participant,
+              tierInfo,
+            };
+          }
+        });
     }
-    // console.log("사라있네사라있네사라있네사라있네사라있네사라있네",attachedReports)
-    return attachedReports;
-  }
 }

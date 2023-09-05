@@ -39,13 +39,16 @@ export class ReportsController {
   })
   async getMatchUserInfo(
     @Param('summonerName') summonerName: string,
+    @Query('page') page: number,
   ): Promise<any> {
     //입력받은 소환사명으로 SearchService에 있는 searchSummonerName 실행
     //실행한 결과값으로 return 된 id=
     const getSummonerId = await this.searchService.searchSummonerName(
-      summonerName,
+      summonerName
     );
-
+    const getSummonerProfileIconUrl = getSummonerId['profileIconIdUrl']
+    // console.log(getSummonerProfileIconUrl)
+ 
     const getSummonerID: string = getSummonerId['id'];
     const getSummonerName: string = getSummonerId['name']
     // 솔랭 승률, 소환사 이름, 제일 많이 한 게임 종류, 한 게임 종류당 얼마나 했는지 count
@@ -53,11 +56,12 @@ export class ReportsController {
 
     const getPuuid: string = getSummonerId['puuid'];
     const getMatchIdByApi = await this.reportsService.getUserInfo(getPuuid);
+    // console.log(getMatchIdByApi)
 
     // 마지막으로 게임 언제 했는지 확인
     const getLastPlayTime = await this.reportsService.getLastPlayTime(
       getMatchIdByApi
-      );
+    );
 
     //db에서 reportCount, category 갖고 오기
     const getCussWordData = await this.reportsService.getCussWordData(getSummonerName);
@@ -66,8 +70,10 @@ export class ReportsController {
     // const getRank = await this.reportsService.getRank(getSummonerName)
 
     // db에서 신고 당한 내역 갖고오기
-    const reportData = await this.reportsService.getReportData(getSummonerName);
+    const reportData = await this.reportsService.getReportData(getSummonerName, page);
+    console.log(reportData)
 
+    getUserLeagueInfo.profileIconIdUrl = getSummonerProfileIconUrl
     getUserLeagueInfo.lastPlayTime = getLastPlayTime.lastPlayTime;
     getUserLeagueInfo.getCussWordData = getCussWordData;
     getUserLeagueInfo.reportData = reportData;
@@ -139,36 +145,40 @@ export class ReportsController {
     );
     // console.log(getUsersTierByAPI)
 
-    // 데이터베이스에서 신고된 목록 갖고오기
     const summonerNames = getUsersId.map(
       (participant) => participant.summonerName,
     );
     // console.log(summonerNames)
+    // 데이터베이스에서 신고된 목록 갖고오기
     const getReportsInfoBySummonerName =
       await this.reportsService.getReportsInfo(summonerNames);
     // console.log(getReportsInfoBySummonerName)
 
-    const participantsWithReportData =
-      await this.reportsService.attachReportDataToParticipants(
-        summonerNames,
-        getReportsInfoBySummonerName,
+    // const participantsWithReportData =
+    //   await this.reportsService.attachReportDataToParticipants(
+    //     summonerNames,
+    //     getReportsInfoBySummonerName,
+    //   );
+    // console.log(participantsWithReportData)
+
+    const combinedParticipants = await this.reportsService.combinedParticipants(
+      getUsersTierByAPI, 
+      getUsersId, 
+      getReportsInfoBySummonerName
       );
 
     const combinedResponse = {
       gameId: getMatch.gameId,
       mapId: getMatch.mapId,
       gameMode: getMatch.gameMode,
+      gameName: getMatch.gameName,
       gameType: getMatch.gameType,
       gameQueueConfigId: getMatch.gameQueueConfigId,
       platformId: getMatch.platformId,
-      // gameStartTime: getMatch.gameStartTime,
       gameLength: getMatch.gameLength,
-      participants: getUsersTierByAPI.map((tierInfo, index) => ({
-        ...getUsersId[index],
-        tierInfo,
-      })),
-      reportsData: participantsWithReportData,
+      participants: combinedParticipants,
     };
+  
     return combinedResponse;
   }
 }

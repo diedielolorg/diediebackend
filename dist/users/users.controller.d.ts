@@ -24,4 +24,7 @@ export declare class UsersController {
     login(userLoginDtodto: UserLoginDto, response: Response): Promise<{
         msg: string;
     }>;
+    logOut(req: any): Promise<{
+        msg: string;
+    }>;
 }

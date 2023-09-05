@@ -74,7 +74,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
                             mostPlayedGame = "솔로 랭크";
                         }
                         else if (mostPlayedGame == "CHERRY") {
-                            mostPlayedGame = "아레나";
+                            mostPlayedGame = "이벤트 게임";
                         }
                         else if (mostPlayedGame == "RANKED_FLEX_SR") {
                             mostPlayedGame = "자유 랭크";
@@ -88,7 +88,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
             leagueInfo['summonerName'] = getSummonerName;
             leagueInfo['mostPlayedGame'] = mostPlayedGame;
             leagueInfo['RANKED_SOLO_5x5'] = queueInfo['RANKED_SOLO_5x5'] || { gameCount: 0 };
-            leagueInfo['Arena'] = queueInfo['CHERRY'] || { gameCount: 0 };
+            leagueInfo['Event_Game'] = queueInfo['CHERRY'] || { gameCount: 0 };
             leagueInfo['RANKED_FLEX_SR'] = queueInfo['RANKED_FLEX_SR'] || { gameCount: 0 };
             leagueInfo['RANKED_TFT'] = queueInfo['RANKED_TFT'] || { gameCount: 0 };
             if (leagueInfo['RANKED_SOLO_5x5'].gameCount == 0) {
@@ -135,7 +135,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
                 "혐오성 발언": 0,
             };
             for (const report of reports) {
-                const categories = report.category.split(', ');
+                const categories = report.category.split(',');
                 for (const category of categories) {
                     if (categoryCounts.hasOwnProperty(category)) {
                         categoryCounts[category]++;
@@ -154,11 +154,16 @@ let ReportsService = exports.ReportsService = class ReportsService {
             console.error(error);
         }
     }
-    async getReportData(getSummonerName) {
+    async getReportData(getSummonerName, page = 1) {
         try {
+            const limit = 5;
+            const skip = (page - 1) * limit;
+            const take = limit;
             const reports = await this.reportRepository.find({
                 where: { summonerName: getSummonerName },
                 select: ['summonerName', 'reportId', 'category', 'reportDate', 'reportPayload', 'reportCapture'],
+                skip,
+                take
             });
             return reports;
         }
@@ -248,28 +253,40 @@ let ReportsService = exports.ReportsService = class ReportsService {
                 let gameMode = '';
                 switch (gameQueueConfigId) {
                     case 420:
-                        gameMode = '솔랭';
+                        gameMode = "솔랭";
                         break;
                     case 430:
-                        gameMode = '일반게임';
+                        gameMode = "일반게임";
                         break;
                     case 440:
-                        gameMode = '자유랭크';
+                        gameMode = "자유랭크";
                         break;
                     case 450:
-                        gameMode = '칼바람';
+                        gameMode = "칼바람";
                         break;
                     default:
-                        gameMode = '일반게임';
+                        gameMode = "이벤트 게임";
                 }
                 const simplifiedParticipants = participants.map((participant) => {
                     const { teamId, summonerName, championId, summonerId } = participant;
                     return { teamId, summonerName, championId, summonerId };
                 });
+                let gameName = '';
+                switch (gameMode) {
+                    case "솔랭" || "일반게임" || "자유랭크":
+                        gameName = "소환사 협곡";
+                        break;
+                    case "칼바람":
+                        gameName = "칼바람 나락";
+                        break;
+                    default:
+                        gameName = "이벤트 협곡";
+                }
                 return {
                     gameId,
                     mapId,
                     gameMode,
+                    gameName,
                     gameType,
                     gameQueueConfigId,
                     platformId,
@@ -357,21 +374,24 @@ let ReportsService = exports.ReportsService = class ReportsService {
             throw error;
         }
     }
-    async attachReportDataToParticipants(summonerNames, reports) {
-        const attachedReports = [];
-        for (let i = 0; i < summonerNames.length; i++) {
-            for (let j = 0; j < reports.length; j++) {
-                if (summonerNames[i] === reports[j].summonerName) {
-                    attachedReports.push({
-                        summonerName: summonerNames[i],
-                        category: reports[j].category,
-                        reportCount: reports[j].reportCount,
-                    });
-                    break;
-                }
+    async combinedParticipants(getUsersTierByAPI, getUsersId, getReportsInfoBySummonerName) {
+        return getUsersTierByAPI.map((tierInfo, index) => {
+            const participant = getUsersId[index];
+            const matchingReport = getReportsInfoBySummonerName.find((report) => report.summonerName === participant.summonerName);
+            if (matchingReport) {
+                return {
+                    ...participant,
+                    tierInfo,
+                    reportsData: matchingReport,
+                };
             }
-        }
-        return attachedReports;
+            else {
+                return {
+                    ...participant,
+                    tierInfo,
+                };
+            }
+        });
     }
 };
 exports.ReportsService = ReportsService = __decorate([

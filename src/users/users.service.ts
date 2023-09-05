@@ -82,6 +82,7 @@ export class UsersService {
     return accessToken;
   }
 
+
   async kakaoLogin(url: string, headers: any) {
     try {
       const data = await this.http.post(url, '', { headers }).toPromise();
@@ -107,4 +108,5 @@ export class UsersService {
     this.accessToken = token;
     return true;
   }
+
 }

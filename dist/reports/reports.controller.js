@@ -25,8 +25,9 @@ let ReportsController = exports.ReportsController = class ReportsController {
         this.reportsService = reportsService;
         this.searchService = searchService;
     }
-    async getMatchUserInfo(summonerName) {
+    async getMatchUserInfo(summonerName, page) {
         const getSummonerId = await this.searchService.searchSummonerName(summonerName);
+        const getSummonerProfileIconUrl = getSummonerId['profileIconIdUrl'];
         const getSummonerID = getSummonerId['id'];
         const getSummonerName = getSummonerId['name'];
         const getUserLeagueInfo = await this.reportsService.getUserLeagueInfo(getSummonerID, getSummonerName);
@@ -34,7 +35,9 @@ let ReportsController = exports.ReportsController = class ReportsController {
         const getMatchIdByApi = await this.reportsService.getUserInfo(getPuuid);
         const getLastPlayTime = await this.reportsService.getLastPlayTime(getMatchIdByApi);
         const getCussWordData = await this.reportsService.getCussWordData(getSummonerName);
-        const reportData = await this.reportsService.getReportData(getSummonerName);
+        const reportData = await this.reportsService.getReportData(getSummonerName, page);
+        console.log(reportData);
+        getUserLeagueInfo.profileIconIdUrl = getSummonerProfileIconUrl;
         getUserLeagueInfo.lastPlayTime = getLastPlayTime.lastPlayTime;
         getUserLeagueInfo.getCussWordData = getCussWordData;
         getUserLeagueInfo.reportData = reportData;
@@ -57,20 +60,17 @@ let ReportsController = exports.ReportsController = class ReportsController {
         const getUsersTierByAPI = await this.reportsService.getUserTierByApi(getUsersNameByMapping);
         const summonerNames = getUsersId.map((participant) => participant.summonerName);
         const getReportsInfoBySummonerName = await this.reportsService.getReportsInfo(summonerNames);
-        const participantsWithReportData = await this.reportsService.attachReportDataToParticipants(summonerNames, getReportsInfoBySummonerName);
+        const combinedParticipants = await this.reportsService.combinedParticipants(getUsersTierByAPI, getUsersId, getReportsInfoBySummonerName);
         const combinedResponse = {
             gameId: getMatch.gameId,
             mapId: getMatch.mapId,
             gameMode: getMatch.gameMode,
+            gameName: getMatch.gameName,
             gameType: getMatch.gameType,
             gameQueueConfigId: getMatch.gameQueueConfigId,
             platformId: getMatch.platformId,
             gameLength: getMatch.gameLength,
-            participants: getUsersTierByAPI.map((tierInfo, index) => ({
-                ...getUsersId[index],
-                tierInfo,
-            })),
-            reportsData: participantsWithReportData,
+            participants: combinedParticipants,
         };
         return combinedResponse;
     }
@@ -82,8 +82,9 @@ __decorate([
         description: '소환사의 최근 게임 전적을 조회하기',
     }),
     __param(0, (0, common_1.Param)('summonerName')),
+    __param(1, (0, common_1.Query)('page')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Number]),
     __metadata("design:returntype", Promise)
 ], ReportsController.prototype, "getMatchUserInfo", null);
 __decorate([

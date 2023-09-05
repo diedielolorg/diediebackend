@@ -13,6 +13,8 @@ import {
   UploadedFile,
   Res,
   Header,
+  Req,
+  Delete,
 } from '@nestjs/common';
 //import { AuthService } from 'src/auth/auth.service';
 import { Response } from 'express';
@@ -24,8 +26,10 @@ import { AuthGuard } from './auth.guard';
 import { ConfigService } from '@nestjs/config';
 import { EmailService } from 'src/email/email.service';
 import { VerifyEmailCodeDto } from './dto/verify-email-code.dto';
+
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CheckNickDto } from './dto/check-nick.dto';
+
 
 @ApiTags('USERS')
 @Controller('/api/users')
@@ -146,5 +150,23 @@ export class UsersController {
     response.header('Hi-junsoo', 'junsoobabo');
     response.header('authorization', `Bearer ${accessToken}`);
     return { msg: '로그인 성공' };
+  }
+
+  @Delete('/logout')
+  @ApiOperation({
+    summary: '로그아웃',
+  })
+  @UseGuards(AuthGuard)
+  async logOut(@Req() req) {
+    // const logout = await this.usersService.logOut(userId)
+    // console.log(logout)
+    //
+    // 딜리트
+    // 헤더에 토큰 담아서 요청 보내보새요
+    console.log(req.header)
+
+    delete req.header['authorization']; 
+
+    return { msg: "로그아웃 완료"}
   }
 }
