@@ -36,60 +36,6 @@ let EmailService = exports.EmailService = class EmailService {
         }
         return str;
     }
-    async sendConfirmationEmail(email) {
-        try {
-            const authcode = await this.generateRandomCode();
-            if (!email) {
-                throw new common_1.BadRequestException('이메일을 입력 해주세요');
-            }
-            const mailOptions = {
-                from: process.env.EMAIL_ADDRESS,
-                to: email,
-                subject: 'DIEDIE 인증 메일',
-                html: `인증번호 4자리입니다 ${authcode}`,
-            };
-            await this.transporter.sendMail(mailOptions);
-            await this.cacheManager.set(email, authcode, 180);
-            return { msg: '인증번호 발송 완료' };
-        }
-        catch (error) {
-            console.error(error);
-        }
-    }
-    async reSendConfirmationEmail(email) {
-        try {
-            const authcode = await this.generateRandomCode();
-            if (!email) {
-                throw new common_1.BadRequestException('이메일을 입력 해주세요');
-            }
-            const mailOptions = {
-                from: process.env.EMAIL_ADDRESS,
-                to: email,
-                subject: 'DIEDIE 인증 메일',
-                html: `인증번호 4자리입니다 ${authcode}`,
-            };
-            await this.transporter.sendMail(mailOptions);
-            const value = await this.cacheManager.get(email);
-            console.log(value);
-            if (value) {
-                console.log('기존인증번호를 삭제합니다');
-                await this.cacheManager.del(email);
-            }
-            await this.cacheManager.set(email, authcode, 300);
-            return { msg: '인증번호 재발송 완료' };
-        }
-        catch (error) {
-            console.error(error);
-        }
-    }
-    async verifyEmail(email, code) {
-        const value = await this.cacheManager.get(email);
-        console.log(value);
-        if (value !== String(code)) {
-            throw new common_1.BadRequestException('인증번호가 일치하지 않습니다.');
-        }
-        return { msg: '인증번호 확인 완료' };
-    }
 };
 exports.EmailService = EmailService = __decorate([
     (0, common_1.Injectable)(),
