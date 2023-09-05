@@ -13,11 +13,12 @@ const users_controller_1 = require("./users.controller");
 const email_module_1 = require("../email/email.module");
 const users_repository_1 = require("./users.repository");
 const auth_module_1 = require("../auth/auth.module");
+const axios_1 = require("@nestjs/axios");
 let UsersModule = exports.UsersModule = class UsersModule {
 };
 exports.UsersModule = UsersModule = __decorate([
     (0, common_1.Module)({
-        imports: [email_module_1.EmailModule, auth_module_1.AuthModule],
+        imports: [email_module_1.EmailModule, auth_module_1.AuthModule, axios_1.HttpModule],
         controllers: [users_controller_1.UsersController],
         providers: [users_service_1.UsersService, users_repository_1.UsersRepository],
     })
