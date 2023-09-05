@@ -106,34 +106,34 @@ export class UsersController {
     summary: '이메일 인증 번호 4자리 재발송',
     description: '인증번호 4자리 재발송',
   })
-  // async reVerifyEmailSend(
-  //   @Body() verifyEmailDto: VerifyEmailDto,
-  // ): Promise<void> {
-  //   const { email } = verifyEmailDto;
-  //   return await this.emailSerivce.reSendConfirmationEmail(email);
-  // }
+  async reVerifyEmailSend(
+    @Body() verifyEmailDto: VerifyEmailDto,
+  ): Promise<void> {
+    const { email } = verifyEmailDto;
+    return await this.emailSerivce.reSendConfirmationEmail(email);
+  }
 
-  // //이메일 전송
-  // @Post('/authcode')
-  // @ApiOperation({
-  //   summary: '이메일 인증 번호 4자리 발송',
-  //   description: '인증번호 4자리 발송',
-  // })
-  // async verifyEmailSend(@Body() verifyEmailDto: VerifyEmailDto): Promise<void> {
-  //   const { email } = verifyEmailDto;
-  //   return await this.emailSerivce.sendConfirmationEmail(email);
-  // }
+  //이메일 전송
+  @Post('/authcode')
+  @ApiOperation({
+    summary: '이메일 인증 번호 4자리 발송',
+    description: '인증번호 4자리 발송',
+  })
+  async verifyEmailSend(@Body() verifyEmailDto: VerifyEmailDto): Promise<void> {
+    const { email } = verifyEmailDto;
+    return await this.emailSerivce.sendConfirmationEmail(email);
+  }
 
-  // //이메일 검증
-  // @Post('/authcodevalidation')
-  // @ApiOperation({
-  //   summary: '이메일 인증 번호 4자리 검증',
-  //   description: '인증번호 4자리 검증',
-  // })
-  // async verifyEmail(@Body() verifyEmailDto: VerifyEmailCodeDto) {
-  //   const { email, code } = verifyEmailDto;
-  //   return await this.emailSerivce.verifyEmail(email, code);
-  // }
+  //이메일 검증
+  @Post('/authcodevalidation')
+  @ApiOperation({
+    summary: '이메일 인증 번호 4자리 검증',
+    description: '인증번호 4자리 검증',
+  })
+  async verifyEmail(@Body() verifyEmailDto: VerifyEmailCodeDto) {
+    const { email, code } = verifyEmailDto;
+    return await this.emailSerivce.verifyEmail(email, code);
+  }
 
   //로그인
   @Post('/login')
