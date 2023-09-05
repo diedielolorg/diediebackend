@@ -365,9 +365,32 @@ let ReportsService = exports.ReportsService = class ReportsService {
         try {
             const reports = await this.reportRepository.find({
                 where: { summonerName: (0, typeorm_2.In)(summonerNames) },
-                select: ['summonerName', 'category', 'reportCount'],
+                select: ['summonerName', 'category'],
             });
-            return reports;
+            const reportsInfo = summonerNames.map((summonerName) => {
+                const matchingReports = reports.filter((report) => report.summonerName === summonerName);
+                const reportCount = matchingReports.length;
+                const categories = matchingReports.map((report) => report.category);
+                const categoryWords = categories.join(',').split(',');
+                const wordCount = categoryWords.reduce((wordCountMap, word) => {
+                    wordCountMap[word] = (wordCountMap[word] || 0) + 1;
+                    return wordCountMap;
+                }, {});
+                let mostFrequentWord = '';
+                let maxOccurrence = 0;
+                for (const word in wordCount) {
+                    if (wordCount[word] > maxOccurrence) {
+                        mostFrequentWord = word;
+                        maxOccurrence = wordCount[word];
+                    }
+                }
+                return {
+                    summonerName,
+                    reportCount,
+                    mostFrequentWord,
+                };
+            });
+            return reportsInfo;
         }
         catch (error) {
             console.error(error);
@@ -375,23 +398,29 @@ let ReportsService = exports.ReportsService = class ReportsService {
         }
     }
     async combinedParticipants(getUsersTierByAPI, getUsersId, getReportsInfoBySummonerName) {
-        return getUsersTierByAPI.map((tierInfo, index) => {
-            const participant = getUsersId[index];
-            const matchingReport = getReportsInfoBySummonerName.find((report) => report.summonerName === participant.summonerName);
-            if (matchingReport) {
-                return {
-                    ...participant,
-                    tierInfo,
-                    reportsData: matchingReport,
-                };
-            }
-            else {
-                return {
-                    ...participant,
-                    tierInfo,
-                };
-            }
-        });
+        try {
+            const result = getUsersTierByAPI.map((tierInfo, index) => {
+                const participant = getUsersId[index];
+                const matchingReport = getReportsInfoBySummonerName.find((report) => report.summonerName === participant.summonerName);
+                if (matchingReport) {
+                    return {
+                        ...participant,
+                        tierInfo,
+                        reportsData: matchingReport,
+                    };
+                }
+                else {
+                    return {
+                        ...participant,
+                        tierInfo,
+                    };
+                }
+            });
+            return result;
+        }
+        catch (error) {
+            console.error(error);
+        }
     }
 };
 exports.ReportsService = ReportsService = __decorate([

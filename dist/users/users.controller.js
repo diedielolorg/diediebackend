@@ -18,7 +18,6 @@ const create_user_dto_1 = require("./dto/create-user.dto");
 const user_login_dto_1 = require("./dto/user-login.dto");
 const verify_email_dto_1 = require("./dto/verify-email.dto");
 const users_service_1 = require("./users.service");
-const auth_guard_1 = require("./auth.guard");
 const config_1 = require("@nestjs/config");
 const email_service_1 = require("../email/email.service");
 const verify_email_code_dto_1 = require("./dto/verify-email-code.dto");
@@ -79,9 +78,10 @@ let UsersController = exports.UsersController = class UsersController {
         return { msg: '로그인 성공' };
     }
     async logOut(req) {
-        console.log(req.header);
-        delete req.header['authorization'];
-        return { msg: "로그아웃 완료" };
+        if (req.headers && req.headers['authorization']) {
+            delete req.headers['authorization'];
+        }
+        return { msg: '로그아웃 완료' };
     }
 };
 __decorate([
@@ -169,13 +169,9 @@ __decorate([
 ], UsersController.prototype, "login", null);
 __decorate([
     (0, common_1.Delete)('/logout'),
-    (0, swagger_1.ApiOperation)({
-        summary: '로그아웃',
-    }),
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Request]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "logOut", null);
 exports.UsersController = UsersController = __decorate([

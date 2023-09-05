@@ -16,6 +16,6 @@ export declare class ReportsService {
     getUserInfoIngame(getId: string): Promise<any>;
     getUserName(getUsersId: any[]): Promise<any>;
     getUserTierByApi(getUsersNameByMapping: string[]): Promise<any>;
-    getReportsInfo(summonerNames: string[]): Promise<any[]>;
+    getReportsInfo(summonerNames: string[]): Promise<any>;
     combinedParticipants(getUsersTierByAPI: any, getUsersId: any, getReportsInfoBySummonerName: any): Promise<any>;
 }
