@@ -16,11 +16,9 @@ exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const create_user_dto_1 = require("./dto/create-user.dto");
 const user_login_dto_1 = require("./dto/user-login.dto");
-const verify_email_dto_1 = require("./dto/verify-email.dto");
 const users_service_1 = require("./users.service");
 const config_1 = require("@nestjs/config");
 const email_service_1 = require("../email/email.service");
-const verify_email_code_dto_1 = require("./dto/verify-email-code.dto");
 const swagger_1 = require("@nestjs/swagger");
 const check_nick_dto_1 = require("./dto/check-nick.dto");
 let UsersController = exports.UsersController = class UsersController {
@@ -57,18 +55,6 @@ let UsersController = exports.UsersController = class UsersController {
         };
         await this.usersService.kakaoLogin(_hostName, _headers);
         return res.send('카카오 로그인 성공');
-    }
-    async reVerifyEmailSend(verifyEmailDto) {
-        const { email } = verifyEmailDto;
-        return await this.emailSerivce.reSendConfirmationEmail(email);
-    }
-    async verifyEmailSend(verifyEmailDto) {
-        const { email } = verifyEmailDto;
-        return await this.emailSerivce.sendConfirmationEmail(email);
-    }
-    async verifyEmail(verifyEmailDto) {
-        const { email, code } = verifyEmailDto;
-        return await this.emailSerivce.verifyEmail(email, code);
     }
     async login(userLoginDtodto, response) {
         const { email, password } = userLoginDtodto;
@@ -128,34 +114,6 @@ __decorate([
         summary: '이메일 인증 번호 4자리 재발송',
         description: '인증번호 4자리 재발송',
     }),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [verify_email_dto_1.VerifyEmailDto]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "reVerifyEmailSend", null);
-__decorate([
-    (0, common_1.Post)('/authcode'),
-    (0, swagger_1.ApiOperation)({
-        summary: '이메일 인증 번호 4자리 발송',
-        description: '인증번호 4자리 발송',
-    }),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [verify_email_dto_1.VerifyEmailDto]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "verifyEmailSend", null);
-__decorate([
-    (0, common_1.Post)('/authcodevalidation'),
-    (0, swagger_1.ApiOperation)({
-        summary: '이메일 인증 번호 4자리 검증',
-        description: '인증번호 4자리 검증',
-    }),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [verify_email_code_dto_1.VerifyEmailCodeDto]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "verifyEmail", null);
-__decorate([
     (0, common_1.Post)('/login'),
     (0, swagger_1.ApiOperation)({
         summary: '로그인',
