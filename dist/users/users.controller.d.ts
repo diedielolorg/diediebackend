@@ -1,11 +1,12 @@
+import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
+import { EmailService } from 'src/email/email.service';
 import { CreateUsersDto } from './dto/create-user.dto';
+import { PutMyInfoDto } from './dto/put-myInfo.dto';
 import { UserLoginDto } from './dto/user-login.dto';
+import { VerifyEmailCodeDto } from './dto/verify-email-code.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { UsersService } from './users.service';
-import { ConfigService } from '@nestjs/config';
-import { EmailService } from 'src/email/email.service';
-import { VerifyEmailCodeDto } from './dto/verify-email-code.dto';
 export declare class UsersController {
     private configService;
     private readonly emailSerivce;
@@ -20,4 +21,7 @@ export declare class UsersController {
     logOut(req: any): Promise<{
         msg: string;
     }>;
+    deleteUser(request: Request): Promise<void>;
+    putMyInfo(putMyInfoDto: PutMyInfoDto, request: Request, userId: string): Promise<void>;
+    getMyReport(request: Request, paginationQuery: any): Promise<any>;
 }

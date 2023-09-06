@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express/multer/interceptors/files.interceptor';
 import * as AWS from 'aws-sdk';
 import * as multerS3 from 'multer-s3';
-import { FilesInterceptor } from '@nestjs/platform-express/multer/interceptors/files.interceptor';
 import path from 'path';
 import sharp from 'sharp';
 
@@ -23,7 +23,7 @@ export class S3FileInterceptor extends FilesInterceptor('file', 3, {
       {
         id: 'resized',
         key: function (req, file, cb) {
-          let extension = path.extname(file.originalname);
+          const extension = path.extname(file.originalname);
           cb(null, Date.now().toString() + extension);
         },
         transform: function (req, file, cb) {

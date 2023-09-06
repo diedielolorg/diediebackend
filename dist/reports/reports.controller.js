@@ -14,12 +14,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReportsController = void 0;
 const common_1 = require("@nestjs/common");
-const reports_service_1 = require("./reports.service");
-const create_report_dto_1 = require("./dto/create-report.dto");
-const S3FileInterceptor_1 = require("../utils/S3FileInterceptor");
+const swagger_1 = require("@nestjs/swagger");
 const search_service_1 = require("../search/search.service");
 const auth_guard_1 = require("../users/auth.guard");
-const swagger_1 = require("@nestjs/swagger");
+const S3FileInterceptor_1 = require("../utils/S3FileInterceptor");
+const create_report_dto_1 = require("./dto/create-report.dto");
+const reports_service_1 = require("./reports.service");
 let ReportsController = exports.ReportsController = class ReportsController {
     constructor(reportsService, searchService) {
         this.reportsService = reportsService;
@@ -36,7 +36,6 @@ let ReportsController = exports.ReportsController = class ReportsController {
         const getLastPlayTime = await this.reportsService.getLastPlayTime(getMatchIdByApi);
         const getCussWordData = await this.reportsService.getCussWordData(getSummonerName);
         const reportData = await this.reportsService.getReportData(getSummonerName, page);
-        console.log(reportData);
         getUserLeagueInfo.profileIconIdUrl = getSummonerProfileIconUrl;
         getUserLeagueInfo.lastPlayTime = getLastPlayTime.lastPlayTime;
         getUserLeagueInfo.getCussWordData = getCussWordData;

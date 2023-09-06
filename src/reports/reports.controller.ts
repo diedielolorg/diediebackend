@@ -1,28 +1,23 @@
 import {
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
   Param,
-  Delete,
-  UploadedFiles,
-  UseInterceptors,
-  Res,
-  UseGuards,
-  Query,
-  ValidationPipe,
   ParseIntPipe,
+  Post,
+  Query,
   Req,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ReportsService } from './reports.service';
-import { CreateReportDto } from './dto/create-report.dto';
-import { S3FileInterceptor } from 'src/utils/S3FileInterceptor';
-import { SearchService } from 'src/search/search.service';
-import { AuthGuard } from 'src/users/auth.guard';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
-import { ILike } from 'typeorm';
+import { SearchService } from 'src/search/search.service';
+import { AuthGuard } from 'src/users/auth.guard';
+import { S3FileInterceptor } from 'src/utils/S3FileInterceptor';
+import { CreateReportDto } from './dto/create-report.dto';
+import { ReportsService } from './reports.service';
 
 @ApiTags('REPORTS')
 @Controller('/api')
@@ -44,15 +39,18 @@ export class ReportsController {
     //입력받은 소환사명으로 SearchService에 있는 searchSummonerName 실행
     //실행한 결과값으로 return 된 id=
     const getSummonerId = await this.searchService.searchSummonerName(
-      summonerName
+      summonerName,
     );
-    const getSummonerProfileIconUrl = getSummonerId['profileIconIdUrl']
+    const getSummonerProfileIconUrl = getSummonerId['profileIconIdUrl'];
     // console.log(getSummonerProfileIconUrl)
- 
+
     const getSummonerID: string = getSummonerId['id'];
-    const getSummonerName: string = getSummonerId['name']
+    const getSummonerName: string = getSummonerId['name'];
     // 솔랭 승률, 소환사 이름, 제일 많이 한 게임 종류, 한 게임 종류당 얼마나 했는지 count
-    const getUserLeagueInfo = await this.reportsService.getUserLeagueInfo(getSummonerID, getSummonerName)
+    const getUserLeagueInfo = await this.reportsService.getUserLeagueInfo(
+      getSummonerID,
+      getSummonerName,
+    );
 
     const getPuuid: string = getSummonerId['puuid'];
     const getMatchIdByApi = await this.reportsService.getUserInfo(getPuuid);
@@ -60,25 +58,29 @@ export class ReportsController {
 
     // 마지막으로 게임 언제 했는지 확인
     const getLastPlayTime = await this.reportsService.getLastPlayTime(
-      getMatchIdByApi
+      getMatchIdByApi,
     );
 
     //db에서 reportCount, category 갖고 오기
-    const getCussWordData = await this.reportsService.getCussWordData(getSummonerName);
+    const getCussWordData = await this.reportsService.getCussWordData(
+      getSummonerName,
+    );
 
     // db에서 rank 조회하기
     // const getRank = await this.reportsService.getRank(getSummonerName)
 
     // db에서 신고 당한 내역 갖고오기
-    const reportData = await this.reportsService.getReportData(getSummonerName, page);
-    console.log(reportData)
+    const reportData = await this.reportsService.getReportData(
+      getSummonerName,
+      page,
+    );
 
-    getUserLeagueInfo.profileIconIdUrl = getSummonerProfileIconUrl
+    getUserLeagueInfo.profileIconIdUrl = getSummonerProfileIconUrl;
     getUserLeagueInfo.lastPlayTime = getLastPlayTime.lastPlayTime;
     getUserLeagueInfo.getCussWordData = getCussWordData;
     getUserLeagueInfo.reportData = reportData;
 
-    return getUserLeagueInfo
+    return getUserLeagueInfo;
   }
 
   @UseGuards(AuthGuard)
@@ -130,14 +132,12 @@ export class ReportsController {
     // 롤 인게임 정보 api에서 불러온 정보들
     const getId: string = getSummonerId['id'];
     const getMatch = await this.reportsService.getUserInfoIngame(getId);
-    // console.log(getMatch)
 
     // 인게임 정보의 유저들의 id값 추출
     const getUsersId = getMatch.participants;
     const getUsersNameByMapping = await this.reportsService.getUserName(
       getUsersId,
     );
-    // console.log(getUsersId)
 
     // 추출한 id값으로 롤 티어 확인
     const getUsersTierByAPI = await this.reportsService.getUserTierByApi(
@@ -162,10 +162,10 @@ export class ReportsController {
     // console.log(participantsWithReportData)
 
     const combinedParticipants = await this.reportsService.combinedParticipants(
-      getUsersTierByAPI, 
-      getUsersId, 
-      getReportsInfoBySummonerName
-      );
+      getUsersTierByAPI,
+      getUsersId,
+      getReportsInfoBySummonerName,
+    );
 
     const combinedResponse = {
       gameId: getMatch.gameId,
@@ -178,7 +178,7 @@ export class ReportsController {
       gameLength: getMatch.gameLength,
       participants: combinedParticipants,
     };
-  
+
     return combinedResponse;
   }
 }

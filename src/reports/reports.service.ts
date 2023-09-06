@@ -1,11 +1,11 @@
+import { HttpService } from '@nestjs/axios';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository, createQueryBuilder, ILike, In } from 'typeorm';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { In, Repository } from 'typeorm';
 import { CreateReportDto } from './dto/create-report.dto';
 import { Reports } from './entities/report.entity';
-import { HttpService } from '@nestjs/axios';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
 
 @Injectable()
 export class ReportsService {
@@ -24,14 +24,17 @@ export class ReportsService {
       const result = await response
         .pipe(map((response) => response.data))
         .toPromise();
-      
+
       return result;
     } catch (error) {
       console.error(error);
     }
   }
 
-  async getUserLeagueInfo(getSummonerID: string, getSummonerName: string): Promise<any> {
+  async getUserLeagueInfo(
+    getSummonerID: string,
+    getSummonerName: string,
+  ): Promise<any> {
     try {
       const response: Observable<any> = this.httpService.get(
         `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${getSummonerID}`,
@@ -41,85 +44,85 @@ export class ReportsService {
         .pipe(map((response) => response.data))
         .toPromise();
 
-      
-        const responses: Observable<any> = this.httpService.get(
-          `https://kr.api.riotgames.com/tft/league/v1/entries/by-summoner/${getSummonerID}`,
-          { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } },
-        );
-        const results = await responses
-          .pipe(map((responses) => responses.data))
-          .toPromise();
-        
-      
-      const popResults = results.pop()
-      result.push(popResults)  
+      const responses: Observable<any> = this.httpService.get(
+        `https://kr.api.riotgames.com/tft/league/v1/entries/by-summoner/${getSummonerID}`,
+        { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } },
+      );
+      const results = await responses
+        .pipe(map((responses) => responses.data))
+        .toPromise();
+
+      const popResults = results.pop();
+      result.push(popResults);
       // console.log(result)
       // console.log(results)
-  
+
       const leagueInfo = {
         winRate: '',
       };
-      
+
       const queueInfo = {};
       let mostPlayedGame = '';
       let maxGameCount = 0;
-  
+
       for (const data of result) {
-        if(data && data.queueType) {
+        if (data && data.queueType) {
           const queueType = data.queueType;
           const wins = data.wins;
           const losses = data.losses;
           const totalGames = wins + losses;
           const winRate = ((wins / totalGames) * 100).toFixed(1) + '%';
-  
+
           if (queueType === 'RANKED_SOLO_5x5') {
             leagueInfo.winRate = winRate;
           }
-  
+
           queueInfo[queueType] = {
             gameCount: totalGames,
           };
-    
+
           if (totalGames > maxGameCount) {
             maxGameCount = totalGames;
             mostPlayedGame = queueType;
-            if(mostPlayedGame == "RANKED_SOLO_5x5"){
-              mostPlayedGame = "솔로 랭크";
-            } else if(mostPlayedGame == "CHERRY"){
-              mostPlayedGame = "이벤트 게임";
-            } else if(mostPlayedGame == "RANKED_FLEX_SR"){
-              mostPlayedGame = "자유 랭크";
-            } else if(mostPlayedGame == "RANKED_TFT"){
-              mostPlayedGame = "TFT"
+            if (mostPlayedGame == 'RANKED_SOLO_5x5') {
+              mostPlayedGame = '솔로 랭크';
+            } else if (mostPlayedGame == 'CHERRY') {
+              mostPlayedGame = '이벤트 게임';
+            } else if (mostPlayedGame == 'RANKED_FLEX_SR') {
+              mostPlayedGame = '자유 랭크';
+            } else if (mostPlayedGame == 'RANKED_TFT') {
+              mostPlayedGame = 'TFT';
             }
           }
         }
       }
-      
-      leagueInfo['summonerName'] = getSummonerName
+
+      leagueInfo['summonerName'] = getSummonerName;
       leagueInfo['mostPlayedGame'] = mostPlayedGame;
-      leagueInfo['RANKED_SOLO_5x5'] = queueInfo['RANKED_SOLO_5x5'] || { gameCount: 0 };
+      leagueInfo['RANKED_SOLO_5x5'] = queueInfo['RANKED_SOLO_5x5'] || {
+        gameCount: 0,
+      };
       leagueInfo['Event_Game'] = queueInfo['CHERRY'] || { gameCount: 0 };
-      leagueInfo['RANKED_FLEX_SR'] = queueInfo['RANKED_FLEX_SR'] || { gameCount: 0 };
+      leagueInfo['RANKED_FLEX_SR'] = queueInfo['RANKED_FLEX_SR'] || {
+        gameCount: 0,
+      };
       leagueInfo['RANKED_TFT'] = queueInfo['RANKED_TFT'] || { gameCount: 0 };
 
-      if(leagueInfo['RANKED_SOLO_5x5'].gameCount == 0){
-        leagueInfo.winRate = "언랭"
+      if (leagueInfo['RANKED_SOLO_5x5'].gameCount == 0) {
+        leagueInfo.winRate = '언랭';
       }
 
-      if(mostPlayedGame.length == 0){
-        leagueInfo['mostPlayedGame'] = "이사람 겨울잠 자러감"
+      if (mostPlayedGame.length == 0) {
+        leagueInfo['mostPlayedGame'] = '이사람 겨울잠 자러감';
       }
-  
+
       return leagueInfo;
     } catch (error) {
       console.error(error);
     }
   }
 
-    async getLastPlayTime(
-    getMatchIdByApi: string[],
-  ): Promise<any> {
+  async getLastPlayTime(getMatchIdByApi: string[]): Promise<any> {
     try {
       // 제일 최근 경기
       const getMatchIdByApi0 = getMatchIdByApi[0];
@@ -134,11 +137,9 @@ export class ReportsService {
         .toPromise();
 
       // 게임 타입
-      const gameRecord = result.info.gameEndTimestamp
+      const gameRecord = result.info.gameEndTimestamp;
 
-      const lastPlayTime = new Date(
-        gameRecord
-      ).toLocaleString();
+      const lastPlayTime = new Date(gameRecord).toLocaleString();
 
       return {
         lastPlayTime: lastPlayTime,
@@ -146,45 +147,44 @@ export class ReportsService {
     } catch (error) {
       console.error(error);
     }
-  } 
+  }
 
   async getCussWordData(getSummonerName: any): Promise<any> {
-    try{
-    const reports = await this.reportRepository.find({
-      where: { summonerName: getSummonerName},
-      select: ['category'],
-    });
+    try {
+      const reports = await this.reportRepository.find({
+        where: { summonerName: getSummonerName },
+        select: ['category'],
+      });
 
-    const categoryCounts = {
-      "쌍욕": 0,
-      "패드립": 0,
-      "기타": 0,
-      "인신공격": 0,
-      "성희롱": 0,
-      "혐오성 발언": 0,
-    };
- 
-    for (const report of reports) {
-      const categories = report.category.split(',');
-      for (const category of categories) {
-        if (categoryCounts.hasOwnProperty(category)) {
-          categoryCounts[category]++;
+      const categoryCounts = {
+        쌍욕: 0,
+        패드립: 0,
+        기타: 0,
+        인신공격: 0,
+        성희롱: 0,
+        '혐오성 발언': 0,
+      };
+
+      for (const report of reports) {
+        const categories = report.category.split(',');
+        for (const category of categories) {
+          if (categoryCounts.hasOwnProperty(category)) {
+            categoryCounts[category]++;
+          }
         }
       }
-    }
 
-    const reportCount = reports.length;
-    const rank = 0
-    
-    return {
-      categoryCounts,
-      reportCount,
-      rank
-    }
+      const reportCount = reports.length;
+      const rank = 0;
 
-  } catch(error){
-    console.error(error);
-  }
+      return {
+        categoryCounts,
+        reportCount,
+        rank,
+      };
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   // async getRank(getSummonerName: string): Promise<any>{
@@ -207,17 +207,24 @@ export class ReportsService {
   //   }
   // }
 
-  async getReportData(getSummonerName: any, page: number = 1): Promise<any> {
+  async getReportData(getSummonerName: any, page = 1): Promise<any> {
     try {
       const limit = 5;
       const skip = (page - 1) * limit;
-      const take = limit
+      const take = limit;
 
       const reports = await this.reportRepository.find({
         where: { summonerName: getSummonerName },
-        select: ['summonerName', 'reportId', 'category', 'reportDate', 'reportPayload', 'reportCapture'],
+        select: [
+          'summonerName',
+          'reportId',
+          'category',
+          'reportDate',
+          'reportPayload',
+          'reportCapture',
+        ],
         skip,
-        take
+        take,
       });
 
       return reports;
@@ -348,19 +355,19 @@ export class ReportsService {
             let gameMode = '';
             switch (gameQueueConfigId) {
               case 420:
-                gameMode = "솔랭";
+                gameMode = '솔랭';
                 break;
               case 430:
-                gameMode = "일반게임";
+                gameMode = '일반게임';
                 break;
               case 440:
-                gameMode = "자유랭크";
+                gameMode = '자유랭크';
                 break;
               case 450:
-                gameMode = "칼바람";
+                gameMode = '칼바람';
                 break;
               default:
-                gameMode = "이벤트 게임";
+                gameMode = '이벤트 게임';
             }
 
             const simplifiedParticipants = participants.map((participant) => {
@@ -372,14 +379,14 @@ export class ReportsService {
 
             let gameName = '';
             switch (gameMode) {
-              case "솔랭" || "일반게임" || "자유랭크":
-                gameName = "소환사 협곡";
+              case '솔랭' || '일반게임' || '자유랭크':
+                gameName = '소환사 협곡';
                 break;
-              case "칼바람":
-                gameName = "칼바람 나락";
+              case '칼바람':
+                gameName = '칼바람 나락';
                 break;
               default:
-                gameName = "이벤트 협곡";
+                gameName = '이벤트 협곡';
             }
 
             return {
@@ -390,40 +397,48 @@ export class ReportsService {
               gameType,
               gameQueueConfigId,
               platformId,
-              gameLength: minutes + "분" + seconds + "초",
+              gameLength: minutes + '분' + seconds + '초',
               participants: simplifiedParticipants,
             };
           }),
         )
-        .toPromise();      
-      const champId = result.participants
-      const champIds = champId.map(data => data.championId)
+        .toPromise();
+      const champId = result.participants;
+      const champIds = champId.map((data) => data.championId);
 
-      const fetchResponse = await fetch(`http://ddragon.leagueoflegends.com/cdn/13.16.1/data/en_US/champion.json`);
-        const data = await fetchResponse.json();
+      const fetchResponse = await fetch(
+        `http://ddragon.leagueoflegends.com/cdn/13.16.1/data/en_US/champion.json`,
+      );
+      const data = await fetchResponse.json();
 
-        const champions = data.data;
+      const champions = data.data;
 
-        const championImageUrls = champIds.map(championId => {
-            const champion = champions[Object.keys(champions).find(key => champions[key].key === championId.toString())];
-            const championImageUrl = `http://ddragon.leagueoflegends.com/cdn/13.16.1/img/champion/${champion.image.full}`;
-            return championImageUrl
-        });
+      const championImageUrls = champIds.map((championId) => {
+        const champion =
+          champions[
+            Object.keys(champions).find(
+              (key) => champions[key].key === championId.toString(),
+            )
+          ];
+        const championImageUrl = `http://ddragon.leagueoflegends.com/cdn/13.16.1/img/champion/${champion.image.full}`;
+        return championImageUrl;
+      });
 
-        const participantsImageUrls = result.participants.map((participant, index) => {
-            return {
-                ...participant,
-                championImageUrl: championImageUrls[index]
-            };
-        });
+      const participantsImageUrls = result.participants.map(
+        (participant, index) => {
+          return {
+            ...participant,
+            championImageUrl: championImageUrls[index],
+          };
+        },
+      );
 
-        const finalResult = {
-            ...result,
-            participants: participantsImageUrls
-        };
+      const finalResult = {
+        ...result,
+        participants: participantsImageUrls,
+      };
 
-        return finalResult;
-
+      return finalResult;
     } catch (error) {
       console.error(error);
     }
@@ -512,25 +527,29 @@ export class ReportsService {
   //   return attachedReports;
   // }
 
-    async combinedParticipants(getUsersTierByAPI, getUsersId, getReportsInfoBySummonerName){
-      return getUsersTierByAPI.map((tierInfo, index) => {
-          const participant = getUsersId[index];
-          const matchingReport = getReportsInfoBySummonerName.find(
-            (report) => report.summonerName === participant.summonerName
-          );
-      
-          if (matchingReport) {
-            return {
-              ...participant,
-              tierInfo,
-              reportsData: matchingReport,
-            };
-          } else {
-            return {
-              ...participant,
-              tierInfo,
-            };
-          }
-        });
-    }
+  async combinedParticipants(
+    getUsersTierByAPI,
+    getUsersId,
+    getReportsInfoBySummonerName,
+  ) {
+    return getUsersTierByAPI.map((tierInfo, index) => {
+      const participant = getUsersId[index];
+      const matchingReport = getReportsInfoBySummonerName.find(
+        (report) => report.summonerName === participant.summonerName,
+      );
+
+      if (matchingReport) {
+        return {
+          ...participant,
+          tierInfo,
+          reportsData: matchingReport,
+        };
+      } else {
+        return {
+          ...participant,
+          tierInfo,
+        };
+      }
+    });
+  }
 }
