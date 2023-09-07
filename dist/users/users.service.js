@@ -8,16 +8,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("../auth/auth.service");
+const typeorm_1 = require("@nestjs/typeorm");
+const report_entity_1 = require("../reports/entities/report.entity");
+const typeorm_2 = require("typeorm");
 const users_repository_1 = require("./users.repository");
 const axios_1 = require("@nestjs/axios");
 let UsersService = exports.UsersService = class UsersService {
-    constructor(usersRepository, authService) {
+    constructor(usersRepository, authService, reportRepository) {
         this.usersRepository = usersRepository;
         this.authService = authService;
+        this.reportRepository = reportRepository;
         this.check = false;
         this.http = new axios_1.HttpService();
         this.accessToken = '';
@@ -63,6 +70,24 @@ let UsersService = exports.UsersService = class UsersService {
         });
         return accessToken;
     }
+    async deleteUser(userId) {
+        return await this.usersRepository.deleteUser(userId);
+    }
+    async putMyInfo(putMyInfoArg) {
+        const { userId, nickname, password, reqUserId } = putMyInfoArg;
+        const loggedInUser = await this.usersRepository.findOne(reqUserId);
+        const wantPutUser = await this.usersRepository.findOne(userId);
+        if (loggedInUser.nickname !== wantPutUser.nickname)
+            throw common_1.BadRequestException;
+        return await this.usersRepository.putMyInfo(putMyInfoArg);
+    }
+    async getMyReport({ page, pageSize, userId }) {
+        return await this.reportRepository.find({
+            where: userId,
+            skip: (page - 1) * pageSize,
+            take: page * pageSize,
+        });
+    }
     async kakaoLogin(url, headers) {
         try {
             const data = await this.http.post(url, '', { headers }).toPromise();
@@ -89,7 +114,9 @@ let UsersService = exports.UsersService = class UsersService {
 };
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),
+    __param(2, (0, typeorm_1.InjectRepository)(report_entity_1.Reports)),
     __metadata("design:paramtypes", [users_repository_1.UsersRepository,
-        auth_service_1.AuthService])
+        auth_service_1.AuthService,
+        typeorm_2.Repository])
 ], UsersService);
 //# sourceMappingURL=users.service.js.map

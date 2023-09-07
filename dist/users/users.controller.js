@@ -14,14 +14,16 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
+const swagger_1 = require("@nestjs/swagger");
+const email_service_1 = require("../email/email.service");
+const auth_guard_1 = require("./auth.guard");
 const create_user_dto_1 = require("./dto/create-user.dto");
+const put_myInfo_dto_1 = require("./dto/put-myInfo.dto");
 const user_login_dto_1 = require("./dto/user-login.dto");
+const verify_email_code_dto_1 = require("./dto/verify-email-code.dto");
 const verify_email_dto_1 = require("./dto/verify-email.dto");
 const users_service_1 = require("./users.service");
-const config_1 = require("@nestjs/config");
-const email_service_1 = require("../email/email.service");
-const verify_email_code_dto_1 = require("./dto/verify-email-code.dto");
-const swagger_1 = require("@nestjs/swagger");
 const check_nick_dto_1 = require("./dto/check-nick.dto");
 let UsersController = exports.UsersController = class UsersController {
     constructor(configService, emailSerivce, usersService) {
@@ -77,11 +79,31 @@ let UsersController = exports.UsersController = class UsersController {
         response.header('authorization', `Bearer ${accessToken}`);
         return { msg: '로그인 성공' };
     }
+<<<<<<< HEAD
     async logOut(Request) {
         if (Request.headers && Request.headers['authorization']) {
             delete Request.headers['authorization'];
         }
+=======
+    async logOut(req) {
+        delete req.header['authorization'];
+>>>>>>> 0d1029572f7cebf21cdf92219ad042ba7bcef9c4
         return { msg: '로그아웃 완료' };
+    }
+    async deleteUser(request) {
+        const userId = request['user'].userId;
+        return await this.usersService.deleteUser(userId);
+    }
+    async putMyInfo(putMyInfoDto, request, userId) {
+        const reqUserId = request['user'].userId;
+        const { nickname, password } = putMyInfoDto;
+        const putMyInfoArg = { userId, reqUserId, nickname, password };
+        return this.usersService.putMyInfo(putMyInfoArg);
+    }
+    async getMyReport(request, paginationQuery) {
+        const { page, pageSize } = paginationQuery;
+        const userId = request['user'].userId;
+        return await this.usersService.getMyReport({ page, pageSize, userId });
     }
 };
 __decorate([
@@ -169,11 +191,54 @@ __decorate([
 ], UsersController.prototype, "login", null);
 __decorate([
     (0, common_1.Delete)('/logout'),
+    (0, swagger_1.ApiOperation)({
+        summary: '로그아웃',
+    }),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "logOut", null);
+__decorate([
+    (0, common_1.Delete)('/'),
+    (0, swagger_1.ApiOperation)({
+        summary: '회원 탈퇴',
+    }),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "deleteUser", null);
+__decorate([
+    (0, common_1.Put)('/mypage/myinfo'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, swagger_1.ApiOperation)({
+        summary: '마이페이지 내 정보 수정',
+        description: '마이페이지에서 내 정보를 수정하는 API',
+    }),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __param(2, (0, common_1.Param)('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [put_myInfo_dto_1.PutMyInfoDto,
+        Request, String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "putMyInfo", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.Get)('/mypage/myreport'),
+    (0, swagger_1.ApiOperation)({
+        summary: '마이페이지 내가 등록한 신고 조회',
+        description: '내가 등록한 신고 조회하는 API',
+    }),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Request, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getMyReport", null);
 exports.UsersController = UsersController = __decorate([
     (0, swagger_1.ApiTags)('USERS'),
     (0, common_1.Controller)('/api/users'),

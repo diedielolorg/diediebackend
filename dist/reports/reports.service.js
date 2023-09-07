@@ -70,32 +70,36 @@ let ReportsService = exports.ReportsService = class ReportsService {
                     if (totalGames > maxGameCount) {
                         maxGameCount = totalGames;
                         mostPlayedGame = queueType;
-                        if (mostPlayedGame == "RANKED_SOLO_5x5") {
-                            mostPlayedGame = "솔로 랭크";
+                        if (mostPlayedGame == 'RANKED_SOLO_5x5') {
+                            mostPlayedGame = '솔로 랭크';
                         }
-                        else if (mostPlayedGame == "CHERRY") {
-                            mostPlayedGame = "이벤트 게임";
+                        else if (mostPlayedGame == 'CHERRY') {
+                            mostPlayedGame = '이벤트 게임';
                         }
-                        else if (mostPlayedGame == "RANKED_FLEX_SR") {
-                            mostPlayedGame = "자유 랭크";
+                        else if (mostPlayedGame == 'RANKED_FLEX_SR') {
+                            mostPlayedGame = '자유 랭크';
                         }
-                        else if (mostPlayedGame == "RANKED_TFT") {
-                            mostPlayedGame = "TFT";
+                        else if (mostPlayedGame == 'RANKED_TFT') {
+                            mostPlayedGame = 'TFT';
                         }
                     }
                 }
             }
             leagueInfo['summonerName'] = getSummonerName;
             leagueInfo['mostPlayedGame'] = mostPlayedGame;
-            leagueInfo['RANKED_SOLO_5x5'] = queueInfo['RANKED_SOLO_5x5'] || { gameCount: 0 };
+            leagueInfo['RANKED_SOLO_5x5'] = queueInfo['RANKED_SOLO_5x5'] || {
+                gameCount: 0,
+            };
             leagueInfo['Event_Game'] = queueInfo['CHERRY'] || { gameCount: 0 };
-            leagueInfo['RANKED_FLEX_SR'] = queueInfo['RANKED_FLEX_SR'] || { gameCount: 0 };
+            leagueInfo['RANKED_FLEX_SR'] = queueInfo['RANKED_FLEX_SR'] || {
+                gameCount: 0,
+            };
             leagueInfo['RANKED_TFT'] = queueInfo['RANKED_TFT'] || { gameCount: 0 };
             if (leagueInfo['RANKED_SOLO_5x5'].gameCount == 0) {
-                leagueInfo.winRate = "언랭";
+                leagueInfo.winRate = '언랭';
             }
             if (mostPlayedGame.length == 0) {
-                leagueInfo['mostPlayedGame'] = "이사람 겨울잠 자러감";
+                leagueInfo['mostPlayedGame'] = '이사람 겨울잠 자러감';
             }
             return leagueInfo;
         }
@@ -127,12 +131,12 @@ let ReportsService = exports.ReportsService = class ReportsService {
                 select: ['category'],
             });
             const categoryCounts = {
-                "쌍욕": 0,
-                "패드립": 0,
-                "기타": 0,
-                "인신공격": 0,
-                "성희롱": 0,
-                "혐오성 발언": 0,
+                '쌍욕': 0,
+                '패드립': 0,
+                '기타': 0,
+                '인신공격': 0,
+                '성희롱': 0,
+                '혐오성 발언': 0,
             };
             for (const report of reports) {
                 const categories = report.category.split(',');
@@ -143,12 +147,49 @@ let ReportsService = exports.ReportsService = class ReportsService {
                 }
             }
             const reportCount = reports.length;
-            const rank = 0;
             return {
                 categoryCounts,
                 reportCount,
-                rank
             };
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+    async getUserInfoRank(getSummonerName) {
+        try {
+            const reports = await this.reportRepository.find({
+                select: ['summonerName']
+            });
+            const summonerNames = reports.map(report => report.summonerName);
+            const stringCounts = {};
+            summonerNames.forEach((summonerName) => {
+                if (!stringCounts[summonerName]) {
+                    stringCounts[summonerName] = 1;
+                }
+                else {
+                    stringCounts[summonerName]++;
+                }
+            });
+            const countArray = Object.keys(stringCounts).map((summonerName) => ({
+                summonerName,
+                count: stringCounts[summonerName],
+            }));
+            countArray.sort((a, b) => b.count - a.count);
+            const top100 = countArray.slice(0, 100);
+            const rankedSummonerData = top100.map((summoner, index) => ({
+                ...summoner,
+                rank: index + 1
+            }));
+            console.log(rankedSummonerData);
+            const findEqualName = rankedSummonerData.map((name) => {
+                if (name.summonerName === getSummonerName) {
+                    return name.rank;
+                }
+            });
+            const getArrayNumber = findEqualName.filter((value) => typeof value === 'number');
+            const getOnlyNumber = getArrayNumber.pop();
+            return getOnlyNumber;
         }
         catch (error) {
             console.error(error);
@@ -161,9 +202,16 @@ let ReportsService = exports.ReportsService = class ReportsService {
             const take = limit;
             const reports = await this.reportRepository.find({
                 where: { summonerName: getSummonerName },
-                select: ['summonerName', 'reportId', 'category', 'reportDate', 'reportPayload', 'reportCapture'],
+                select: [
+                    'summonerName',
+                    'reportId',
+                    'category',
+                    'reportDate',
+                    'reportPayload',
+                    'reportCapture',
+                ],
                 skip,
-                take
+                take,
             });
             return reports;
         }
@@ -253,19 +301,19 @@ let ReportsService = exports.ReportsService = class ReportsService {
                 let gameMode = '';
                 switch (gameQueueConfigId) {
                     case 420:
-                        gameMode = "솔랭";
+                        gameMode = '솔랭';
                         break;
                     case 430:
-                        gameMode = "일반게임";
+                        gameMode = '일반게임';
                         break;
                     case 440:
-                        gameMode = "자유랭크";
+                        gameMode = '자유랭크';
                         break;
                     case 450:
-                        gameMode = "칼바람";
+                        gameMode = '칼바람';
                         break;
                     default:
-                        gameMode = "이벤트 게임";
+                        gameMode = '이벤트 게임';
                 }
                 const simplifiedParticipants = participants.map((participant) => {
                     const { teamId, summonerName, championId, summonerId } = participant;
@@ -273,14 +321,14 @@ let ReportsService = exports.ReportsService = class ReportsService {
                 });
                 let gameName = '';
                 switch (gameMode) {
-                    case "솔랭" || "일반게임" || "자유랭크":
-                        gameName = "소환사 협곡";
+                    case '솔랭' || '일반게임' || '자유랭크':
+                        gameName = '소환사 협곡';
                         break;
-                    case "칼바람":
-                        gameName = "칼바람 나락";
+                    case '칼바람':
+                        gameName = '칼바람 나락';
                         break;
                     default:
-                        gameName = "이벤트 협곡";
+                        gameName = '이벤트 협곡';
                 }
                 return {
                     gameId,
@@ -290,30 +338,30 @@ let ReportsService = exports.ReportsService = class ReportsService {
                     gameType,
                     gameQueueConfigId,
                     platformId,
-                    gameLength: minutes + "분" + seconds + "초",
+                    gameLength: minutes + '분' + seconds + '초',
                     participants: simplifiedParticipants,
                 };
             }))
                 .toPromise();
             const champId = result.participants;
-            const champIds = champId.map(data => data.championId);
+            const champIds = champId.map((data) => data.championId);
             const fetchResponse = await fetch(`http://ddragon.leagueoflegends.com/cdn/13.16.1/data/en_US/champion.json`);
             const data = await fetchResponse.json();
             const champions = data.data;
-            const championImageUrls = champIds.map(championId => {
-                const champion = champions[Object.keys(champions).find(key => champions[key].key === championId.toString())];
+            const championImageUrls = champIds.map((championId) => {
+                const champion = champions[Object.keys(champions).find((key) => champions[key].key === championId.toString())];
                 const championImageUrl = `http://ddragon.leagueoflegends.com/cdn/13.16.1/img/champion/${champion.image.full}`;
                 return championImageUrl;
             });
             const participantsImageUrls = result.participants.map((participant, index) => {
                 return {
                     ...participant,
-                    championImageUrl: championImageUrls[index]
+                    championImageUrl: championImageUrls[index],
                 };
             });
             const finalResult = {
                 ...result,
-                participants: participantsImageUrls
+                participants: participantsImageUrls,
             };
             return finalResult;
         }

@@ -1,8 +1,8 @@
 /// <reference types="multer" />
-import { ReportsService } from './reports.service';
-import { CreateReportDto } from './dto/create-report.dto';
-import { SearchService } from 'src/search/search.service';
 import { Request } from 'express';
+import { SearchService } from 'src/search/search.service';
+import { CreateReportDto } from './dto/create-report.dto';
+import { ReportsService } from './reports.service';
 export declare class ReportsController {
     private readonly reportsService;
     private readonly searchService;
