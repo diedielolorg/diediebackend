@@ -125,7 +125,6 @@ __decorate([
 ], UsersController.prototype, "checknickname", null);
 __decorate([
     (0, common_1.Get)('kakaoLoginLogic'),
-    (0, common_1.Header)('Content-Type', 'text/html'),
     __param(0, (0, common_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
