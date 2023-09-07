@@ -41,14 +41,14 @@ let UsersController = exports.UsersController = class UsersController {
     async kakaoLoginLogic(res) {
         const _hostName = 'https://kauth.kakao.com';
         const _restApiKey = process.env.KAKAO_SECRET;
-        const _redirectUrl = 'http://localhost:3000/api/users/kakaoLoginLogicRedirect';
+        const _redirectUrl = 'https://diedie.shop/api/users/kakaoLoginLogicRedirect';
         const url = `${_hostName}/oauth/authorize?client_id=${_restApiKey}&redirect_uri=${_redirectUrl}&response_type=code`;
         return res.redirect(url);
     }
     async kakaoLoginLogicRedirect(qs, res) {
         console.log(qs.code);
         const _restApiKey = process.env.KAKAO_SECRET;
-        const _redirect_uri = 'http://localhost:3000/api/users/kakaoLoginLogicRedirect';
+        const _redirect_uri = 'https://diedie.shop/api/users/kakaoLoginLogicRedirect';
         console.log(_restApiKey);
         const _hostName = `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${_restApiKey}&redirect_uri=${_redirect_uri}&code=${qs.code}`;
         const _headers = {
@@ -125,6 +125,7 @@ __decorate([
 ], UsersController.prototype, "checknickname", null);
 __decorate([
     (0, common_1.Get)('kakaoLoginLogic'),
+    (0, common_1.Header)('Content-Type', 'text/html'),
     __param(0, (0, common_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

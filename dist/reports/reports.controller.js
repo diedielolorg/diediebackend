@@ -50,7 +50,7 @@ let ReportsController = exports.ReportsController = class ReportsController {
     }
     async findAll(month) {
         const data = await this.reportsService.getRankUser(month);
-        return { data: data };
+        return { data };
     }
     async getUserInfoIngame(summonerName) {
         const getSummonerId = await this.searchService.searchSummonerName(summonerName);
