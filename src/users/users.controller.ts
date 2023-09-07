@@ -63,7 +63,7 @@ export class UsersController {
     const _hostName = 'https://kauth.kakao.com';
     const _restApiKey = process.env.KAKAO_SECRET; // * 입력필요
     const _redirectUrl =
-      'http://localhost:3000/api/users/kakaoLoginLogicRedirect';
+      'https://diedie.shop/api/users/kakaoLoginLogicRedirect';
     const url = `${_hostName}/oauth/authorize?client_id=${_restApiKey}&redirect_uri=${_redirectUrl}&response_type=code`;
     return res.redirect(url);
   }
@@ -74,7 +74,7 @@ export class UsersController {
     console.log(qs.code);
     const _restApiKey = process.env.KAKAO_SECRET; // * 입력필요
     const _redirect_uri =
-      'http://localhost:3000/api/users/kakaoLoginLogicRedirect';
+      'https://diedie.shop/api/users/kakaoLoginLogicRedirect';
     console.log(_restApiKey);
     const _hostName = `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${_restApiKey}&redirect_uri=${_redirect_uri}&code=${qs.code}`;
     const _headers = {
