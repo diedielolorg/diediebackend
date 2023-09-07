@@ -79,8 +79,15 @@ let UsersController = exports.UsersController = class UsersController {
         response.header('authorization', `Bearer ${accessToken}`);
         return { msg: '로그인 성공' };
     }
+<<<<<<< HEAD
+    async logOut(Request) {
+        if (Request.headers && Request.headers['authorization']) {
+            delete Request.headers['authorization'];
+        }
+=======
     async logOut(req) {
         delete req.header['authorization'];
+>>>>>>> 0d1029572f7cebf21cdf92219ad042ba7bcef9c4
         return { msg: '로그아웃 완료' };
     }
     async deleteUser(request) {
@@ -111,7 +118,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "createUser", null);
 __decorate([
-    (0, common_1.Get)('/duplicationcheck'),
+    (0, common_1.Post)('/duplicationcheck'),
     (0, swagger_1.ApiOperation)({
         summary: '닉네임 중복확인',
         description: '중복확인',
@@ -201,7 +208,7 @@ __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Request]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "deleteUser", null);
 __decorate([
