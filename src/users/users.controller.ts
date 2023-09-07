@@ -58,7 +58,7 @@ export class UsersController {
   }
 
   @Get('kakaoLoginLogic')
-  @Header('Content-Type', 'text/html')
+  //@Header('Content-Type', 'text/html')
   async kakaoLoginLogic(@Res() res) {
     const _hostName = 'https://kauth.kakao.com';
     const _restApiKey = process.env.KAKAO_SECRET; // * 입력필요
