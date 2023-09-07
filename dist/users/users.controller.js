@@ -79,15 +79,10 @@ let UsersController = exports.UsersController = class UsersController {
         response.header('authorization', `Bearer ${accessToken}`);
         return { msg: '로그인 성공' };
     }
-<<<<<<< HEAD
-    async logOut(Request) {
-        if (Request.headers && Request.headers['authorization']) {
-            delete Request.headers['authorization'];
+    async logOut(request) {
+        if (request.headers && request.headers['authorization']) {
+            delete request.headers['authorization'];
         }
-=======
-    async logOut(req) {
-        delete req.header['authorization'];
->>>>>>> 0d1029572f7cebf21cdf92219ad042ba7bcef9c4
         return { msg: '로그아웃 완료' };
     }
     async deleteUser(request) {
@@ -191,10 +186,6 @@ __decorate([
 ], UsersController.prototype, "login", null);
 __decorate([
     (0, common_1.Delete)('/logout'),
-    (0, swagger_1.ApiOperation)({
-        summary: '로그아웃',
-    }),
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -222,8 +213,7 @@ __decorate([
     __param(1, (0, common_1.Req)()),
     __param(2, (0, common_1.Param)('userId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [put_myInfo_dto_1.PutMyInfoDto,
-        Request, String]),
+    __metadata("design:paramtypes", [put_myInfo_dto_1.PutMyInfoDto, Object, String]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "putMyInfo", null);
 __decorate([
@@ -236,7 +226,7 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Request, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getMyReport", null);
 exports.UsersController = UsersController = __decorate([

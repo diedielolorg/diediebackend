@@ -1,10 +1,6 @@
-<<<<<<< HEAD
-import { Response, Request } from 'express';
-=======
 import { ConfigService } from '@nestjs/config';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { EmailService } from 'src/email/email.service';
->>>>>>> 0d1029572f7cebf21cdf92219ad042ba7bcef9c4
 import { CreateUsersDto } from './dto/create-user.dto';
 import { PutMyInfoDto } from './dto/put-myInfo.dto';
 import { UserLoginDto } from './dto/user-login.dto';
@@ -29,11 +25,7 @@ export declare class UsersController {
     login(userLoginDtodto: UserLoginDto, response: Response): Promise<{
         msg: string;
     }>;
-<<<<<<< HEAD
-    logOut(Request: Request): Promise<{
-=======
-    logOut(req: any): Promise<{
->>>>>>> 0d1029572f7cebf21cdf92219ad042ba7bcef9c4
+    logOut(request: Request): Promise<{
         msg: string;
     }>;
     deleteUser(request: Request): Promise<void>;
