@@ -16,7 +16,7 @@ import {
 //import { AuthService } from 'src/auth/auth.service';
 import { ConfigService } from '@nestjs/config';
 import { ApiOperation, ApiCookieAuth, ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { EmailService } from 'src/email/email.service';
 import { AuthGuard } from './auth.guard';
 import { CreateUsersDto } from './dto/create-user.dto';
@@ -167,10 +167,10 @@ export class UsersController {
   // }
 
   @Delete('/logout')
-  async logOut(@Req() req: Request) {
+  async logOut(@Req() request: Request) {
     // Remove the 'Authorization' header from the response
-    if (req.headers && req.headers['authorization']) {
-      delete req.headers['authorization'];
+    if (request.headers && request.headers['authorization']) {
+      delete request.headers['authorization'];
     }
 
     return { msg: '로그아웃 완료' };
