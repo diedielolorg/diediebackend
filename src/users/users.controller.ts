@@ -57,28 +57,19 @@ export class UsersController {
     return await this.usersService.checknickname(nickname);
   }
 
-  //카카오 로그인
-  //카카오 로그인을 수행하는 핸들러 /kakaoLoginLogic
   @Get('kakaoLoginLogic')
-  //응답헤더를 설정하기 위해 사용 서버가 클라이언트에게 전송하는 리소소의
-  //유형을 나타냄 html페이지를 렌더링하는 메서드에서 사용
-  //@Header('Content-Type', 'text/html')
-  //카오 로그인 페이지로 리디렉션 수행
+  @Header('Content-Type', 'text/html')
   async kakaoLoginLogic(@Res() res) {
     const _hostName = 'https://kauth.kakao.com';
     const _restApiKey = process.env.KAKAO_SECRET; // * 입력필요
-    // 카카오 로그인 RedirectURI 등록
     const _redirectUrl =
       'http://localhost:3000/api/users/kakaoLoginLogicRedirect';
     const url = `${_hostName}/oauth/authorize?client_id=${_restApiKey}&redirect_uri=${_redirectUrl}&response_type=code`;
-    // 사용자를 카카오 로그인 페이지로 이동시키기 위해 res.redirect사용
     return res.redirect(url);
   }
 
   @Get('kakaoLoginLogicRedirect')
   @Header('Content-Type', 'text/html')
-  //카카오로부터 전달받은 qs.code를 사용하여 카카오 api를 호출하여 사용자 토큰을 얻음
-  //사용자 인증을 유지하기 위해 저장
   async kakaoLoginLogicRedirect(@Query() qs, @Res() res) {
     console.log(qs.code);
     const _restApiKey = process.env.KAKAO_SECRET; // * 입력필요
