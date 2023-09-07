@@ -30,7 +30,8 @@ export class ReportsController {
   @Get('userinfo/:summonerName')
   @ApiOperation({
     summary: '전적 상세 정보',
-    description: '소환사의 이름, 솔랭 승률, 주 출몰지역 외 통계, 마지막 플레이 타임 && DB에서 욕 통계, 신고당한 수, 신고당한 수에 비례하여 랭킹, 등록된 신고',
+    description:
+      '소환사의 이름, 솔랭 승률, 주 출몰지역 외 통계, 마지막 플레이 타임 && DB에서 욕 통계, 신고당한 수, 신고당한 수에 비례하여 랭킹, 등록된 신고',
   })
   async getMatchUserInfo(
     @Param('summonerName') summonerName: string,
@@ -66,10 +67,15 @@ export class ReportsController {
     );
 
     // db에서 rank 조회하기
-    const getUserInfoRank = await this.reportsService.getUserInfoRank(getSummonerName)
+    const getUserInfoRank = await this.reportsService.getUserInfoRank(
+      getSummonerName,
+    );
 
     // db에서 신고 당한 내역 갖고오기
-    const reportData = await this.reportsService.getReportData(getSummonerName, page);
+    const reportData = await this.reportsService.getReportData(
+      getSummonerName,
+      page,
+    );
 
     getUserLeagueInfo.profileIconIdUrl = getSummonerProfileIconUrl;
     getUserLeagueInfo.lastPlayTime = getLastPlayTime.lastPlayTime;
@@ -84,7 +90,8 @@ export class ReportsController {
   @Post('reportuser')
   @ApiOperation({
     summary: '유저 신고 등록',
-    description: '롤에서 욕한 유저 신고 기능, 소환사 이름, 욕한 날짜, 스크린샷, 욕 카테고리, 신고 내용',
+    description:
+      '롤에서 욕한 유저 신고 기능, 소환사 이름, 욕한 날짜, 스크린샷, 욕 카테고리, 신고 내용',
   })
   @UseInterceptors(S3FileInterceptor)
   async createReportUsers(
@@ -107,7 +114,7 @@ export class ReportsController {
   })
   async findAll(@Query('month', ParseIntPipe) month: number) {
     const data = await this.reportsService.getRankUser(month);
-    return { data: data };
+    return { data };
   }
 
   //인게임 정보
@@ -151,11 +158,11 @@ export class ReportsController {
     // console.log(getReportsInfoBySummonerName)
 
     const combinedParticipants = await this.reportsService.combinedParticipants(
-      getUsersTierByAPI, 
-      getUsersId, 
-      getReportsInfoBySummonerName
+      getUsersTierByAPI,
+      getUsersId,
+      getReportsInfoBySummonerName,
     );
-      
+
     const combinedResponse = {
       gameId: getMatch.gameId,
       mapId: getMatch.mapId,
