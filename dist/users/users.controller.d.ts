@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { CreateUsersDto } from './dto/create-user.dto';
 import { UserLoginDto } from './dto/user-login.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
@@ -24,7 +24,7 @@ export declare class UsersController {
     login(userLoginDtodto: UserLoginDto, response: Response): Promise<{
         msg: string;
     }>;
-    logOut(req: Request): Promise<{
+    logOut(Request: Request): Promise<{
         msg: string;
     }>;
 }

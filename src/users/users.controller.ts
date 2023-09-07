@@ -17,7 +17,7 @@ import {
   Delete,
 } from '@nestjs/common';
 //import { AuthService } from 'src/auth/auth.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { CreateUsersDto } from './dto/create-user.dto';
 import { UserLoginDto } from './dto/user-login.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
@@ -29,7 +29,6 @@ import { VerifyEmailCodeDto } from './dto/verify-email-code.dto';
 
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CheckNickDto } from './dto/check-nick.dto';
-
 
 @ApiTags('USERS')
 @Controller('/api/users')
@@ -51,7 +50,7 @@ export class UsersController {
     return await this.usersService.createUser(createUserdto);
   }
 
-  @Get('/duplicationcheck')
+  @Post('/duplicationcheck')
   @ApiOperation({
     summary: '닉네임 중복확인',
     description: '중복확인',
@@ -165,16 +164,16 @@ export class UsersController {
   //   // 헤더에 토큰 담아서 요청 보내보새요
   //   console.log(req.header)
 
-  //   delete req.header['authorization']; 
+  //   delete req.header['authorization'];
 
   //   return { msg: "로그아웃 완료"}
   // }
 
   @Delete('/logout')
-  async logOut(@Req() req: Request) {
+  async logOut(@Req() Request: Request) {
     // Remove the 'Authorization' header from the response
-    if (req.headers && req.headers['authorization']) {
-      delete req.headers['authorization'];
+    if (Request.headers && Request.headers['authorization']) {
+      delete Request.headers['authorization'];
     }
 
     return { msg: '로그아웃 완료' };
