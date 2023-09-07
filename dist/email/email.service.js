@@ -13,9 +13,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmailService = void 0;
+const cache_manager_1 = require("@nestjs/cache-manager");
 const common_1 = require("@nestjs/common");
 const nodemailer = require("nodemailer");
-const cache_manager_1 = require("@nestjs/cache-manager");
 let EmailService = exports.EmailService = class EmailService {
     constructor(cacheManager) {
         this.cacheManager = cacheManager;

@@ -1,7 +1,7 @@
+import { HttpService } from '@nestjs/axios';
 import { Repository } from 'typeorm';
 import { CreateReportDto } from './dto/create-report.dto';
 import { Reports } from './entities/report.entity';
-import { HttpService } from '@nestjs/axios';
 export declare class ReportsService {
     private httpService;
     private reportRepository;

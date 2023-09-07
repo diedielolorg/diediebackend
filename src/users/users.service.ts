@@ -1,21 +1,21 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { Response } from 'express';
 // import { UserInfo } from './UserInfo';
 // import { ConfigService } from '@nestjs/config';
 // import { UserEntity } from './entities/user.entity';
-import * as bcrypt from 'bcryptjs';
 // import { UserInfo } from './UserInfo';
 // import { ConfigService } from '@nestjs/config';
 import { AuthService } from '../auth/auth.service';
 // //import { EmailService } from 'src/email/email.service';
-import { UsersRepository } from './users.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Reports } from 'src/reports/entities/report.entity';
+import { Repository } from 'typeorm';
 import { CreateUsersDto } from './dto/create-user.dto';
+import { UsersRepository } from './users.repository';
 import { HttpService } from '@nestjs/axios';
 import { AxiosResponse } from 'axios';
 // import { UserEntity } from './entities/user.entity';
@@ -29,7 +29,10 @@ export class UsersService {
   constructor(
     private usersRepository: UsersRepository,
     private authService: AuthService,
-  ) {
+    @InjectRepository(Reports)
+    private readonly reportRepository: Repository<Reports>,
+  )
+  {
     this.check = false;
     this.http = new HttpService();
     this.accessToken = '';
@@ -82,6 +85,27 @@ export class UsersService {
     return accessToken;
   }
 
+  async deleteUser(userId: number) {
+    return await this.usersRepository.deleteUser(userId);
+  }
+
+  async putMyInfo(putMyInfoArg) {
+    const { userId, nickname, password, reqUserId } = putMyInfoArg;
+    const loggedInUser = await this.usersRepository.findOne(reqUserId);
+    const wantPutUser = await this.usersRepository.findOne(userId);
+
+    if (loggedInUser.nickname !== wantPutUser.nickname)
+      throw BadRequestException;
+    return await this.usersRepository.putMyInfo(putMyInfoArg);
+  }
+
+  async getMyReport({ page, pageSize, userId }) {
+    return await this.reportRepository.find({
+      where: userId,
+      skip: (page - 1) * pageSize,
+      take: page * pageSize,
+    });
+  }
 
   async kakaoLogin(url: string, headers: any) {
     try {
@@ -108,5 +132,4 @@ export class UsersService {
     this.accessToken = token;
     return true;
   }
-
 }

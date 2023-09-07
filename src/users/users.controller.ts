@@ -1,33 +1,30 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
+  Put,
   Query,
-  Headers,
+  Req,
+  Res,
   UseGuards,
   ValidationPipe,
-  UploadedFiles,
-  UseInterceptors,
-  UploadedFile,
-  Res,
-  Header,
-  Req,
-  Delete,
 } from '@nestjs/common';
 //import { AuthService } from 'src/auth/auth.service';
+import { ConfigService } from '@nestjs/config';
+import { ApiOperation, ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
+import { EmailService } from 'src/email/email.service';
+import { AuthGuard } from './auth.guard';
 import { CreateUsersDto } from './dto/create-user.dto';
+import { PutMyInfoDto } from './dto/put-myInfo.dto';
 import { UserLoginDto } from './dto/user-login.dto';
+import { VerifyEmailCodeDto } from './dto/verify-email-code.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { UsersService } from './users.service';
-import { AuthGuard } from './auth.guard';
 import { ConfigService } from '@nestjs/config';
-import { EmailService } from 'src/email/email.service';
-import { VerifyEmailCodeDto } from './dto/verify-email-code.dto';
-
-import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CheckNickDto } from './dto/check-nick.dto';
 
 
@@ -171,12 +168,63 @@ export class UsersController {
   // }
 
   @Delete('/logout')
-  async logOut(@Req() req: Request) {
-    // Remove the 'Authorization' header from the response
-    if (req.headers && req.headers['authorization']) {
-      delete req.headers['authorization'];
-    }
+  @ApiOperation({
+    summary: '로그아웃',
+  })
+  @UseGuards(AuthGuard)
+  async logOut(@Req() req) {
+    // const logout = await this.usersService.logOut(userId)
+    // console.log(logout)
+    //
+    // 딜리트
+    // 헤더에 토큰 담아서 요청 보내보새요
+    console.log(req.header);
+
+    delete req.header['authorization'];
 
     return { msg: '로그아웃 완료' };
+  }
+
+  @Delete('/')
+  @ApiOperation({
+    summary: '회원 탈퇴',
+  })
+  @UseGuards(AuthGuard)
+  async deleteUser(@Req() request: Request) {
+    const userId = request['user'].userId;
+    return await this.usersService.deleteUser(userId);
+  }
+
+  @Put('/mypage/myinfo')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    summary: '마이페이지 내 정보 수정',
+    description: '마이페이지에서 내 정보를 수정하는 API',
+  })
+  async putMyInfo(
+    @Body() putMyInfoDto: PutMyInfoDto,
+    @Req() request: Request,
+    @Param('userId') userId: string,
+  ) {
+    const reqUserId = request['user'].userId;
+    const { nickname, password } = putMyInfoDto;
+    const putMyInfoArg = { userId, reqUserId, nickname, password };
+
+    return this.usersService.putMyInfo(putMyInfoArg);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/mypage/myreport')
+  @ApiOperation({
+    summary: '마이페이지 내가 등록한 신고 조회',
+    description: '내가 등록한 신고 조회하는 API',
+  })
+  async getMyReport(
+    @Req() request: Request,
+    @Query() paginationQuery,
+  ): Promise<any> {
+    const { page, pageSize } = paginationQuery;
+    const userId = request['user'].userId;
+    return await this.usersService.getMyReport({ page, pageSize, userId });
   }
 }

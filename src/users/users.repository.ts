@@ -1,13 +1,7 @@
-import {
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
-import { CreateUsersDto } from './dto/create-user.dto';
+import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
+import { CreateUsersDto } from './dto/create-user.dto';
 import { Users } from './entities/user.entity';
-import { v4 as uuidv4 } from 'uuid'; // uuid 패키지에서 v4 함수를 가져옴
-import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UsersRepository extends Repository<Users> {
@@ -51,5 +45,30 @@ export class UsersRepository extends Repository<Users> {
   async loginUserExists(email: string, password: string): Promise<Users> {
     const user = await this.findOne({ where: { email, password } });
     return user;
+  }
+
+  async deleteUser(userId: number) {
+    await this.delete({
+      userId,
+    });
+  }
+
+  async isExistUser(userId: number) {
+    if (await this.findOne({ where: { userId } })) return true;
+    else return false;
+  }
+
+  async putMyInfo(putMyInfoArg: {
+    userId: number;
+    nickname: string;
+    password: string;
+  }) {
+    const { userId, nickname, password } = putMyInfoArg;
+    this.update(
+      {
+        userId,
+      },
+      { nickname, password },
+    );
   }
 }

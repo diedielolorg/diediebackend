@@ -48,6 +48,23 @@ let UsersRepository = exports.UsersRepository = class UsersRepository extends ty
         const user = await this.findOne({ where: { email, password } });
         return user;
     }
+    async deleteUser(userId) {
+        await this.delete({
+            userId,
+        });
+    }
+    async isExistUser(userId) {
+        if (await this.findOne({ where: { userId } }))
+            return true;
+        else
+            return false;
+    }
+    async putMyInfo(putMyInfoArg) {
+        const { userId, nickname, password } = putMyInfoArg;
+        this.update({
+            userId,
+        }, { nickname, password });
+    }
 };
 exports.UsersRepository = UsersRepository = __decorate([
     (0, common_1.Injectable)(),

@@ -8,9 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.S3FileInterceptor = void 0;
 const common_1 = require("@nestjs/common");
+const files_interceptor_1 = require("@nestjs/platform-express/multer/interceptors/files.interceptor");
 const AWS = require("aws-sdk");
 const multerS3 = require("multer-s3");
-const files_interceptor_1 = require("@nestjs/platform-express/multer/interceptors/files.interceptor");
 const path_1 = require("path");
 const sharp_1 = require("sharp");
 let S3FileInterceptor = exports.S3FileInterceptor = class S3FileInterceptor extends (0, files_interceptor_1.FilesInterceptor)('file', 3, {
@@ -30,7 +30,7 @@ let S3FileInterceptor = exports.S3FileInterceptor = class S3FileInterceptor exte
             {
                 id: 'resized',
                 key: function (req, file, cb) {
-                    let extension = path_1.default.extname(file.originalname);
+                    const extension = path_1.default.extname(file.originalname);
                     cb(null, Date.now().toString() + extension);
                 },
                 transform: function (req, file, cb) {
