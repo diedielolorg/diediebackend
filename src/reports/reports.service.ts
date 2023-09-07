@@ -159,11 +159,11 @@ export class ReportsService {
       });
 
       const categoryCounts = {
-        쌍욕: 0,
-        패드립: 0,
-        기타: 0,
-        인신공격: 0,
-        성희롱: 0,
+        '쌍욕': 0,
+        '패드립': 0,
+        '기타': 0,
+        '인신공격': 0,
+        '성희롱': 0,
         '혐오성 발언': 0,
       };
 
@@ -176,40 +176,74 @@ export class ReportsService {
         }
       }
 
-      const reportCount = reports.length;
-      const rank = 0;
-
-      return {
-        categoryCounts,
-        reportCount,
-        rank,
-      };
+    const reportCount = reports.length;
+    
+    return {
+      categoryCounts,
+      reportCount,
+    }
     } catch (error) {
       console.error(error);
     }
   }
 
-  // async getRank(getSummonerName: string): Promise<any>{
-  //   try{
-  //     const reports = await this.reportRepository.find({
-  //       // where: { summonerName: getSummonerName },
-  //       select: ['summonerName']
-  //     });
+  async getUserInfoRank(getSummonerName: string): Promise<any>{
+    try{
+      // db에서 summonerName들을 전부 검색
+      // 검색된 summonerName들이 각 얼마나 있는지 숫자로 나타냄
+      // 많은 순부터 작은 순으로 1위부터 100위까지 출력
+      // summonerName과 getSummonerName을 비교하여 같으면 순위 출력
 
-  //     const summonerNames = reports.map(report => report.summonerName);
+      // db에서 summonerName들을 전부 검색
+      const reports = await this.reportRepository.find({
+        select: ['summonerName']
+      });
 
-  //     summonerNames.sort();
+      const summonerNames = reports.map(report => report.summonerName);
 
-  //     const top100 = summonerNames.slice(0, 100);
-  //     console.log(top100)
+      // 검색된 summonerName들이 각 얼마나 있는지 숫자로 나타냄
+      const stringCounts = {};
+      summonerNames.forEach((summonerName) => {
+        if (!stringCounts[summonerName]) {
+          stringCounts[summonerName] = 1;
+        } else {
+          stringCounts[summonerName]++;
+        }
+      });
 
-  //     return top100;
-  //   } catch(error) {
-  //     console.error(error);
-  //   }
-  // }
+      const countArray = Object.keys(stringCounts).map((summonerName) => ({
+        summonerName,
+        count: stringCounts[summonerName],
+      }));
 
-  async getReportData(getSummonerName: any, page = 1): Promise<any> {
+      // 많은 순부터 작은 순으로 1위부터 100위까지 출력      
+      countArray.sort((a, b) => b.count - a.count);
+      const top100 = countArray.slice(0, 100);
+      const rankedSummonerData = top100.map((summoner, index) => ({
+        ...summoner,
+        rank: index + 1
+      }));
+      console.log(rankedSummonerData)
+
+      // summonerName과 getSummonerName을 비교하여 같으면 순위 출력
+      const findEqualName = rankedSummonerData.map((name) => {
+        if(name.summonerName === getSummonerName) {
+          return name.rank
+        }
+      })
+      // console.log(findEqualName)
+
+      const getArrayNumber = findEqualName.filter((value) => typeof value === 'number');
+      const getOnlyNumber = getArrayNumber.pop()
+
+      return getOnlyNumber
+    } catch(error) {
+      console.error(error);
+    }
+  }
+  
+
+  async getReportData(getSummonerName: any, page: number = 1): Promise<any> {
     try {
       const limit = 5;
       const skip = (page - 1) * limit;

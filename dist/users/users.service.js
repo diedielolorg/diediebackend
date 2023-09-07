@@ -87,6 +87,7 @@ let UsersService = exports.UsersService = class UsersService {
             skip: (page - 1) * pageSize,
             take: page * pageSize,
         });
+    }
     async kakaoLogin(url, headers) {
         try {
             const data = await this.http.post(url, '', { headers }).toPromise();

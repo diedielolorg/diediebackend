@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Param,
   Post,
   Put,
@@ -24,7 +25,6 @@ import { UserLoginDto } from './dto/user-login.dto';
 import { VerifyEmailCodeDto } from './dto/verify-email-code.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { UsersService } from './users.service';
-import { ConfigService } from '@nestjs/config';
 import { CheckNickDto } from './dto/check-nick.dto';
 
 
@@ -149,39 +149,13 @@ export class UsersController {
     return { msg: '로그인 성공' };
   }
 
-  // @Delete('/logout')
-  // @ApiOperation({
-  //   summary: '로그아웃',
-  // })
-  // @UseGuards(AuthGuard)
-  // async logOut(@Req() req) {
-  //   // const logout = await this.usersService.logOut(userId)
-  //   // console.log(logout)
-  //   //
-  //   // 딜리트
-  //   // 헤더에 토큰 담아서 요청 보내보새요
-  //   console.log(req.header)
-
-  //   delete req.header['authorization']; 
-
-  //   return { msg: "로그아웃 완료"}
-  // }
-
   @Delete('/logout')
   @ApiOperation({
     summary: '로그아웃',
   })
   @UseGuards(AuthGuard)
   async logOut(@Req() req) {
-    // const logout = await this.usersService.logOut(userId)
-    // console.log(logout)
-    //
-    // 딜리트
-    // 헤더에 토큰 담아서 요청 보내보새요
-    console.log(req.header);
-
     delete req.header['authorization'];
-
     return { msg: '로그아웃 완료' };
   }
 

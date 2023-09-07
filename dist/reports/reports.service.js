@@ -13,12 +13,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReportsService = void 0;
-const axios_1 = require("@nestjs/axios");
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const operators_1 = require("rxjs/operators");
 const typeorm_2 = require("typeorm");
 const report_entity_1 = require("./entities/report.entity");
+const axios_1 = require("@nestjs/axios");
+const operators_1 = require("rxjs/operators");
 let ReportsService = exports.ReportsService = class ReportsService {
     constructor(httpService, reportRepository) {
         this.httpService = httpService;
@@ -131,11 +131,11 @@ let ReportsService = exports.ReportsService = class ReportsService {
                 select: ['category'],
             });
             const categoryCounts = {
-                쌍욕: 0,
-                패드립: 0,
-                기타: 0,
-                인신공격: 0,
-                성희롱: 0,
+                '쌍욕': 0,
+                '패드립': 0,
+                '기타': 0,
+                '인신공격': 0,
+                '성희롱': 0,
                 '혐오성 발언': 0,
             };
             for (const report of reports) {
@@ -147,12 +147,49 @@ let ReportsService = exports.ReportsService = class ReportsService {
                 }
             }
             const reportCount = reports.length;
-            const rank = 0;
             return {
                 categoryCounts,
                 reportCount,
-                rank,
             };
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+    async getUserInfoRank(getSummonerName) {
+        try {
+            const reports = await this.reportRepository.find({
+                select: ['summonerName']
+            });
+            const summonerNames = reports.map(report => report.summonerName);
+            const stringCounts = {};
+            summonerNames.forEach((summonerName) => {
+                if (!stringCounts[summonerName]) {
+                    stringCounts[summonerName] = 1;
+                }
+                else {
+                    stringCounts[summonerName]++;
+                }
+            });
+            const countArray = Object.keys(stringCounts).map((summonerName) => ({
+                summonerName,
+                count: stringCounts[summonerName],
+            }));
+            countArray.sort((a, b) => b.count - a.count);
+            const top100 = countArray.slice(0, 100);
+            const rankedSummonerData = top100.map((summoner, index) => ({
+                ...summoner,
+                rank: index + 1
+            }));
+            console.log(rankedSummonerData);
+            const findEqualName = rankedSummonerData.map((name) => {
+                if (name.summonerName === getSummonerName) {
+                    return name.rank;
+                }
+            });
+            const getArrayNumber = findEqualName.filter((value) => typeof value === 'number');
+            const getOnlyNumber = getArrayNumber.pop();
+            return getOnlyNumber;
         }
         catch (error) {
             console.error(error);
