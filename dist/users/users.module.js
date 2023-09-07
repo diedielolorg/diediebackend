@@ -15,6 +15,7 @@ const email_module_1 = require("../email/email.module");
 const report_entity_1 = require("../reports/entities/report.entity");
 const auth_module_1 = require("../auth/auth.module");
 const users_repository_1 = require("./users.repository");
+const axios_1 = require("@nestjs/axios");
 let UsersModule = exports.UsersModule = class UsersModule {
 };
 exports.UsersModule = UsersModule = __decorate([

@@ -19,18 +19,29 @@ const typeorm_1 = require("@nestjs/typeorm");
 const report_entity_1 = require("../reports/entities/report.entity");
 const typeorm_2 = require("typeorm");
 const users_repository_1 = require("./users.repository");
+const axios_1 = require("@nestjs/axios");
 let UsersService = exports.UsersService = class UsersService {
     constructor(usersRepository, authService, reportRepository) {
         this.usersRepository = usersRepository;
         this.authService = authService;
         this.reportRepository = reportRepository;
+        this.check = false;
+        this.http = new axios_1.HttpService();
+        this.accessToken = '';
     }
     async createUser(createUserdto) {
         try {
-            const { email } = createUserdto;
+            const { email, emailVerified, nicknameVerified } = createUserdto;
+            console.log(emailVerified, nicknameVerified);
             const userExist = await this.usersRepository.checkUserExists(email);
             if (userExist) {
-                throw new common_1.UnprocessableEntityException('해당 이메일로는 가입할 수 없습니다.');
+                throw new common_1.BadRequestException('해당 이메일로는 가입할 수 없습니다.');
+            }
+            if (!emailVerified) {
+                throw new common_1.BadRequestException('이메일 인증을 완료해주세요');
+            }
+            if (!nicknameVerified) {
+                throw new common_1.BadRequestException('닉네임 중복 확을 완료해주세요');
             }
             await this.usersRepository.createUser(createUserdto);
             return { msg: '회원가입 성공' };
@@ -76,6 +87,28 @@ let UsersService = exports.UsersService = class UsersService {
             skip: (page - 1) * pageSize,
             take: page * pageSize,
         });
+    async kakaoLogin(url, headers) {
+        try {
+            const data = await this.http.post(url, '', { headers }).toPromise();
+            this.setToken(data.data.access_token);
+            console.log(data.data);
+            const response = await this.http
+                .get('https://kapi.kakao.com/v2/user/me', {
+                headers: {
+                    Authorization: `Bearer ${this.accessToken}`,
+                },
+            })
+                .toPromise();
+            console.log(response.data.kakao_account);
+            return response;
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+    setToken(token) {
+        this.accessToken = token;
+        return true;
     }
 };
 exports.UsersService = UsersService = __decorate([

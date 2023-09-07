@@ -29,6 +29,9 @@ export class EmailService {
   async sendConfirmationEmail(email: string): Promise<any> {
     try {
       const authcode = await this.generateRandomCode();
+      if (!email) {
+        throw new BadRequestException('이메일을 입력 해주세요');
+      }
       const mailOptions: nodemailer.SendMailOptions = {
         from: process.env.EMAIL_ADDRESS, // 보내는 이메일 주소
         to: email, // 받는 이메일 주소
@@ -37,18 +40,46 @@ export class EmailService {
       };
       await this.transporter.sendMail(mailOptions);
       //입력받은 코드 redis에 폰번이랑 code 저장 ttl설정
-      await this.cacheManager.set(authcode, email, 0.5);
+      await this.cacheManager.set(email, authcode, 180);
       return { msg: '인증번호 발송 완료' };
     } catch (error) {
       console.error(error);
     }
   }
 
-  async verifyEmail(code: number): Promise<any> {
+  async reSendConfirmationEmail(email: string): Promise<any> {
+    try {
+      const authcode = await this.generateRandomCode();
+      if (!email) {
+        throw new BadRequestException('이메일을 입력 해주세요');
+      }
+      const mailOptions: nodemailer.SendMailOptions = {
+        from: process.env.EMAIL_ADDRESS, // 보내는 이메일 주소
+        to: email, // 받는 이메일 주소
+        subject: 'DIEDIE 인증 메일', // 이메일 제목
+        html: `인증번호 4자리입니다 ${authcode}`, // 인증 링크 포함한 HTML 내용
+      };
+      await this.transporter.sendMail(mailOptions);
+
+      const value = await this.cacheManager.get(email);
+      console.log(value);
+      if (value) {
+        console.log('기존인증번호를 삭제합니다');
+        await this.cacheManager.del(email);
+      }
+      await this.cacheManager.set(email, authcode, 300);
+      return { msg: '인증번호 재발송 완료' };
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async verifyEmail(email: string, code: number): Promise<any> {
     //받은 코드 Redis에서 조회
-    const value = await this.cacheManager.get(String(code));
-    if (value === null) {
-      throw new BadRequestException(`인증번호가 일치하지 않습니다.`);
+    const value = await this.cacheManager.get(email);
+    console.log(value);
+    if (value !== String(code)) {
+      throw new BadRequestException('인증번호가 일치하지 않습니다.');
     }
     return { msg: '인증번호 확인 완료' };
   }

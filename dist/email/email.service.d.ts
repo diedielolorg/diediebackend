@@ -5,5 +5,6 @@ export declare class EmailService {
     constructor(cacheManager: Cache);
     generateRandomCode(): Promise<string>;
     sendConfirmationEmail(email: string): Promise<any>;
-    verifyEmail(code: number): Promise<any>;
+    reSendConfirmationEmail(email: string): Promise<any>;
+    verifyEmail(email: string, code: number): Promise<any>;
 }

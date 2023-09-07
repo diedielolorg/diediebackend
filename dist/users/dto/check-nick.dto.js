@@ -9,34 +9,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateUsersDto = void 0;
+exports.CheckNickDto = void 0;
 const class_validator_1 = require("class-validator");
-class CreateUsersDto {
+class CheckNickDto {
 }
-exports.CreateUsersDto = CreateUsersDto;
+exports.CheckNickDto = CheckNickDto;
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateUsersDto.prototype, "email", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateUsersDto.prototype, "nickname", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateUsersDto.prototype, "password", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsBoolean)(),
-    __metadata("design:type", Boolean)
-], CreateUsersDto.prototype, "emailVerified", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsBoolean)(),
-    __metadata("design:type", Boolean)
-], CreateUsersDto.prototype, "nicknameVerified", void 0);
-//# sourceMappingURL=create-user.dto.js.map
+], CheckNickDto.prototype, "nickname", void 0);
+//# sourceMappingURL=check-nick.dto.js.map

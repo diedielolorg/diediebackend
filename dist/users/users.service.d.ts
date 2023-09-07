@@ -8,6 +8,14 @@ export declare class UsersService {
     private authService;
     private readonly reportRepository;
     constructor(usersRepository: UsersRepository, authService: AuthService, reportRepository: Repository<Reports>);
+import { AxiosResponse } from 'axios';
+export declare class UsersService {
+    private usersRepository;
+    private authService;
+    check: boolean;
+    accessToken: string;
+    private http;
+    constructor(usersRepository: UsersRepository, authService: AuthService);
     createUser(createUserdto: CreateUsersDto): Promise<any>;
     checknickname(nickname: string): Promise<{
         msg: string;
@@ -20,4 +28,6 @@ export declare class UsersService {
         pageSize: any;
         userId: any;
     }): Promise<Reports[]>;
+    kakaoLogin(url: string, headers: any): Promise<AxiosResponse<any, any>>;
+    setToken(token: string): boolean;
 }

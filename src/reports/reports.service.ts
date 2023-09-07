@@ -1,11 +1,13 @@
-import { HttpService } from '@nestjs/axios';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { In, Repository } from 'typeorm';
+import { DataSource, Repository, createQueryBuilder, ILike, In } from 'typeorm';
 import { CreateReportDto } from './dto/create-report.dto';
 import { Reports } from './entities/report.entity';
+import { HttpService } from '@nestjs/axios';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { report } from 'process';
+
 
 @Injectable()
 export class ReportsService {
@@ -491,65 +493,81 @@ export class ReportsService {
     }
   }
 
-  async getReportsInfo(summonerNames: string[]): Promise<any[]> {
+  async getReportsInfo(summonerNames: string[]): Promise<any> {
     try {
       const reports = await this.reportRepository.find({
-        where: { summonerName: In(summonerNames) },
-        select: ['summonerName', 'category', 'reportCount'],
+        where: { summonerName: In(summonerNames) }, // 현재 게임 중인 유저의 목록 중 우리 DB에 있는 유저와 비교하여 있으면 데이터 추출
+        select: ['summonerName', 'category'],
       });
-      // console.log("여기여기여기여기", reports)
-      return reports;
+
+      // reportCount는 Reports DB에 있는 같은 이름만 몇개인지 추출
+      // category는 Reports DB에 있는 같은 이름으로만 한 배열에 정리 후 제일 많이 있는 단어 하나 추출
+      // summonerName 내보내기
+  
+      const reportsInfo = summonerNames.map((summonerName) => {
+        const matchingReports = reports.filter((report) => report.summonerName === summonerName);
+  
+        const reportCount = matchingReports.length;
+  
+        const categories = matchingReports.map((report) => report.category);
+  
+        const categoryWords = categories.join(',').split(',');
+  
+        const wordCount = categoryWords.reduce((wordCountMap, word) => {
+          wordCountMap[word] = (wordCountMap[word] || 0) + 1;
+          return wordCountMap;
+        }, {});
+  
+        let mostFrequentWord = '';
+        let maxOccurrence = 0;
+  
+        for (const word in wordCount) {
+          if (wordCount[word] > maxOccurrence) {
+            mostFrequentWord = word;
+            maxOccurrence = wordCount[word];
+          }
+        }
+  
+        return {
+          summonerName,
+          reportCount,
+          mostFrequentWord,
+        };
+      });
+  
+      return reportsInfo;
     } catch (error) {
       console.error(error);
       throw error;
     }
   }
+  
+  async combinedParticipants(getUsersTierByAPI, getUsersId, getReportsInfoBySummonerName){
+    try {
 
-  // async attachReportDataToParticipants(
-  //   summonerNames: string,
-  //   reports: any[],
-  // ): Promise<any[]> {
-  //   const attachedReports = [];
-  //   for (let i = 0; i < summonerNames.length; i++) {
-  //     for (let j = 0; j < reports.length; j++) {
-  //       if (summonerNames[i] === reports[j].summonerName) {
-  //         // summonerName을 reports[j].summonerName으로 수정
-  //         attachedReports.push({
-  //           summonerName: summonerNames[i],
-  //           category: reports[j].category,
-  //           reportCount: reports[j].reportCount,
-  //         });
-  //         break; // 이미 해당 보고서를 찾았으면 루프 중단
-  //       }
-  //     }
-  //   }
-  //   // console.log("사라있네사라있네사라있네사라있네사라있네사라있네",attachedReports)
-  //   return attachedReports;
-  // }
-
-  async combinedParticipants(
-    getUsersTierByAPI,
-    getUsersId,
-    getReportsInfoBySummonerName,
-  ) {
-    return getUsersTierByAPI.map((tierInfo, index) => {
-      const participant = getUsersId[index];
-      const matchingReport = getReportsInfoBySummonerName.find(
-        (report) => report.summonerName === participant.summonerName,
-      );
-
-      if (matchingReport) {
-        return {
-          ...participant,
-          tierInfo,
-          reportsData: matchingReport,
-        };
-      } else {
-        return {
-          ...participant,
-          tierInfo,
-        };
-      }
-    });
+      const result = getUsersTierByAPI.map((tierInfo, index) => {
+        const participant = getUsersId[index];
+        const matchingReport = getReportsInfoBySummonerName.find(
+          (report) => report.summonerName === participant.summonerName
+        );
+        // console.log(matchingReport)
+        
+        if (matchingReport) {
+          return {
+            ...participant,
+            tierInfo,
+            reportsData: matchingReport,
+          };
+        } else {
+            return {
+              ...participant,
+              tierInfo,
+            };
+          }
+        });
+        return result;
+      } catch(error) {
+      console.error(error)
+    }
   }
 }
