@@ -3,19 +3,15 @@ import { Reports } from 'src/reports/entities/report.entity';
 import { Repository } from 'typeorm';
 import { CreateUsersDto } from './dto/create-user.dto';
 import { UsersRepository } from './users.repository';
-export declare class UsersService {
-    private usersRepository;
-    private authService;
-    private readonly reportRepository;
-    constructor(usersRepository: UsersRepository, authService: AuthService, reportRepository: Repository<Reports>);
 import { AxiosResponse } from 'axios';
 export declare class UsersService {
     private usersRepository;
     private authService;
+    private readonly reportRepository;
     check: boolean;
     accessToken: string;
     private http;
-    constructor(usersRepository: UsersRepository, authService: AuthService);
+    constructor(usersRepository: UsersRepository, authService: AuthService, reportRepository: Repository<Reports>);
     createUser(createUserdto: CreateUsersDto): Promise<any>;
     checknickname(nickname: string): Promise<{
         msg: string;

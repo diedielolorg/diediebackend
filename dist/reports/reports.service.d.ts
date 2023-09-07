@@ -1,7 +1,7 @@
-import { HttpService } from '@nestjs/axios';
 import { Repository } from 'typeorm';
 import { CreateReportDto } from './dto/create-report.dto';
 import { Reports } from './entities/report.entity';
+import { HttpService } from '@nestjs/axios';
 export declare class ReportsService {
     private httpService;
     private reportRepository;
@@ -10,6 +10,7 @@ export declare class ReportsService {
     getUserLeagueInfo(getSummonerID: string, getSummonerName: string): Promise<any>;
     getLastPlayTime(getMatchIdByApi: string[]): Promise<any>;
     getCussWordData(getSummonerName: any): Promise<any>;
+    getUserInfoRank(getSummonerName: string): Promise<any>;
     getReportData(getSummonerName: any, page?: number): Promise<any>;
     createReportUsers(userId: any, createReportDto: CreateReportDto, file: any): Promise<any>;
     getRankUser(month: number): Promise<Reports[]>;

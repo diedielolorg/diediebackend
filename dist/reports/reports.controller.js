@@ -35,10 +35,12 @@ let ReportsController = exports.ReportsController = class ReportsController {
         const getMatchIdByApi = await this.reportsService.getUserInfo(getPuuid);
         const getLastPlayTime = await this.reportsService.getLastPlayTime(getMatchIdByApi);
         const getCussWordData = await this.reportsService.getCussWordData(getSummonerName);
+        const getUserInfoRank = await this.reportsService.getUserInfoRank(getSummonerName);
         const reportData = await this.reportsService.getReportData(getSummonerName, page);
         getUserLeagueInfo.profileIconIdUrl = getSummonerProfileIconUrl;
         getUserLeagueInfo.lastPlayTime = getLastPlayTime.lastPlayTime;
         getUserLeagueInfo.getCussWordData = getCussWordData;
+        getUserLeagueInfo.rank = getUserInfoRank;
         getUserLeagueInfo.reportData = reportData;
         return getUserLeagueInfo;
     }
@@ -78,7 +80,7 @@ __decorate([
     (0, common_1.Get)('userinfo/:summonerName'),
     (0, swagger_1.ApiOperation)({
         summary: '전적 상세 정보',
-        description: '소환사의 최근 게임 전적을 조회하기',
+        description: '소환사의 이름, 솔랭 승률, 주 출몰지역 외 통계, 마지막 플레이 타임 && DB에서 욕 통계, 신고당한 수, 신고당한 수에 비례하여 랭킹, 등록된 신고',
     }),
     __param(0, (0, common_1.Param)('summonerName')),
     __param(1, (0, common_1.Query)('page')),
@@ -91,7 +93,7 @@ __decorate([
     (0, common_1.Post)('reportuser'),
     (0, swagger_1.ApiOperation)({
         summary: '유저 신고 등록',
-        description: '롤에서 욕한 유저를 스샷과 함께 신고 가능',
+        description: '롤에서 욕한 유저 신고 기능, 소환사 이름, 욕한 날짜, 스크린샷, 욕 카테고리, 신고 내용',
     }),
     (0, common_1.UseInterceptors)(S3FileInterceptor_1.S3FileInterceptor),
     __param(0, (0, common_1.UploadedFiles)()),
@@ -116,7 +118,7 @@ __decorate([
     (0, common_1.Get)('/userinfo/ingame/:summonerName'),
     (0, swagger_1.ApiOperation)({
         summary: '인게임 정보',
-        description: '롤 하고 있는 사람들의 인게임 정보와 diedie db에 있는 정보들을 종합하여 불러옴',
+        description: '인게임 정보의 소환사 이름, 티어, 랭크 이름, 게임 맵, 시간 && DB에서 신고 횟수, 제일 많이 한 욕 1개',
     }),
     __param(0, (0, common_1.Param)('summonerName')),
     __metadata("design:type", Function),
