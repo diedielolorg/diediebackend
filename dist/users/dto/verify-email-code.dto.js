@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VerifyEmailCodeDto = void 0;
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class VerifyEmailCodeDto {
 }
@@ -17,11 +18,19 @@ exports.VerifyEmailCodeDto = VerifyEmailCodeDto;
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)({
+        example: 'ystar5008@naver.com',
+        description: '이메일',
+    }),
     __metadata("design:type", String)
 ], VerifyEmailCodeDto.prototype, "email", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)({
+        example: '4287',
+        description: '이메일 인증번호',
+    }),
     __metadata("design:type", Number)
 ], VerifyEmailCodeDto.prototype, "code", void 0);
 //# sourceMappingURL=verify-email-code.dto.js.map

@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SearchSummonerNameDto = void 0;
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class SearchSummonerNameDto {
 }
@@ -17,6 +18,10 @@ exports.SearchSummonerNameDto = SearchSummonerNameDto;
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)({
+        example: '방배동 둠피스트',
+        description: '소환사 이름',
+    }),
     __metadata("design:type", String)
 ], SearchSummonerNameDto.prototype, "summonerName", void 0);
 //# sourceMappingURL=summoner-name.dto.js.map

@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateReportDto = void 0;
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateReportDto {
 }
@@ -17,20 +18,36 @@ exports.CreateReportDto = CreateReportDto;
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)({
+        example: '축지법 아저씨',
+        description: '소환사 이름',
+    }),
     __metadata("design:type", String)
 ], CreateReportDto.prototype, "summonerName", void 0);
 __decorate([
     (0, class_validator_1.IsDateString)(),
+    (0, swagger_1.ApiProperty)({
+        example: '2023-09-09',
+        description: '신고날짜',
+    }),
     __metadata("design:type", String)
 ], CreateReportDto.prototype, "reportDate", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)({
+        example: '성희롱,패드립',
+        description: '욕설 종류',
+    }),
     __metadata("design:type", String)
 ], CreateReportDto.prototype, "category", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)({
+        example: '쌍욕 하고 탈주했습니다.',
+        description: '신고내용',
+    }),
     __metadata("design:type", String)
 ], CreateReportDto.prototype, "reportPayload", void 0);
 //# sourceMappingURL=create-report.dto.js.map

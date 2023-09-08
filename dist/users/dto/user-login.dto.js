@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserLoginDto = void 0;
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class UserLoginDto {
 }
@@ -17,11 +18,19 @@ exports.UserLoginDto = UserLoginDto;
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)({
+        example: 'ystar5008@naver.com',
+        description: '이메일',
+    }),
     __metadata("design:type", String)
 ], UserLoginDto.prototype, "email", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)({
+        example: '1q2w3e4r@',
+        description: '비밀번호',
+    }),
     __metadata("design:type", String)
 ], UserLoginDto.prototype, "password", void 0);
 //# sourceMappingURL=user-login.dto.js.map
