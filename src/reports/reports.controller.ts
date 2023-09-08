@@ -11,7 +11,12 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Request } from 'express';
 import { SearchService } from 'src/search/search.service';
 import { AuthGuard } from 'src/users/auth.guard';
@@ -33,6 +38,7 @@ export class ReportsController {
     description:
       '소환사의 이름, 솔랭 승률, 주 출몰지역 외 통계, 마지막 플레이 타임 && DB에서 욕 통계, 신고당한 수, 신고당한 수에 비례하여 랭킹, 등록된 신고',
   })
+  @ApiResponse({ status: 200, description: '전적 상세 정보 조회' })
   async getMatchUserInfo(
     @Param('summonerName') summonerName: string,
     @Query('page') page: number,
@@ -93,6 +99,7 @@ export class ReportsController {
     description:
       '롤에서 욕한 유저 신고 기능, 소환사 이름, 욕한 날짜, 스크린샷, 욕 카테고리, 신고 내용',
   })
+  @ApiCreatedResponse({ description: '신고 등록', type: CreateReportDto })
   @UseInterceptors(S3FileInterceptor)
   async createReportUsers(
     @UploadedFiles() file: Express.Multer.File[],
@@ -112,6 +119,7 @@ export class ReportsController {
     summary: '신고 횟수에 따른 랭킹 조회',
     description: '롤에서 욕한 유저가 신고당한 횟수만큼 랭킹 매김',
   })
+  @ApiResponse({ status: 200, description: '랭킹 조회' })
   async findAll(@Query('month', ParseIntPipe) month: number) {
     const data = await this.reportsService.getRankUser(month);
     return { data };
@@ -124,6 +132,7 @@ export class ReportsController {
     description:
       '인게임 정보의 소환사 이름, 티어, 랭크 이름, 게임 맵, 시간 && DB에서 신고 횟수, 제일 많이 한 욕 1개',
   })
+  @ApiResponse({ status: 200, description: '인게임 정보 조회' })
   async getUserInfoIngame(
     @Param('summonerName') summonerName: string,
   ): Promise<any> {

@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CheckNickDto = void 0;
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CheckNickDto {
 }
@@ -17,6 +18,10 @@ exports.CheckNickDto = CheckNickDto;
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)({
+        example: '방둠',
+        description: '닉네임',
+    }),
     __metadata("design:type", String)
 ], CheckNickDto.prototype, "nickname", void 0);
 //# sourceMappingURL=check-nick.dto.js.map

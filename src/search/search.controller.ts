@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SearchSummonerNameDto } from './dto/summoner-name.dto';
 import { SearchService } from './search.service';
 
@@ -13,6 +13,7 @@ export class SearchController {
   @ApiOperation({
     summary: '소환사 검색',
   })
+  @ApiResponse({ status: 200, description: '소환사 정보 조회' })
   async searchSummonerName(
     @Query() searchSummonerNameDto: SearchSummonerNameDto,
   ): Promise<void> {

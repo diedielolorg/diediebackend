@@ -1,1 +1,1 @@
-{"version":3,"file":"check-nick.dto.js","sourceRoot":"","sources":["../../../src/users/dto/check-nick.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qDAAuD;AAEvD,MAAa,YAAY;CAIxB;AAJD,oCAIC;AADC;IAFC,IAAA,4BAAU,GAAE;IACZ,IAAA,0BAAQ,GAAE;;8CACM"}
+{"version":3,"file":"check-nick.dto.js","sourceRoot":"","sources":["../../../src/users/dto/check-nick.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,6CAA8C;AAC9C,qDAAuD;AAEvD,MAAa,YAAY;CAQxB;AARD,oCAQC;AADQ;IANN,IAAA,4BAAU,GAAE;IACZ,IAAA,0BAAQ,GAAE;IACV,IAAA,qBAAW,EAAC;QACX,OAAO,EAAE,IAAI;QACb,WAAW,EAAE,KAAK;KACnB,CAAC;;8CACsB"}

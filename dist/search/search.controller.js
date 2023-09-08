@@ -32,6 +32,7 @@ __decorate([
     (0, swagger_1.ApiOperation)({
         summary: '소환사 검색',
     }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: '소환사 정보 조회' }),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [summoner_name_dto_1.SearchSummonerNameDto]),
