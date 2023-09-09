@@ -120,8 +120,8 @@ export class ReportsController {
     description: '롤에서 욕한 유저가 신고당한 횟수만큼 랭킹 매김',
   })
   @ApiResponse({ status: 200, description: '랭킹 조회' })
-  async findAll(@Query('month', ParseIntPipe) month: number) {
-    const data = await this.reportsService.getRankUser(month);
+  async findAll(@Query('Date') Date: string) {
+    const data = await this.reportsService.getRankUser(Date);
     return { data };
   }
 
