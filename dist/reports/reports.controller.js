@@ -48,8 +48,8 @@ let ReportsController = exports.ReportsController = class ReportsController {
         const userId = request['user'].userId;
         return await this.reportsService.createReportUsers(userId, createReportDto, file);
     }
-    async findAll(month) {
-        const data = await this.reportsService.getRankUser(month);
+    async findAll(Date) {
+        const data = await this.reportsService.getRankUser(Date);
         return { data };
     }
     async getUserInfoIngame(summonerName) {
@@ -112,9 +112,9 @@ __decorate([
         description: '롤에서 욕한 유저가 신고당한 횟수만큼 랭킹 매김',
     }),
     (0, swagger_1.ApiResponse)({ status: 200, description: '랭킹 조회' }),
-    __param(0, (0, common_1.Query)('month', common_1.ParseIntPipe)),
+    __param(0, (0, common_1.Query)('Date')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ReportsController.prototype, "findAll", null);
 __decorate([
