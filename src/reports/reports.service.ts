@@ -7,6 +7,7 @@ import { HttpService } from '@nestjs/axios';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { report } from 'process';
+import { match } from 'assert';
 
 
 @Injectable()
@@ -210,11 +211,13 @@ export class ReportsService {
           stringCounts[summonerName]++;
         }
       });
+      console.log(stringCounts)
 
       const countArray = Object.keys(stringCounts).map((summonerName) => ({
         summonerName,
         count: stringCounts[summonerName],
       }));
+      // console.log(countArray)
 
       // 많은 순부터 작은 순으로 1위부터 100위까지 출력      
       countArray.sort((a, b) => b.count - a.count);
@@ -223,7 +226,7 @@ export class ReportsService {
         ...summoner,
         rank: index + 1
       }));
-      console.log(rankedSummonerData)
+      // console.log(rankedSummonerData)
 
       // summonerName과 getSummonerName을 비교하여 같으면 순위 출력
       const findEqualName = rankedSummonerData.map((name) => {
@@ -248,6 +251,7 @@ export class ReportsService {
       const limit = 5;
       const skip = (page - 1) * limit;
       const take = limit;
+      console.log(skip)
 
       const reports = await this.reportRepository.find({
         where: { summonerName: getSummonerName },
@@ -340,28 +344,88 @@ export class ReportsService {
     }
   }
 
-  async getRankUser(month: number) {
-    if (month > 12 || month < 1) {
-      throw new BadRequestException('검색하려는 월을 입력해주세요');
+
+  async getRankUser(Date: string) {
+    try{
+      const [year, month] = Date.split('-');
+
+      const matchDate = await this.reportRepository.find({});
+  
+      const filteredReports = matchDate.filter(report => {
+        const [reportYear, reportMonth] = report.reportDate.split('-');
+        return reportYear === year && reportMonth === month;
+      });
+  
+      // console.log(filteredReports);
+     
+      const summonerNames = filteredReports.map(report => report.summonerName);
+
+      const stringCounts = {};
+      summonerNames.forEach((summonerName) => {
+        if (!stringCounts[summonerName]) {
+          stringCounts[summonerName] = 1;
+        } else {
+          stringCounts[summonerName]++;
+        }
+      });
+
+      const countArray = Object.keys(stringCounts).map((summonerName) => ({
+        summonerName,
+        count: stringCounts[summonerName],
+      }));
+
+      countArray.sort((a, b) => b.count - a.count);
+      const top100 = countArray.slice(0, 100);
+      const rankedSummonerData = top100.map((summoner, index) => ({
+        ...summoner,
+        rank: index + 1
+      }));
+
+      const reportsInfo = summonerNames.map((summonerName) => {
+        const matchingReports = matchDate.filter((report) => report.summonerName === summonerName);
+    
+        const categories = matchingReports.map((report) => report.category);
+  
+        const categoryWords = categories.join(',').split(',');
+  
+        const wordCount = categoryWords.reduce((wordCountMap, word) => {
+          wordCountMap[word] = (wordCountMap[word] || 0) + 1;
+          return wordCountMap;
+        }, {});
+  
+        let mostFrequentWord = '';
+        let maxOccurrence = 0;
+  
+        for (const word in wordCount) {
+          if (wordCount[word] > maxOccurrence) {
+            mostFrequentWord = word;
+            maxOccurrence = wordCount[word];
+          }
+        }
+  
+        return {
+          summonerName,
+          mostFrequentWord,
+        };
+      });
+      
+      const result = rankedSummonerData.map((tierInfo, index) => {
+        const participant = rankedSummonerData[index];
+        const matchingReport = reportsInfo.find(
+          (report) => report.summonerName === participant.summonerName
+        );
+        if (matchingReport) {
+          return {
+            ...tierInfo,
+            ...matchingReport,
+          };
+        } 
+      });
+
+      return result;
+    } catch(error) {
+      console.error(error)
     }
-    const rankResult = this.reportRepository.find({
-      take: 100,
-      select: [
-        'summonerName',
-        'summonerPhoto',
-        'reportCount',
-        'lastAccessTime',
-        'wins',
-        'losses',
-        'winRate',
-        'rank',
-        'cussWordStats',
-      ],
-      order: {
-        reportCount: 'ASC',
-      },
-    });
-    return rankResult;
   }
 
   async getUserInfoIngame(getId: string): Promise<any> {
@@ -437,7 +501,7 @@ export class ReportsService {
               participants: simplifiedParticipants,
             };
           }),
-        )
+        ) 
         .toPromise();
       const champId = result.participants;
       const champIds = champId.map((data) => data.championId);

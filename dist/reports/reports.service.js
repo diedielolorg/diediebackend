@@ -171,6 +171,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
                     stringCounts[summonerName]++;
                 }
             });
+            console.log(stringCounts);
             const countArray = Object.keys(stringCounts).map((summonerName) => ({
                 summonerName,
                 count: stringCounts[summonerName],
@@ -181,7 +182,6 @@ let ReportsService = exports.ReportsService = class ReportsService {
                 ...summoner,
                 rank: index + 1
             }));
-            console.log(rankedSummonerData);
             const findEqualName = rankedSummonerData.map((name) => {
                 if (name.summonerName === getSummonerName) {
                     return name.rank;
@@ -200,6 +200,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
             const limit = 5;
             const skip = (page - 1) * limit;
             const take = limit;
+            console.log(skip);
             const reports = await this.reportRepository.find({
                 where: { summonerName: getSummonerName },
                 select: [
@@ -267,28 +268,70 @@ let ReportsService = exports.ReportsService = class ReportsService {
             throw new common_1.BadRequestException('존재하지 않는 소환사입니다.');
         }
     }
-    async getRankUser(month) {
-        if (month > 12 || month < 1) {
-            throw new common_1.BadRequestException('검색하려는 월을 입력해주세요');
+    async getRankUser(Date) {
+        try {
+            const [year, month] = Date.split('-');
+            const matchDate = await this.reportRepository.find({});
+            const filteredReports = matchDate.filter(report => {
+                const [reportYear, reportMonth] = report.reportDate.split('-');
+                return reportYear === year && reportMonth === month;
+            });
+            const summonerNames = filteredReports.map(report => report.summonerName);
+            const stringCounts = {};
+            summonerNames.forEach((summonerName) => {
+                if (!stringCounts[summonerName]) {
+                    stringCounts[summonerName] = 1;
+                }
+                else {
+                    stringCounts[summonerName]++;
+                }
+            });
+            const countArray = Object.keys(stringCounts).map((summonerName) => ({
+                summonerName,
+                count: stringCounts[summonerName],
+            }));
+            countArray.sort((a, b) => b.count - a.count);
+            const top100 = countArray.slice(0, 100);
+            const rankedSummonerData = top100.map((summoner, index) => ({
+                ...summoner,
+                rank: index + 1
+            }));
+            const reportsInfo = summonerNames.map((summonerName) => {
+                const matchingReports = matchDate.filter((report) => report.summonerName === summonerName);
+                const categories = matchingReports.map((report) => report.category);
+                const categoryWords = categories.join(',').split(',');
+                const wordCount = categoryWords.reduce((wordCountMap, word) => {
+                    wordCountMap[word] = (wordCountMap[word] || 0) + 1;
+                    return wordCountMap;
+                }, {});
+                let mostFrequentWord = '';
+                let maxOccurrence = 0;
+                for (const word in wordCount) {
+                    if (wordCount[word] > maxOccurrence) {
+                        mostFrequentWord = word;
+                        maxOccurrence = wordCount[word];
+                    }
+                }
+                return {
+                    summonerName,
+                    mostFrequentWord,
+                };
+            });
+            const result = rankedSummonerData.map((tierInfo, index) => {
+                const participant = rankedSummonerData[index];
+                const matchingReport = reportsInfo.find((report) => report.summonerName === participant.summonerName);
+                if (matchingReport) {
+                    return {
+                        ...tierInfo,
+                        ...matchingReport,
+                    };
+                }
+            });
+            return result;
         }
-        const rankResult = this.reportRepository.find({
-            take: 100,
-            select: [
-                'summonerName',
-                'summonerPhoto',
-                'reportCount',
-                'lastAccessTime',
-                'wins',
-                'losses',
-                'winRate',
-                'rank',
-                'cussWordStats',
-            ],
-            order: {
-                reportCount: 'ASC',
-            },
-        });
-        return rankResult;
+        catch (error) {
+            console.error(error);
+        }
     }
     async getUserInfoIngame(getId) {
         try {

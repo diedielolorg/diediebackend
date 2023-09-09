@@ -13,7 +13,12 @@ export declare class ReportsService {
     getUserInfoRank(getSummonerName: string): Promise<any>;
     getReportData(getSummonerName: any, page?: number): Promise<any>;
     createReportUsers(userId: any, createReportDto: CreateReportDto, file: any): Promise<any>;
-    getRankUser(month: number): Promise<Reports[]>;
+    getRankUser(Date: string): Promise<{
+        summonerName: string;
+        mostFrequentWord: string;
+        rank: number;
+        count: any;
+    }[]>;
     getUserInfoIngame(getId: string): Promise<any>;
     getUserName(getUsersId: any[]): Promise<any>;
     getUserTierByApi(getUsersNameByMapping: string[]): Promise<any>;
