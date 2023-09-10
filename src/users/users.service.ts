@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  UnprocessableEntityException,
 } from '@nestjs/common';
 // import { UserInfo } from './UserInfo';
 // import { ConfigService } from '@nestjs/config';
@@ -11,13 +10,12 @@ import {
 // import { ConfigService } from '@nestjs/config';
 import { AuthService } from '../auth/auth.service';
 // //import { EmailService } from 'src/email/email.service';
+import { HttpService } from '@nestjs/axios';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Reports } from 'src/reports/entities/report.entity';
 import { Repository } from 'typeorm';
 import { CreateUsersDto } from './dto/create-user.dto';
 import { UsersRepository } from './users.repository';
-import { HttpService } from '@nestjs/axios';
-import { AxiosResponse } from 'axios';
 // import { UserEntity } from './entities/user.entity';
 // import { string } from 'joi';
 
@@ -31,8 +29,7 @@ export class UsersService {
     private authService: AuthService,
     @InjectRepository(Reports)
     private readonly reportRepository: Repository<Reports>,
-  )
-  {
+  ) {
     this.check = false;
     this.http = new HttpService();
     this.accessToken = '';
@@ -90,7 +87,7 @@ export class UsersService {
   }
 
   async putMyInfo(putMyInfoArg) {
-    const { userId, nickname, password, reqUserId } = putMyInfoArg;
+    const { userId, reqUserId } = putMyInfoArg;
     const loggedInUser = await this.usersRepository.findOne(reqUserId);
     const wantPutUser = await this.usersRepository.findOne(userId);
 
@@ -100,11 +97,24 @@ export class UsersService {
   }
 
   async getMyReport({ page, pageSize, userId }) {
-    return await this.reportRepository.find({
+    const reportData = await this.reportRepository.find({
+      select: {
+        reportId: true,
+        summonerId: true,
+        summonerPhoto: true,
+        category: true,
+        reportPayload: true,
+        reportCapture: true,
+        reportDate: true,
+        createdAt: true,
+      },
       where: userId,
       skip: (page - 1) * pageSize,
       take: page * pageSize,
     });
+    const myReportCount = reportData.length;
+
+    return { myReportData: { myReportCount, reportData } };
   }
 
   async kakaoLogin(url: string, headers: any) {

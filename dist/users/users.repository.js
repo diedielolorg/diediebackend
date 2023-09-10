@@ -60,10 +60,10 @@ let UsersRepository = exports.UsersRepository = class UsersRepository extends ty
             return false;
     }
     async putMyInfo(putMyInfoArg) {
-        const { userId, nickname, password } = putMyInfoArg;
+        const { userId, nickname } = putMyInfoArg;
         this.update({
             userId,
-        }, { nickname, password });
+        }, { nickname });
     }
 };
 exports.UsersRepository = UsersRepository = __decorate([

@@ -16,22 +16,21 @@ import {
 //import { AuthService } from 'src/auth/auth.service';
 import { ConfigService } from '@nestjs/config';
 import {
-  ApiOperation,
-  ApiCookieAuth,
-  ApiTags,
   ApiCreatedResponse,
+  ApiOperation,
   ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
-import { Response, Request } from 'express';
+import { Request, Response } from 'express';
 import { EmailService } from 'src/email/email.service';
 import { AuthGuard } from './auth.guard';
+import { CheckNickDto } from './dto/check-nick.dto';
 import { CreateUsersDto } from './dto/create-user.dto';
 import { PutMyInfoDto } from './dto/put-myInfo.dto';
 import { UserLoginDto } from './dto/user-login.dto';
 import { VerifyEmailCodeDto } from './dto/verify-email-code.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { UsersService } from './users.service';
-import { CheckNickDto } from './dto/check-nick.dto';
 
 @ApiTags('USERS')
 @Controller('/api/users')
