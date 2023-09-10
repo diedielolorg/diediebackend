@@ -124,10 +124,10 @@ let ReportsService = exports.ReportsService = class ReportsService {
             console.error(error);
         }
     }
-    async getCussWordData(getSummonerName) {
+    async getCussWordData(getSummonerID) {
         try {
             const reports = await this.reportRepository.find({
-                where: { summonerName: getSummonerName },
+                where: { summonerId: getSummonerID },
                 select: ['category'],
             });
             const categoryCounts = {
@@ -156,25 +156,25 @@ let ReportsService = exports.ReportsService = class ReportsService {
             console.error(error);
         }
     }
-    async getUserInfoRank(getSummonerName) {
+    async getUserInfoRank(getSummonerID) {
         try {
             const reports = await this.reportRepository.find({
-                select: ['summonerName']
+                select: ['summonerId']
             });
-            const summonerNames = reports.map(report => report.summonerName);
+            const summonerNames = reports.map(report => report.summonerId);
             const stringCounts = {};
-            summonerNames.forEach((summonerName) => {
-                if (!stringCounts[summonerName]) {
-                    stringCounts[summonerName] = 1;
+            summonerNames.forEach((summonerId) => {
+                if (!stringCounts[summonerId]) {
+                    stringCounts[summonerId] = 1;
                 }
                 else {
-                    stringCounts[summonerName]++;
+                    stringCounts[summonerId]++;
                 }
             });
             console.log(stringCounts);
-            const countArray = Object.keys(stringCounts).map((summonerName) => ({
-                summonerName,
-                count: stringCounts[summonerName],
+            const countArray = Object.keys(stringCounts).map((summonerId) => ({
+                summonerId,
+                count: stringCounts[summonerId],
             }));
             countArray.sort((a, b) => b.count - a.count);
             const top100 = countArray.slice(0, 100);
@@ -182,9 +182,9 @@ let ReportsService = exports.ReportsService = class ReportsService {
                 ...summoner,
                 rank: index + 1
             }));
-            const findEqualName = rankedSummonerData.map((name) => {
-                if (name.summonerName === getSummonerName) {
-                    return name.rank;
+            const findEqualName = rankedSummonerData.map((id) => {
+                if (id.summonerId === getSummonerID) {
+                    return id.rank;
                 }
             });
             const getArrayNumber = findEqualName.filter((value) => typeof value === 'number');
@@ -195,14 +195,14 @@ let ReportsService = exports.ReportsService = class ReportsService {
             console.error(error);
         }
     }
-    async getReportData(getSummonerName, page = 1) {
+    async getReportData(getSummonerID, page = 1) {
         try {
             const limit = 5;
             const skip = (page - 1) * limit;
             const take = limit;
             console.log(skip);
             const reports = await this.reportRepository.find({
-                where: { summonerName: getSummonerName },
+                where: { summonerId: getSummonerID },
                 select: [
                     'summonerName',
                     'reportId',
@@ -461,14 +461,14 @@ let ReportsService = exports.ReportsService = class ReportsService {
             throw error;
         }
     }
-    async getReportsInfo(summonerNames) {
+    async getReportsInfo(summonerIds) {
         try {
             const reports = await this.reportRepository.find({
-                where: { summonerName: (0, typeorm_2.In)(summonerNames) },
-                select: ['summonerName', 'category'],
+                where: { summonerId: (0, typeorm_2.In)(summonerIds) },
+                select: ['summonerId', 'category'],
             });
-            const reportsInfo = summonerNames.map((summonerName) => {
-                const matchingReports = reports.filter((report) => report.summonerName === summonerName);
+            const reportsInfo = summonerIds.map((summonerId) => {
+                const matchingReports = reports.filter((report) => report.summonerId === summonerId);
                 const reportCount = matchingReports.length;
                 const categories = matchingReports.map((report) => report.category);
                 const categoryWords = categories.join(',').split(',');
@@ -485,7 +485,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
                     }
                 }
                 return {
-                    summonerName,
+                    summonerId,
                     reportCount,
                     mostFrequentWord,
                 };
@@ -501,7 +501,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
         try {
             const result = getUsersTierByAPI.map((tierInfo, index) => {
                 const participant = getUsersId[index];
-                const matchingReport = getReportsInfoBySummonerName.find((report) => report.summonerName === participant.summonerName);
+                const matchingReport = getReportsInfoBySummonerName.find((report) => report.summonerId === participant.summonerId);
                 if (matchingReport) {
                     return {
                         ...participant,

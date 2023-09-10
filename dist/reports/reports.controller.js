@@ -34,9 +34,9 @@ let ReportsController = exports.ReportsController = class ReportsController {
         const getPuuid = getSummonerId['puuid'];
         const getMatchIdByApi = await this.reportsService.getUserInfo(getPuuid);
         const getLastPlayTime = await this.reportsService.getLastPlayTime(getMatchIdByApi);
-        const getCussWordData = await this.reportsService.getCussWordData(getSummonerName);
-        const getUserInfoRank = await this.reportsService.getUserInfoRank(getSummonerName);
-        const reportData = await this.reportsService.getReportData(getSummonerName, page);
+        const getCussWordData = await this.reportsService.getCussWordData(getSummonerID);
+        const getUserInfoRank = await this.reportsService.getUserInfoRank(getSummonerID);
+        const reportData = await this.reportsService.getReportData(getSummonerID, page);
         getUserLeagueInfo.profileIconIdUrl = getSummonerProfileIconUrl;
         getUserLeagueInfo.lastPlayTime = getLastPlayTime.lastPlayTime;
         getUserLeagueInfo.getCussWordData = getCussWordData;
@@ -59,8 +59,9 @@ let ReportsController = exports.ReportsController = class ReportsController {
         const getUsersId = getMatch.participants;
         const getUsersNameByMapping = await this.reportsService.getUserName(getUsersId);
         const getUsersTierByAPI = await this.reportsService.getUserTierByApi(getUsersNameByMapping);
-        const summonerNames = getUsersId.map((participant) => participant.summonerName);
-        const getReportsInfoBySummonerName = await this.reportsService.getReportsInfo(summonerNames);
+        const summonerIds = getUsersId.map((participant) => participant.summonerId);
+        console.log(summonerIds);
+        const getReportsInfoBySummonerName = await this.reportsService.getReportsInfo(summonerIds);
         const combinedParticipants = await this.reportsService.combinedParticipants(getUsersTierByAPI, getUsersId, getReportsInfoBySummonerName);
         const combinedResponse = {
             gameId: getMatch.gameId,
