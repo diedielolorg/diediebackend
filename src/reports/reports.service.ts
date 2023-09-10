@@ -292,9 +292,12 @@ export class ReportsService {
 
       //존재하지 않는 소환사일때 에러처리
 
+      
       const result = await response
         .pipe(map((response) => response.data))
         .toPromise();
+
+      const summonerId = result.id
       const profileIconId = result.profileIconId;
       const id = result.id;
       const profileIconIdUrl = `https://ddragon.leagueoflegends.com/cdn/11.1.1/img/profileicon/${profileIconId}.png`;
@@ -315,6 +318,18 @@ export class ReportsService {
 
       const lastAccessTime = new Date(result.revisionDate);
 
+      const summonerIdInDb = await this.reportRepository.find({
+        where: { summonerId: summonerId },
+        select: ['summonerName', 'summonerId']
+      })
+
+        for(const element of summonerIdInDb) {
+            await this.reportRepository.update(
+            { summonerId: element.summonerId }, 
+            { summonerName: result.name }
+          );
+        }
+
       function formatDateToCustomString(date) {
         const isoString = date.toISOString();
         const customString = isoString.replace('T', ' ').split('.')[0];
@@ -324,6 +339,7 @@ export class ReportsService {
       //존재하면 소환사 아이콘 url db에 저
       const createReport = this.reportRepository.create({
         userId,
+        summonerId,
         summonerName,
         summonerPhoto: profileIconIdUrl,
         category,
@@ -669,3 +685,23 @@ export class ReportsService {
     }
   }
 }
+
+
+
+// 신고 등록 할 때 바뀌지 않는 riot api id값과 summonerName 등을 db에 저장
+// 축지법 아저씨 => 방배동둠피스트 닉 변환
+
+// 신고 등록 부분
+// riot api에서 현재 불러온 id값과 summonerName이 db에 저장되어 있는 riot api id값은 같고 summonerName만 틀리면
+// 바뀐 summonerName 값으로 db에 저장
+
+
+// 유저 정보 조회
+// 축지법 아저씨 => 방배동둠피스트로 닉 변환했다는 것을 눈으로 보여줘야 함
+
+
+// 메인 화면 검색 부분
+// riot api에서 불러온 id값과 summonerName이 db에 저장되어 있는 riot api id값은 같고 summonerName은 틀리다면
+// 바뀐 summonerName으로 검색
+
+// 랭킹

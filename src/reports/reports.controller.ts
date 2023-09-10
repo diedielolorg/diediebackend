@@ -43,8 +43,6 @@ export class ReportsController {
     @Param('summonerName') summonerName: string,
     @Query('page') page: number,
   ): Promise<any> {
-    //입력받은 소환사명으로 SearchService에 있는 searchSummonerName 실행
-    //실행한 결과값으로 return 된 id=
     const getSummonerId = await this.searchService.searchSummonerName(
       summonerName,
     );

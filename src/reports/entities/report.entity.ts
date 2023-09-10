@@ -23,6 +23,10 @@ export class Reports extends BaseEntity {
   @Column()
   userId: number;
 
+  @Column()
+  @IsString()
+  summonerId: string;
+
   @ManyToOne(() => Users, (Users) => Users.userId)
   @JoinColumn({ name: 'userId' })
   Users: Users;
@@ -35,29 +39,12 @@ export class Reports extends BaseEntity {
   @IsString()
   summonerPhoto: string;
 
-  @Column()
-  @IsNumber()
-  rank: number;
-
-  @Column()
-  @IsString()
-  cussWordStats: string;
 
   @Column()
   lastAccessTime: Date;
 
   @Column()
   winRate: number;
-  //   @Column({
-  //     type: 'varchar',
-  //     length: 16,
-  //     transformer: {
-  //       // 임의의 yyyy-mm-dd hh:mm 형식으로 값을 저장/로드하는 변환기
-  //       from: (value: string) => new Date(value),
-  //       to: (value: Date) => value.toISOString().slice(0, 16),
-  //     },
-  //   })
-  //   customTime: string; // 임의의 yyyy-mm-dd hh:mm 형식으로 저장될 속성
 
   @Column()
   @IsString()
@@ -79,10 +66,6 @@ export class Reports extends BaseEntity {
   @Column()
   @IsDateString()
   reportDate: string;
-
-  @Column({ default: 0, nullable: true })
-  @IsNumber()
-  reportCount: number;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
