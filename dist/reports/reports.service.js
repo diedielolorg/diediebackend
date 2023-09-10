@@ -329,10 +329,15 @@ let ReportsService = exports.ReportsService = class ReportsService {
             const result = rankedSummonerData.map((tierInfo, index) => {
                 const participant = rankedSummonerData[index];
                 const matchingReport = reportsInfo.find((report) => report.summonerName === participant.summonerName);
+                const matchingFilteredReport = filteredReports.find((report) => report.summonerName === participant.summonerName);
                 if (matchingReport) {
                     return {
                         ...tierInfo,
                         ...matchingReport,
+                        lastAccessTime: matchingFilteredReport.lastAccessTime,
+                        winRate: matchingFilteredReport.winRate,
+                        wins: matchingFilteredReport.wins,
+                        losses: matchingFilteredReport.losses,
                     };
                 }
             });

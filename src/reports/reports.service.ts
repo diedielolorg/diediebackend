@@ -371,8 +371,6 @@ export class ReportsService {
         const [reportYear, reportMonth] = report.reportDate.split('-');
         return reportYear === year && reportMonth === month;
       });
-  
-      // console.log(filteredReports);
      
       const summonerNames = filteredReports.map(report => report.summonerName);
 
@@ -424,18 +422,27 @@ export class ReportsService {
           mostFrequentWord,
         };
       });
-      
+
       const result = rankedSummonerData.map((tierInfo, index) => {
         const participant = rankedSummonerData[index];
         const matchingReport = reportsInfo.find(
           (report) => report.summonerName === participant.summonerName
         );
+      
+        const matchingFilteredReport = filteredReports.find(
+          (report) => report.summonerName === participant.summonerName
+        );
+      
         if (matchingReport) {
           return {
             ...tierInfo,
             ...matchingReport,
+            lastAccessTime: matchingFilteredReport.lastAccessTime,
+            winRate: matchingFilteredReport.winRate,
+            wins: matchingFilteredReport.wins,
+            losses: matchingFilteredReport.losses,
           };
-        } 
+        }
       });
 
       return result;
