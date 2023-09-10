@@ -152,10 +152,10 @@ export class ReportsService {
     }
   }
 
-  async getCussWordData(getSummonerName: any): Promise<any> {
+  async getCussWordData(getSummonerID: any): Promise<any> {
     try {
       const reports = await this.reportRepository.find({
-        where: { summonerName: getSummonerName },
+        where: { summonerId: getSummonerID },
         select: ['category'],
       });
 
@@ -188,7 +188,7 @@ export class ReportsService {
     }
   }
 
-  async getUserInfoRank(getSummonerName: string): Promise<any>{
+  async getUserInfoRank(getSummonerID: string): Promise<any>{
     try{
       // db에서 summonerName들을 전부 검색
       // 검색된 summonerName들이 각 얼마나 있는지 숫자로 나타냄
@@ -197,25 +197,25 @@ export class ReportsService {
 
       // db에서 summonerName들을 전부 검색
       const reports = await this.reportRepository.find({
-        select: ['summonerName']
+        select: ['summonerId']
       });
 
-      const summonerNames = reports.map(report => report.summonerName);
+      const summonerNames = reports.map(report => report.summonerId);
 
       // 검색된 summonerName들이 각 얼마나 있는지 숫자로 나타냄
       const stringCounts = {};
-      summonerNames.forEach((summonerName) => {
-        if (!stringCounts[summonerName]) {
-          stringCounts[summonerName] = 1;
+      summonerNames.forEach((summonerId) => {
+        if (!stringCounts[summonerId]) {
+          stringCounts[summonerId] = 1;
         } else {
-          stringCounts[summonerName]++;
+          stringCounts[summonerId]++;
         }
       });
       console.log(stringCounts)
 
-      const countArray = Object.keys(stringCounts).map((summonerName) => ({
-        summonerName,
-        count: stringCounts[summonerName],
+      const countArray = Object.keys(stringCounts).map((summonerId) => ({
+        summonerId,
+        count: stringCounts[summonerId],
       }));
       // console.log(countArray)
 
@@ -229,9 +229,9 @@ export class ReportsService {
       // console.log(rankedSummonerData)
 
       // summonerName과 getSummonerName을 비교하여 같으면 순위 출력
-      const findEqualName = rankedSummonerData.map((name) => {
-        if(name.summonerName === getSummonerName) {
-          return name.rank
+      const findEqualName = rankedSummonerData.map((id) => {
+        if(id.summonerId === getSummonerID) {
+          return id.rank
         }
       })
       // console.log(findEqualName)
@@ -246,7 +246,7 @@ export class ReportsService {
   }
   
 
-  async getReportData(getSummonerName: any, page: number = 1): Promise<any> {
+  async getReportData(getSummonerID: any, page: number = 1): Promise<any> {
     try {
       const limit = 5;
       const skip = (page - 1) * limit;
@@ -254,7 +254,7 @@ export class ReportsService {
       console.log(skip)
 
       const reports = await this.reportRepository.find({
-        where: { summonerName: getSummonerName },
+        where: { summonerId: getSummonerID },
         select: [
           'summonerName',
           'reportId',
@@ -607,19 +607,19 @@ export class ReportsService {
     }
   }
 
-  async getReportsInfo(summonerNames: string[]): Promise<any> {
+  async getReportsInfo(summonerIds: string[]): Promise<any> {
     try {
       const reports = await this.reportRepository.find({
-        where: { summonerName: In(summonerNames) }, // 현재 게임 중인 유저의 목록 중 우리 DB에 있는 유저와 비교하여 있으면 데이터 추출
-        select: ['summonerName', 'category'],
+        where: { summonerId: In(summonerIds) }, // 현재 게임 중인 유저의 목록 중 우리 DB에 있는 유저와 비교하여 있으면 데이터 추출
+        select: ['summonerId', 'category'],
       });
 
       // reportCount는 Reports DB에 있는 같은 이름만 몇개인지 추출
       // category는 Reports DB에 있는 같은 이름으로만 한 배열에 정리 후 제일 많이 있는 단어 하나 추출
       // summonerName 내보내기
   
-      const reportsInfo = summonerNames.map((summonerName) => {
-        const matchingReports = reports.filter((report) => report.summonerName === summonerName);
+      const reportsInfo = summonerIds.map((summonerId) => {
+        const matchingReports = reports.filter((report) => report.summonerId === summonerId);
   
         const reportCount = matchingReports.length;
   
@@ -643,7 +643,7 @@ export class ReportsService {
         }
   
         return {
-          summonerName,
+          summonerId,
           reportCount,
           mostFrequentWord,
         };
@@ -662,7 +662,7 @@ export class ReportsService {
       const result = getUsersTierByAPI.map((tierInfo, index) => {
         const participant = getUsersId[index];
         const matchingReport = getReportsInfoBySummonerName.find(
-          (report) => report.summonerName === participant.summonerName
+          (report) => report.summonerId === participant.summonerId
         );
         // console.log(matchingReport)
         

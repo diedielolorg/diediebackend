@@ -67,17 +67,17 @@ export class ReportsController {
 
     //db에서 reportCount, category 갖고 오기
     const getCussWordData = await this.reportsService.getCussWordData(
-      getSummonerName,
+      getSummonerID,
     );
 
     // db에서 rank 조회하기
     const getUserInfoRank = await this.reportsService.getUserInfoRank(
-      getSummonerName,
+      getSummonerID,
     );
 
     // db에서 신고 당한 내역 갖고오기
     const reportData = await this.reportsService.getReportData(
-      getSummonerName,
+      getSummonerID,
       page,
     );
 
@@ -142,12 +142,14 @@ export class ReportsController {
     // 롤 인게임 정보 api에서 불러온 정보들
     const getId: string = getSummonerId['id'];
     const getMatch = await this.reportsService.getUserInfoIngame(getId);
+    // console.log(getMatch)
 
     // 인게임 정보의 유저들의 id값 추출
     const getUsersId = getMatch.participants;
     const getUsersNameByMapping = await this.reportsService.getUserName(
       getUsersId,
     );
+    // console.log(getUsersNameByMapping)
 
     // 추출한 id값으로 롤 티어 확인
     const getUsersTierByAPI = await this.reportsService.getUserTierByApi(
@@ -155,13 +157,13 @@ export class ReportsController {
     );
     // console.log(getUsersTierByAPI)
 
-    const summonerNames = getUsersId.map(
-      (participant) => participant.summonerName,
+    const summonerIds = getUsersId.map(
+      (participant) => participant.summonerId,
     );
-    // console.log(summonerNames)
+    console.log(summonerIds)
     // 데이터베이스에서 신고된 목록 갖고오기
     const getReportsInfoBySummonerName =
-      await this.reportsService.getReportsInfo(summonerNames);
+      await this.reportsService.getReportsInfo(summonerIds);
     // console.log(getReportsInfoBySummonerName)
 
     const combinedParticipants = await this.reportsService.combinedParticipants(
