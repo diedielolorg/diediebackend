@@ -18,12 +18,14 @@ const auth_service_1 = require("../auth/auth.service");
 const axios_1 = require("@nestjs/axios");
 const typeorm_1 = require("@nestjs/typeorm");
 const report_entity_1 = require("../reports/entities/report.entity");
+const kakaouser_entity_1 = require("./entities/kakaouser.entity");
 const typeorm_2 = require("typeorm");
 const users_repository_1 = require("./users.repository");
 let UsersService = exports.UsersService = class UsersService {
-    constructor(usersRepository, authService, reportRepository) {
+    constructor(usersRepository, authService, kakaoRepository, reportRepository) {
         this.usersRepository = usersRepository;
         this.authService = authService;
+        this.kakaoRepository = kakaoRepository;
         this.reportRepository = reportRepository;
         this.check = false;
         this.http = new axios_1.HttpService();
@@ -103,8 +105,8 @@ let UsersService = exports.UsersService = class UsersService {
     async kakaoLogin(url, headers) {
         try {
             const data = await this.http.post(url, '', { headers }).toPromise();
+            console.log(data.data.refresh_token);
             this.setToken(data.data.access_token);
-            console.log(data.data);
             const response = await this.http
                 .get('https://kapi.kakao.com/v2/user/me', {
                 headers: {
@@ -112,8 +114,17 @@ let UsersService = exports.UsersService = class UsersService {
                 },
             })
                 .toPromise();
-            console.log(response.data.kakao_account);
-            return response;
+            const kakaoId = await this.kakaoRepository.findOne({
+                where: { email: response.data.kakao_account.email },
+            });
+            if (!kakaoId) {
+                await this.kakaoRepository.save({
+                    email: response.data.kakao_account.email,
+                    nickname: response.data.properties.nickname,
+                    profile_image: response.data.properties.profile_image,
+                });
+            }
+            return this.accessToken;
         }
         catch (error) {
             console.error(error);
@@ -126,9 +137,11 @@ let UsersService = exports.UsersService = class UsersService {
 };
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),
-    __param(2, (0, typeorm_1.InjectRepository)(report_entity_1.Reports)),
+    __param(2, (0, typeorm_1.InjectRepository)(kakaouser_entity_1.Kakaousers)),
+    __param(3, (0, typeorm_1.InjectRepository)(report_entity_1.Reports)),
     __metadata("design:paramtypes", [users_repository_1.UsersRepository,
         auth_service_1.AuthService,
+        typeorm_2.Repository,
         typeorm_2.Repository])
 ], UsersService);
 //# sourceMappingURL=users.service.js.map

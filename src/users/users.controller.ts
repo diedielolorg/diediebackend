@@ -21,7 +21,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Request, Response } from 'express';
+import { Request, Response, response } from 'express';
 import { EmailService } from 'src/email/email.service';
 import { AuthGuard } from './auth.guard';
 import { CheckNickDto } from './dto/check-nick.dto';
@@ -68,21 +68,23 @@ export class UsersController {
   //@Header('Content-Type', 'text/html')
   async kakaoLoginLogic(@Res() res) {
     const _hostName = 'https://kauth.kakao.com';
-    const _restApiKey = process.env.KAKAO_SECRET; // * 입력필요
+    const _restApiKey = process.env.KAKAO_SECRET;
     const _redirectUrl =
-      'https://diedie.shop/api/users/kakaoLoginLogicRedirect';
+      'https://diediefrontend.vercel.app/api/users/kakaoLoginLogicRedirect';
     const url = `${_hostName}/oauth/authorize?client_id=${_restApiKey}&redirect_uri=${_redirectUrl}&response_type=code`;
     return res.redirect(url);
   }
 
   @Get('kakaoLoginLogicRedirect')
   @Header('Content-Type', 'text/html')
-  async kakaoLoginLogicRedirect(@Query() qs, @Res() res) {
+  async kakaoLoginLogicRedirect(
+    @Query() qs,
+    @Res({ passthrough: true }) response: Response,
+  ) {
     console.log(qs.code);
-    const _restApiKey = process.env.KAKAO_SECRET; // * 입력필요
+    const _restApiKey = process.env.KAKAO_SECRET;
     const _redirect_uri =
-      'https://diedie.shop/api/users/kakaoLoginLogicRedirect';
-    console.log(_restApiKey);
+      'https://diediefrontend.vercel.app/api/users/kakaoLoginLogicRedirect';
     const _hostName = `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${_restApiKey}&redirect_uri=${_redirect_uri}&code=${qs.code}`;
     const _headers = {
       headers: {
@@ -90,9 +92,10 @@ export class UsersController {
         secure_resource: true,
       },
     };
-    await this.usersService.kakaoLogin(_hostName, _headers);
-
-    return res.send('카카오 로그인 성공');
+    const accessToken = await this.usersService.kakaoLogin(_hostName, _headers);
+    console.log(accessToken);
+    response.header('authorization', `Bearer ${accessToken}`);
+    return response.redirect('https://diediefrontend.vercel.app/');
   }
 
   @Post('/authcoderesend')

@@ -13,13 +13,18 @@ const users_service_1 = require("./users.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const email_module_1 = require("../email/email.module");
 const report_entity_1 = require("../reports/entities/report.entity");
+const kakaouser_entity_1 = require("./entities/kakaouser.entity");
 const auth_module_1 = require("../auth/auth.module");
 const users_repository_1 = require("./users.repository");
 let UsersModule = exports.UsersModule = class UsersModule {
 };
 exports.UsersModule = UsersModule = __decorate([
     (0, common_1.Module)({
-        imports: [email_module_1.EmailModule, auth_module_1.AuthModule, typeorm_1.TypeOrmModule.forFeature([report_entity_1.Reports])],
+        imports: [
+            email_module_1.EmailModule,
+            auth_module_1.AuthModule,
+            typeorm_1.TypeOrmModule.forFeature([report_entity_1.Reports, kakaouser_entity_1.Kakaousers]),
+        ],
         controllers: [users_controller_1.UsersController],
         providers: [users_service_1.UsersService, users_repository_1.UsersRepository],
     })
