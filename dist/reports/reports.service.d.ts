@@ -9,11 +9,15 @@ export declare class ReportsService {
     getUserInfo(getPuuid: string): Promise<any>;
     getUserLeagueInfo(getSummonerID: string, getSummonerName: string): Promise<any>;
     getLastPlayTime(getMatchIdByApi: string[]): Promise<any>;
-    getCussWordData(getSummonerName: any): Promise<any>;
-    getUserInfoRank(getSummonerName: string): Promise<any>;
-    getReportData(getSummonerName: any, page?: number): Promise<any>;
+    getCussWordData(getSummonerID: any): Promise<any>;
+    getUserInfoRank(getSummonerID: string): Promise<any>;
+    getReportData(getSummonerID: any, page?: number): Promise<any>;
     createReportUsers(userId: any, createReportDto: CreateReportDto, file: any): Promise<any>;
     getRankUser(Date: string): Promise<{
+        lastAccessTime: Date;
+        winRate: number;
+        wins: number;
+        losses: number;
         summonerName: string;
         mostFrequentWord: string;
         rank: number;
@@ -22,6 +26,6 @@ export declare class ReportsService {
     getUserInfoIngame(getId: string): Promise<any>;
     getUserName(getUsersId: any[]): Promise<any>;
     getUserTierByApi(getUsersNameByMapping: string[]): Promise<any>;
-    getReportsInfo(summonerNames: string[]): Promise<any>;
+    getReportsInfo(summonerIds: string[]): Promise<any>;
     combinedParticipants(getUsersTierByAPI: any, getUsersId: any, getReportsInfoBySummonerName: any): Promise<any>;
 }

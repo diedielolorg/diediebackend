@@ -152,10 +152,10 @@ export class ReportsService {
     }
   }
 
-  async getCussWordData(getSummonerName: any): Promise<any> {
+  async getCussWordData(getSummonerID: any): Promise<any> {
     try {
       const reports = await this.reportRepository.find({
-        where: { summonerName: getSummonerName },
+        where: { summonerId: getSummonerID },
         select: ['category'],
       });
 
@@ -188,7 +188,7 @@ export class ReportsService {
     }
   }
 
-  async getUserInfoRank(getSummonerName: string): Promise<any>{
+  async getUserInfoRank(getSummonerID: string): Promise<any>{
     try{
       // db에서 summonerName들을 전부 검색
       // 검색된 summonerName들이 각 얼마나 있는지 숫자로 나타냄
@@ -197,25 +197,25 @@ export class ReportsService {
 
       // db에서 summonerName들을 전부 검색
       const reports = await this.reportRepository.find({
-        select: ['summonerName']
+        select: ['summonerId']
       });
 
-      const summonerNames = reports.map(report => report.summonerName);
+      const summonerNames = reports.map(report => report.summonerId);
 
       // 검색된 summonerName들이 각 얼마나 있는지 숫자로 나타냄
       const stringCounts = {};
-      summonerNames.forEach((summonerName) => {
-        if (!stringCounts[summonerName]) {
-          stringCounts[summonerName] = 1;
+      summonerNames.forEach((summonerId) => {
+        if (!stringCounts[summonerId]) {
+          stringCounts[summonerId] = 1;
         } else {
-          stringCounts[summonerName]++;
+          stringCounts[summonerId]++;
         }
       });
       console.log(stringCounts)
 
-      const countArray = Object.keys(stringCounts).map((summonerName) => ({
-        summonerName,
-        count: stringCounts[summonerName],
+      const countArray = Object.keys(stringCounts).map((summonerId) => ({
+        summonerId,
+        count: stringCounts[summonerId],
       }));
       // console.log(countArray)
 
@@ -229,9 +229,9 @@ export class ReportsService {
       // console.log(rankedSummonerData)
 
       // summonerName과 getSummonerName을 비교하여 같으면 순위 출력
-      const findEqualName = rankedSummonerData.map((name) => {
-        if(name.summonerName === getSummonerName) {
-          return name.rank
+      const findEqualName = rankedSummonerData.map((id) => {
+        if(id.summonerId === getSummonerID) {
+          return id.rank
         }
       })
       // console.log(findEqualName)
@@ -246,7 +246,7 @@ export class ReportsService {
   }
   
 
-  async getReportData(getSummonerName: any, page: number = 1): Promise<any> {
+  async getReportData(getSummonerID: any, page: number = 1): Promise<any> {
     try {
       const limit = 5;
       const skip = (page - 1) * limit;
@@ -254,7 +254,7 @@ export class ReportsService {
       console.log(skip)
 
       const reports = await this.reportRepository.find({
-        where: { summonerName: getSummonerName },
+        where: { summonerId: getSummonerID },
         select: [
           'summonerName',
           'reportId',
@@ -292,9 +292,12 @@ export class ReportsService {
 
       //존재하지 않는 소환사일때 에러처리
 
+      
       const result = await response
         .pipe(map((response) => response.data))
         .toPromise();
+
+      const summonerId = result.id
       const profileIconId = result.profileIconId;
       const id = result.id;
       const profileIconIdUrl = `https://ddragon.leagueoflegends.com/cdn/11.1.1/img/profileicon/${profileIconId}.png`;
@@ -315,6 +318,18 @@ export class ReportsService {
 
       const lastAccessTime = new Date(result.revisionDate);
 
+      const summonerIdInDb = await this.reportRepository.find({
+        where: { summonerId: summonerId },
+        select: ['summonerName', 'summonerId']
+      })
+
+        for(const element of summonerIdInDb) {
+            await this.reportRepository.update(
+            { summonerId: element.summonerId }, 
+            { summonerName: result.name }
+          );
+        }
+
       function formatDateToCustomString(date) {
         const isoString = date.toISOString();
         const customString = isoString.replace('T', ' ').split('.')[0];
@@ -324,6 +339,7 @@ export class ReportsService {
       //존재하면 소환사 아이콘 url db에 저
       const createReport = this.reportRepository.create({
         userId,
+        summonerId,
         summonerName,
         summonerPhoto: profileIconIdUrl,
         category,
@@ -355,8 +371,6 @@ export class ReportsService {
         const [reportYear, reportMonth] = report.reportDate.split('-');
         return reportYear === year && reportMonth === month;
       });
-  
-      // console.log(filteredReports);
      
       const summonerNames = filteredReports.map(report => report.summonerName);
 
@@ -408,18 +422,27 @@ export class ReportsService {
           mostFrequentWord,
         };
       });
-      
+
       const result = rankedSummonerData.map((tierInfo, index) => {
         const participant = rankedSummonerData[index];
         const matchingReport = reportsInfo.find(
           (report) => report.summonerName === participant.summonerName
         );
+      
+        const matchingFilteredReport = filteredReports.find(
+          (report) => report.summonerName === participant.summonerName
+        );
+      
         if (matchingReport) {
           return {
             ...tierInfo,
             ...matchingReport,
+            lastAccessTime: matchingFilteredReport.lastAccessTime,
+            winRate: matchingFilteredReport.winRate,
+            wins: matchingFilteredReport.wins,
+            losses: matchingFilteredReport.losses,
           };
-        } 
+        }
       });
 
       return result;
@@ -591,19 +614,19 @@ export class ReportsService {
     }
   }
 
-  async getReportsInfo(summonerNames: string[]): Promise<any> {
+  async getReportsInfo(summonerIds: string[]): Promise<any> {
     try {
       const reports = await this.reportRepository.find({
-        where: { summonerName: In(summonerNames) }, // 현재 게임 중인 유저의 목록 중 우리 DB에 있는 유저와 비교하여 있으면 데이터 추출
-        select: ['summonerName', 'category'],
+        where: { summonerId: In(summonerIds) }, // 현재 게임 중인 유저의 목록 중 우리 DB에 있는 유저와 비교하여 있으면 데이터 추출
+        select: ['summonerId', 'category'],
       });
 
       // reportCount는 Reports DB에 있는 같은 이름만 몇개인지 추출
       // category는 Reports DB에 있는 같은 이름으로만 한 배열에 정리 후 제일 많이 있는 단어 하나 추출
       // summonerName 내보내기
   
-      const reportsInfo = summonerNames.map((summonerName) => {
-        const matchingReports = reports.filter((report) => report.summonerName === summonerName);
+      const reportsInfo = summonerIds.map((summonerId) => {
+        const matchingReports = reports.filter((report) => report.summonerId === summonerId);
   
         const reportCount = matchingReports.length;
   
@@ -627,7 +650,7 @@ export class ReportsService {
         }
   
         return {
-          summonerName,
+          summonerId,
           reportCount,
           mostFrequentWord,
         };
@@ -646,7 +669,7 @@ export class ReportsService {
       const result = getUsersTierByAPI.map((tierInfo, index) => {
         const participant = getUsersId[index];
         const matchingReport = getReportsInfoBySummonerName.find(
-          (report) => report.summonerName === participant.summonerName
+          (report) => report.summonerId === participant.summonerId
         );
         // console.log(matchingReport)
         
@@ -669,3 +692,23 @@ export class ReportsService {
     }
   }
 }
+
+
+
+// 신고 등록 할 때 바뀌지 않는 riot api id값과 summonerName 등을 db에 저장
+// 축지법 아저씨 => 방배동둠피스트 닉 변환
+
+// 신고 등록 부분
+// riot api에서 현재 불러온 id값과 summonerName이 db에 저장되어 있는 riot api id값은 같고 summonerName만 틀리면
+// 바뀐 summonerName 값으로 db에 저장
+
+
+// 유저 정보 조회
+// 축지법 아저씨 => 방배동둠피스트로 닉 변환했다는 것을 눈으로 보여줘야 함
+
+
+// 메인 화면 검색 부분
+// riot api에서 불러온 id값과 summonerName이 db에 저장되어 있는 riot api id값은 같고 summonerName은 틀리다면
+// 바뀐 summonerName으로 검색
+
+// 랭킹
