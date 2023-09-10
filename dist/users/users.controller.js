@@ -18,13 +18,13 @@ const config_1 = require("@nestjs/config");
 const swagger_1 = require("@nestjs/swagger");
 const email_service_1 = require("../email/email.service");
 const auth_guard_1 = require("./auth.guard");
+const check_nick_dto_1 = require("./dto/check-nick.dto");
 const create_user_dto_1 = require("./dto/create-user.dto");
 const put_myInfo_dto_1 = require("./dto/put-myInfo.dto");
 const user_login_dto_1 = require("./dto/user-login.dto");
 const verify_email_code_dto_1 = require("./dto/verify-email-code.dto");
 const verify_email_dto_1 = require("./dto/verify-email.dto");
 const users_service_1 = require("./users.service");
-const check_nick_dto_1 = require("./dto/check-nick.dto");
 let UsersController = exports.UsersController = class UsersController {
     constructor(configService, emailSerivce, usersService) {
         this.configService = configService;
