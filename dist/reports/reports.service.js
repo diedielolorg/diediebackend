@@ -229,6 +229,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
             const result = await response
                 .pipe((0, operators_1.map)((response) => response.data))
                 .toPromise();
+            const summonerId = result.id;
             const profileIconId = result.profileIconId;
             const id = result.id;
             const profileIconIdUrl = `https://ddragon.leagueoflegends.com/cdn/11.1.1/img/profileicon/${profileIconId}.png`;
@@ -241,6 +242,13 @@ let ReportsService = exports.ReportsService = class ReportsService {
             const totalGames = wins + losses;
             const winRate = Number(((wins / totalGames) * 100).toFixed(1));
             const lastAccessTime = new Date(result.revisionDate);
+            const summonerIdInDb = await this.reportRepository.find({
+                where: { summonerId: summonerId },
+                select: ['summonerName', 'summonerId']
+            });
+            for (const element of summonerIdInDb) {
+                await this.reportRepository.update({ summonerId: element.summonerId }, { summonerName: result.name });
+            }
             function formatDateToCustomString(date) {
                 const isoString = date.toISOString();
                 const customString = isoString.replace('T', ' ').split('.')[0];
@@ -249,6 +257,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
             const formattedTime = formatDateToCustomString(lastAccessTime);
             const createReport = this.reportRepository.create({
                 userId,
+                summonerId,
                 summonerName,
                 summonerPhoto: profileIconIdUrl,
                 category,

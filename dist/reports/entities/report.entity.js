@@ -25,6 +25,11 @@ __decorate([
     __metadata("design:type", Number)
 ], Reports.prototype, "userId", void 0);
 __decorate([
+    (0, typeorm_1.Column)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], Reports.prototype, "summonerId", void 0);
+__decorate([
     (0, typeorm_1.ManyToOne)(() => user_entity_1.Users, (Users) => Users.userId),
     (0, typeorm_1.JoinColumn)({ name: 'userId' }),
     __metadata("design:type", user_entity_1.Users)
@@ -39,16 +44,6 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], Reports.prototype, "summonerPhoto", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], Reports.prototype, "rank", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], Reports.prototype, "cussWordStats", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Date)
@@ -84,11 +79,6 @@ __decorate([
     (0, class_validator_1.IsDateString)(),
     __metadata("design:type", String)
 ], Reports.prototype, "reportDate", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ default: 0, nullable: true }),
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], Reports.prototype, "reportCount", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)({ type: 'timestamp' }),
     __metadata("design:type", Date)
