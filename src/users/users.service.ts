@@ -13,6 +13,7 @@ import { AuthService } from '../auth/auth.service';
 import { HttpService } from '@nestjs/axios';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Reports } from 'src/reports/entities/report.entity';
+import { Kakaousers } from 'src/users/entities/kakaouser.entity';
 import { Repository } from 'typeorm';
 import { CreateUsersDto } from './dto/create-user.dto';
 import { UsersRepository } from './users.repository';
@@ -27,6 +28,8 @@ export class UsersService {
   constructor(
     private usersRepository: UsersRepository,
     private authService: AuthService,
+    @InjectRepository(Kakaousers)
+    private kakaoRepository: Repository<Kakaousers>,
     @InjectRepository(Reports)
     private readonly reportRepository: Repository<Reports>,
   ) {
@@ -120,8 +123,8 @@ export class UsersService {
   async kakaoLogin(url: string, headers: any) {
     try {
       const data = await this.http.post(url, '', { headers }).toPromise();
+      console.log(data.data.refresh_token);
       this.setToken(data.data.access_token);
-      console.log(data.data);
       const response = await this.http
         .get('https://kapi.kakao.com/v2/user/me', {
           headers: {
@@ -129,10 +132,20 @@ export class UsersService {
           },
         })
         .toPromise();
-      // const user= await this.http.get('https://kapi.kakao.com/v2/user/me',{Authorization: Bearer ${ACCESS_TOKEN}})
-      // console.log(user)
-      console.log(response.data.kakao_account);
-      return response;
+
+      const kakaoId = await this.kakaoRepository.findOne({
+        where: { email: response.data.kakao_account.email },
+      });
+
+      if (!kakaoId) {
+        await this.kakaoRepository.save({
+          email: response.data.kakao_account.email,
+          nickname: response.data.properties.nickname,
+          profile_image: response.data.properties.profile_image,
+        });
+      }
+
+      return this.accessToken;
     } catch (error) {
       console.error(error);
     }

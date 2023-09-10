@@ -18,7 +18,7 @@ export declare class UsersController {
         msg: string;
     }>;
     kakaoLoginLogic(res: any): Promise<any>;
-    kakaoLoginLogicRedirect(qs: any, res: any): Promise<any>;
+    kakaoLoginLogicRedirect(qs: any, response: Response): Promise<void>;
     reVerifyEmailSend(verifyEmailDto: VerifyEmailDto): Promise<void>;
     verifyEmailSend(verifyEmailDto: VerifyEmailDto): Promise<void>;
     verifyEmail(verifyEmailDto: VerifyEmailCodeDto): Promise<any>;

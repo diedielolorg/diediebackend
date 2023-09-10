@@ -1,16 +1,18 @@
 import { AuthService } from '../auth/auth.service';
 import { Reports } from 'src/reports/entities/report.entity';
+import { Kakaousers } from 'src/users/entities/kakaouser.entity';
 import { Repository } from 'typeorm';
 import { CreateUsersDto } from './dto/create-user.dto';
 import { UsersRepository } from './users.repository';
 export declare class UsersService {
     private usersRepository;
     private authService;
+    private kakaoRepository;
     private readonly reportRepository;
     check: boolean;
     accessToken: string;
     private http;
-    constructor(usersRepository: UsersRepository, authService: AuthService, reportRepository: Repository<Reports>);
+    constructor(usersRepository: UsersRepository, authService: AuthService, kakaoRepository: Repository<Kakaousers>, reportRepository: Repository<Reports>);
     createUser(createUserdto: CreateUsersDto): Promise<any>;
     checknickname(nickname: string): Promise<{
         msg: string;
@@ -28,6 +30,6 @@ export declare class UsersService {
             reportData: Reports[];
         };
     }>;
-    kakaoLogin(url: string, headers: any): Promise<import("axios").AxiosResponse<any, any>>;
+    kakaoLogin(url: string, headers: any): Promise<string>;
     setToken(token: string): boolean;
 }

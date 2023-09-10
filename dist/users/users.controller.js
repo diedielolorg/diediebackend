@@ -41,15 +41,14 @@ let UsersController = exports.UsersController = class UsersController {
     async kakaoLoginLogic(res) {
         const _hostName = 'https://kauth.kakao.com';
         const _restApiKey = process.env.KAKAO_SECRET;
-        const _redirectUrl = 'https://diedie.shop/api/users/kakaoLoginLogicRedirect';
+        const _redirectUrl = 'https://diediefrontend.vercel.app/api/users/kakaoLoginLogicRedirect';
         const url = `${_hostName}/oauth/authorize?client_id=${_restApiKey}&redirect_uri=${_redirectUrl}&response_type=code`;
         return res.redirect(url);
     }
-    async kakaoLoginLogicRedirect(qs, res) {
+    async kakaoLoginLogicRedirect(qs, response) {
         console.log(qs.code);
         const _restApiKey = process.env.KAKAO_SECRET;
-        const _redirect_uri = 'https://diedie.shop/api/users/kakaoLoginLogicRedirect';
-        console.log(_restApiKey);
+        const _redirect_uri = 'https://diediefrontend.vercel.app/api/users/kakaoLoginLogicRedirect';
         const _hostName = `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${_restApiKey}&redirect_uri=${_redirect_uri}&code=${qs.code}`;
         const _headers = {
             headers: {
@@ -57,8 +56,10 @@ let UsersController = exports.UsersController = class UsersController {
                 secure_resource: true,
             },
         };
-        await this.usersService.kakaoLogin(_hostName, _headers);
-        return res.send('카카오 로그인 성공');
+        const accessToken = await this.usersService.kakaoLogin(_hostName, _headers);
+        console.log(accessToken);
+        response.header('authorization', `Bearer ${accessToken}`);
+        return response.redirect('https://diediefrontend.vercel.app/');
     }
     async reVerifyEmailSend(verifyEmailDto) {
         const { email } = verifyEmailDto;
@@ -136,7 +137,7 @@ __decorate([
     (0, common_1.Get)('kakaoLoginLogicRedirect'),
     (0, common_1.Header)('Content-Type', 'text/html'),
     __param(0, (0, common_1.Query)()),
-    __param(1, (0, common_1.Res)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
