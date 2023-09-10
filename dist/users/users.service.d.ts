@@ -3,7 +3,6 @@ import { Reports } from 'src/reports/entities/report.entity';
 import { Repository } from 'typeorm';
 import { CreateUsersDto } from './dto/create-user.dto';
 import { UsersRepository } from './users.repository';
-import { AxiosResponse } from 'axios';
 export declare class UsersService {
     private usersRepository;
     private authService;
@@ -23,7 +22,12 @@ export declare class UsersService {
         page: any;
         pageSize: any;
         userId: any;
-    }): Promise<Reports[]>;
-    kakaoLogin(url: string, headers: any): Promise<AxiosResponse<any, any>>;
+    }): Promise<{
+        myReportData: {
+            myReportCount: number;
+            reportData: Reports[];
+        };
+    }>;
+    kakaoLogin(url: string, headers: any): Promise<import("axios").AxiosResponse<any, any>>;
     setToken(token: string): boolean;
 }

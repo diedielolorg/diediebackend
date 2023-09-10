@@ -63,12 +63,12 @@ export class UsersRepository extends Repository<Users> {
     nickname: string;
     password: string;
   }) {
-    const { userId, nickname, password } = putMyInfoArg;
+    const { userId, nickname } = putMyInfoArg;
     this.update(
       {
         userId,
       },
-      { nickname, password },
+      { nickname },
     );
   }
 }

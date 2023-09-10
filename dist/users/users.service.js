@@ -15,11 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("../auth/auth.service");
+const axios_1 = require("@nestjs/axios");
 const typeorm_1 = require("@nestjs/typeorm");
 const report_entity_1 = require("../reports/entities/report.entity");
 const typeorm_2 = require("typeorm");
 const users_repository_1 = require("./users.repository");
-const axios_1 = require("@nestjs/axios");
 let UsersService = exports.UsersService = class UsersService {
     constructor(usersRepository, authService, reportRepository) {
         this.usersRepository = usersRepository;
@@ -74,7 +74,7 @@ let UsersService = exports.UsersService = class UsersService {
         return await this.usersRepository.deleteUser(userId);
     }
     async putMyInfo(putMyInfoArg) {
-        const { userId, nickname, password, reqUserId } = putMyInfoArg;
+        const { userId, reqUserId } = putMyInfoArg;
         const loggedInUser = await this.usersRepository.findOne(reqUserId);
         const wantPutUser = await this.usersRepository.findOne(userId);
         if (loggedInUser.nickname !== wantPutUser.nickname)
@@ -82,11 +82,23 @@ let UsersService = exports.UsersService = class UsersService {
         return await this.usersRepository.putMyInfo(putMyInfoArg);
     }
     async getMyReport({ page, pageSize, userId }) {
-        return await this.reportRepository.find({
+        const reportData = await this.reportRepository.find({
+            select: {
+                reportId: true,
+                summonerId: true,
+                summonerPhoto: true,
+                category: true,
+                reportPayload: true,
+                reportCapture: true,
+                reportDate: true,
+                createdAt: true,
+            },
             where: userId,
             skip: (page - 1) * pageSize,
             take: page * pageSize,
         });
+        const myReportCount = reportData.length;
+        return { myReportData: { myReportCount, reportData } };
     }
     async kakaoLogin(url, headers) {
         try {
