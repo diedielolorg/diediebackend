@@ -131,11 +131,11 @@ let ReportsService = exports.ReportsService = class ReportsService {
                 select: ['category'],
             });
             const categoryCounts = {
-                '쌍욕': 0,
-                '패드립': 0,
-                '기타': 0,
-                '인신공격': 0,
-                '성희롱': 0,
+                쌍욕: 0,
+                패드립: 0,
+                기타: 0,
+                인신공격: 0,
+                성희롱: 0,
                 '혐오성 발언': 0,
             };
             for (const report of reports) {
@@ -159,9 +159,9 @@ let ReportsService = exports.ReportsService = class ReportsService {
     async getUserInfoRank(getSummonerID) {
         try {
             const reports = await this.reportRepository.find({
-                select: ['summonerId']
+                select: ['summonerId'],
             });
-            const summonerNames = reports.map(report => report.summonerId);
+            const summonerNames = reports.map((report) => report.summonerId);
             const stringCounts = {};
             summonerNames.forEach((summonerId) => {
                 if (!stringCounts[summonerId]) {
@@ -180,7 +180,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
             const top100 = countArray.slice(0, 100);
             const rankedSummonerData = top100.map((summoner, index) => ({
                 ...summoner,
-                rank: index + 1
+                rank: index + 1,
             }));
             const findEqualName = rankedSummonerData.map((id) => {
                 if (id.summonerId === getSummonerID) {
@@ -244,7 +244,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
             const lastAccessTime = new Date(result.revisionDate);
             const summonerIdInDb = await this.reportRepository.find({
                 where: { summonerId: summonerId },
-                select: ['summonerName', 'summonerId']
+                select: ['summonerName', 'summonerId'],
             });
             for (const element of summonerIdInDb) {
                 await this.reportRepository.update({ summonerId: element.summonerId }, { summonerName: result.name });
@@ -281,11 +281,11 @@ let ReportsService = exports.ReportsService = class ReportsService {
         try {
             const [year, month] = Date.split('-');
             const matchDate = await this.reportRepository.find({});
-            const filteredReports = matchDate.filter(report => {
+            const filteredReports = matchDate.filter((report) => {
                 const [reportYear, reportMonth] = report.reportDate.split('-');
                 return reportYear === year && reportMonth === month;
             });
-            const summonerNames = filteredReports.map(report => report.summonerName);
+            const summonerNames = filteredReports.map((report) => report.summonerName);
             const stringCounts = {};
             summonerNames.forEach((summonerName) => {
                 if (!stringCounts[summonerName]) {
@@ -303,7 +303,7 @@ let ReportsService = exports.ReportsService = class ReportsService {
             const top100 = countArray.slice(0, 100);
             const rankedSummonerData = top100.map((summoner, index) => ({
                 ...summoner,
-                rank: index + 1
+                rank: index + 1,
             }));
             const reportsInfo = summonerNames.map((summonerName) => {
                 const matchingReports = matchDate.filter((report) => report.summonerName === summonerName);
@@ -330,11 +330,19 @@ let ReportsService = exports.ReportsService = class ReportsService {
                 const participant = rankedSummonerData[index];
                 const matchingReport = reportsInfo.find((report) => report.summonerName === participant.summonerName);
                 const matchingFilteredReport = filteredReports.find((report) => report.summonerName === participant.summonerName);
+                const lastAccessTime = matchingFilteredReport.lastAccessTime;
+                console.log(lastAccessTime);
+                function formatDateToCustomString(date) {
+                    const isoString = date.toISOString();
+                    const customString = isoString.replace('T', ' ').split('.')[0];
+                    return customString;
+                }
+                const formattedTime = formatDateToCustomString(lastAccessTime);
                 if (matchingReport) {
                     return {
                         ...tierInfo,
                         ...matchingReport,
-                        lastAccessTime: matchingFilteredReport.lastAccessTime,
+                        lastAccessTime: formattedTime,
                         winRate: matchingFilteredReport.winRate,
                         wins: matchingFilteredReport.wins,
                         losses: matchingFilteredReport.losses,

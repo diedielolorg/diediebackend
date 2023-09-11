@@ -9,7 +9,6 @@ import { catchError, map } from 'rxjs/operators';
 import { report } from 'process';
 import { match } from 'assert';
 
-
 @Injectable()
 export class ReportsService {
   constructor(
@@ -160,11 +159,11 @@ export class ReportsService {
       });
 
       const categoryCounts = {
-        '쌍욕': 0,
-        '패드립': 0,
-        '기타': 0,
-        '인신공격': 0,
-        '성희롱': 0,
+        쌍욕: 0,
+        패드립: 0,
+        기타: 0,
+        인신공격: 0,
+        성희롱: 0,
         '혐오성 발언': 0,
       };
 
@@ -177,19 +176,19 @@ export class ReportsService {
         }
       }
 
-    const reportCount = reports.length;
-    
-    return {
-      categoryCounts,
-      reportCount,
-    }
+      const reportCount = reports.length;
+
+      return {
+        categoryCounts,
+        reportCount,
+      };
     } catch (error) {
       console.error(error);
     }
   }
 
-  async getUserInfoRank(getSummonerID: string): Promise<any>{
-    try{
+  async getUserInfoRank(getSummonerID: string): Promise<any> {
+    try {
       // db에서 summonerName들을 전부 검색
       // 검색된 summonerName들이 각 얼마나 있는지 숫자로 나타냄
       // 많은 순부터 작은 순으로 1위부터 100위까지 출력
@@ -197,10 +196,10 @@ export class ReportsService {
 
       // db에서 summonerName들을 전부 검색
       const reports = await this.reportRepository.find({
-        select: ['summonerId']
+        select: ['summonerId'],
       });
 
-      const summonerNames = reports.map(report => report.summonerId);
+      const summonerNames = reports.map((report) => report.summonerId);
 
       // 검색된 summonerName들이 각 얼마나 있는지 숫자로 나타냄
       const stringCounts = {};
@@ -211,7 +210,7 @@ export class ReportsService {
           stringCounts[summonerId]++;
         }
       });
-      console.log(stringCounts)
+      console.log(stringCounts);
 
       const countArray = Object.keys(stringCounts).map((summonerId) => ({
         summonerId,
@@ -219,39 +218,40 @@ export class ReportsService {
       }));
       // console.log(countArray)
 
-      // 많은 순부터 작은 순으로 1위부터 100위까지 출력      
+      // 많은 순부터 작은 순으로 1위부터 100위까지 출력
       countArray.sort((a, b) => b.count - a.count);
       const top100 = countArray.slice(0, 100);
       const rankedSummonerData = top100.map((summoner, index) => ({
         ...summoner,
-        rank: index + 1
+        rank: index + 1,
       }));
       // console.log(rankedSummonerData)
 
       // summonerName과 getSummonerName을 비교하여 같으면 순위 출력
       const findEqualName = rankedSummonerData.map((id) => {
-        if(id.summonerId === getSummonerID) {
-          return id.rank
+        if (id.summonerId === getSummonerID) {
+          return id.rank;
         }
-      })
+      });
       // console.log(findEqualName)
 
-      const getArrayNumber = findEqualName.filter((value) => typeof value === 'number');
-      const getOnlyNumber = getArrayNumber.pop()
+      const getArrayNumber = findEqualName.filter(
+        (value) => typeof value === 'number',
+      );
+      const getOnlyNumber = getArrayNumber.pop();
 
-      return getOnlyNumber
-    } catch(error) {
+      return getOnlyNumber;
+    } catch (error) {
       console.error(error);
     }
   }
-  
 
   async getReportData(getSummonerID: any, page: number = 1): Promise<any> {
     try {
       const limit = 5;
       const skip = (page - 1) * limit;
       const take = limit;
-      console.log(skip)
+      console.log(skip);
 
       const reports = await this.reportRepository.find({
         where: { summonerId: getSummonerID },
@@ -292,12 +292,11 @@ export class ReportsService {
 
       //존재하지 않는 소환사일때 에러처리
 
-      
       const result = await response
         .pipe(map((response) => response.data))
         .toPromise();
 
-      const summonerId = result.id
+      const summonerId = result.id;
       const profileIconId = result.profileIconId;
       const id = result.id;
       const profileIconIdUrl = `https://ddragon.leagueoflegends.com/cdn/11.1.1/img/profileicon/${profileIconId}.png`;
@@ -320,15 +319,15 @@ export class ReportsService {
 
       const summonerIdInDb = await this.reportRepository.find({
         where: { summonerId: summonerId },
-        select: ['summonerName', 'summonerId']
-      })
+        select: ['summonerName', 'summonerId'],
+      });
 
-        for(const element of summonerIdInDb) {
-            await this.reportRepository.update(
-            { summonerId: element.summonerId }, 
-            { summonerName: result.name }
-          );
-        }
+      for (const element of summonerIdInDb) {
+        await this.reportRepository.update(
+          { summonerId: element.summonerId },
+          { summonerName: result.name },
+        );
+      }
 
       function formatDateToCustomString(date) {
         const isoString = date.toISOString();
@@ -360,19 +359,20 @@ export class ReportsService {
     }
   }
 
-
   async getRankUser(Date: string) {
-    try{
+    try {
       const [year, month] = Date.split('-');
 
       const matchDate = await this.reportRepository.find({});
-  
-      const filteredReports = matchDate.filter(report => {
+
+      const filteredReports = matchDate.filter((report) => {
         const [reportYear, reportMonth] = report.reportDate.split('-');
         return reportYear === year && reportMonth === month;
       });
-     
-      const summonerNames = filteredReports.map(report => report.summonerName);
+
+      const summonerNames = filteredReports.map(
+        (report) => report.summonerName,
+      );
 
       const stringCounts = {};
       summonerNames.forEach((summonerName) => {
@@ -392,31 +392,33 @@ export class ReportsService {
       const top100 = countArray.slice(0, 100);
       const rankedSummonerData = top100.map((summoner, index) => ({
         ...summoner,
-        rank: index + 1
+        rank: index + 1,
       }));
 
       const reportsInfo = summonerNames.map((summonerName) => {
-        const matchingReports = matchDate.filter((report) => report.summonerName === summonerName);
-    
+        const matchingReports = matchDate.filter(
+          (report) => report.summonerName === summonerName,
+        );
+
         const categories = matchingReports.map((report) => report.category);
-  
+
         const categoryWords = categories.join(',').split(',');
-  
+
         const wordCount = categoryWords.reduce((wordCountMap, word) => {
           wordCountMap[word] = (wordCountMap[word] || 0) + 1;
           return wordCountMap;
         }, {});
-  
+
         let mostFrequentWord = '';
         let maxOccurrence = 0;
-  
+
         for (const word in wordCount) {
           if (wordCount[word] > maxOccurrence) {
             mostFrequentWord = word;
             maxOccurrence = wordCount[word];
           }
         }
-  
+
         return {
           summonerName,
           mostFrequentWord,
@@ -426,18 +428,27 @@ export class ReportsService {
       const result = rankedSummonerData.map((tierInfo, index) => {
         const participant = rankedSummonerData[index];
         const matchingReport = reportsInfo.find(
-          (report) => report.summonerName === participant.summonerName
+          (report) => report.summonerName === participant.summonerName,
         );
-      
+
         const matchingFilteredReport = filteredReports.find(
-          (report) => report.summonerName === participant.summonerName
+          (report) => report.summonerName === participant.summonerName,
         );
-      
+
+        const lastAccessTime = matchingFilteredReport.lastAccessTime;
+        console.log(lastAccessTime);
+
+        function formatDateToCustomString(date) {
+          const isoString = date.toISOString();
+          const customString = isoString.replace('T', ' ').split('.')[0];
+          return customString;
+        }
+        const formattedTime = formatDateToCustomString(lastAccessTime);
         if (matchingReport) {
           return {
             ...tierInfo,
             ...matchingReport,
-            lastAccessTime: matchingFilteredReport.lastAccessTime,
+            lastAccessTime: formattedTime,
             winRate: matchingFilteredReport.winRate,
             wins: matchingFilteredReport.wins,
             losses: matchingFilteredReport.losses,
@@ -446,8 +457,8 @@ export class ReportsService {
       });
 
       return result;
-    } catch(error) {
-      console.error(error)
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -524,7 +535,7 @@ export class ReportsService {
               participants: simplifiedParticipants,
             };
           }),
-        ) 
+        )
         .toPromise();
       const champId = result.participants;
       const champIds = champId.map((data) => data.championId);
@@ -624,55 +635,60 @@ export class ReportsService {
       // reportCount는 Reports DB에 있는 같은 이름만 몇개인지 추출
       // category는 Reports DB에 있는 같은 이름으로만 한 배열에 정리 후 제일 많이 있는 단어 하나 추출
       // summonerName 내보내기
-  
+
       const reportsInfo = summonerIds.map((summonerId) => {
-        const matchingReports = reports.filter((report) => report.summonerId === summonerId);
-  
+        const matchingReports = reports.filter(
+          (report) => report.summonerId === summonerId,
+        );
+
         const reportCount = matchingReports.length;
-  
+
         const categories = matchingReports.map((report) => report.category);
-  
+
         const categoryWords = categories.join(',').split(',');
-  
+
         const wordCount = categoryWords.reduce((wordCountMap, word) => {
           wordCountMap[word] = (wordCountMap[word] || 0) + 1;
           return wordCountMap;
         }, {});
-  
+
         let mostFrequentWord = '';
         let maxOccurrence = 0;
-  
+
         for (const word in wordCount) {
           if (wordCount[word] > maxOccurrence) {
             mostFrequentWord = word;
             maxOccurrence = wordCount[word];
           }
         }
-  
+
         return {
           summonerId,
           reportCount,
           mostFrequentWord,
         };
       });
-  
+
       return reportsInfo;
     } catch (error) {
       console.error(error);
       throw error;
     }
   }
-  
-  async combinedParticipants(getUsersTierByAPI, getUsersId, getReportsInfoBySummonerName){
-    try {
 
+  async combinedParticipants(
+    getUsersTierByAPI,
+    getUsersId,
+    getReportsInfoBySummonerName,
+  ) {
+    try {
       const result = getUsersTierByAPI.map((tierInfo, index) => {
         const participant = getUsersId[index];
         const matchingReport = getReportsInfoBySummonerName.find(
-          (report) => report.summonerId === participant.summonerId
+          (report) => report.summonerId === participant.summonerId,
         );
         // console.log(matchingReport)
-        
+
         if (matchingReport) {
           return {
             ...participant,
@@ -680,20 +696,18 @@ export class ReportsService {
             reportsData: matchingReport,
           };
         } else {
-            return {
-              ...participant,
-              tierInfo,
-            };
-          }
-        });
-        return result;
-      } catch(error) {
-      console.error(error)
+          return {
+            ...participant,
+            tierInfo,
+          };
+        }
+      });
+      return result;
+    } catch (error) {
+      console.error(error);
     }
   }
 }
-
-
 
 // 신고 등록 할 때 바뀌지 않는 riot api id값과 summonerName 등을 db에 저장
 // 축지법 아저씨 => 방배동둠피스트 닉 변환
@@ -702,10 +716,8 @@ export class ReportsService {
 // riot api에서 현재 불러온 id값과 summonerName이 db에 저장되어 있는 riot api id값은 같고 summonerName만 틀리면
 // 바뀐 summonerName 값으로 db에 저장
 
-
 // 유저 정보 조회
 // 축지법 아저씨 => 방배동둠피스트로 닉 변환했다는 것을 눈으로 보여줘야 함
-
 
 // 메인 화면 검색 부분
 // riot api에서 불러온 id값과 summonerName이 db에 저장되어 있는 riot api id값은 같고 summonerName은 틀리다면

@@ -11,7 +11,7 @@ export declare class ReportsController {
     createReportUsers(file: Express.Multer.File[], createReportDto: CreateReportDto, request: Request): Promise<any>;
     findAll(Date: string): Promise<{
         data: {
-            lastAccessTime: Date;
+            lastAccessTime: any;
             winRate: number;
             wins: number;
             losses: number;
