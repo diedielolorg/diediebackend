@@ -14,7 +14,7 @@ export declare class ReportsService {
     getReportData(getSummonerID: any, page?: number): Promise<any>;
     createReportUsers(userId: any, createReportDto: CreateReportDto, file: any): Promise<any>;
     getRankUser(Date: string): Promise<{
-        lastAccessTime: any;
+        lastAccessTime: string;
         winRate: number;
         wins: number;
         losses: number;
