@@ -13,11 +13,16 @@ export declare class UsersService {
     accessToken: string;
     private http;
     constructor(usersRepository: UsersRepository, authService: AuthService, kakaoRepository: Repository<Kakaousers>, reportRepository: Repository<Reports>);
-    createUser(createUserdto: CreateUsersDto): Promise<any>;
+    createUser(createUserdto: CreateUsersDto): Promise<{
+        msg: string;
+    }>;
     checknickname(nickname: string): Promise<{
         msg: string;
     }>;
-    login(email: string, password: string): Promise<string>;
+    login(email: string, password: string): Promise<{
+        accessToken: string;
+        user: import("./entities/user.entity").Users;
+    }>;
     deleteUser(userId: number): Promise<void>;
     putMyInfo(putMyInfoArg: any): Promise<void>;
     getMyReport({ page, pageSize, userId }: {

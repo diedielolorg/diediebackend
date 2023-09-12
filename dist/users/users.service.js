@@ -35,27 +35,28 @@ let UsersService = exports.UsersService = class UsersService {
         try {
             const { email, emailVerified, nicknameVerified } = createUserdto;
             console.log(emailVerified, nicknameVerified);
-            const userExist = await this.usersRepository.checkUserExists(email);
-            if (userExist) {
-                throw new common_1.BadRequestException('해당 이메일로는 가입할 수 없습니다.');
-            }
             if (!emailVerified) {
                 throw new common_1.BadRequestException('이메일 인증을 완료해주세요');
             }
             if (!nicknameVerified) {
-                throw new common_1.BadRequestException('닉네임 중복 확을 완료해주세요');
+                throw new common_1.BadRequestException('닉네임 중복 확인을 완료해주세요');
+            }
+            const userExist = await this.usersRepository.checkUserExists(email);
+            if (userExist) {
+                throw new common_1.BadRequestException('해당 이메일로는 가입할 수 없습니다.');
             }
             await this.usersRepository.createUser(createUserdto);
             return { msg: '회원가입 성공' };
         }
         catch (error) {
             console.error(error);
+            throw error;
         }
     }
     async checknickname(nickname) {
         const nickBool = await this.usersRepository.checknickname(nickname);
         if (nickBool) {
-            return { msg: '중복된 닉네임 입니다.' };
+            throw new common_1.BadRequestException('중복된 닉네임 입니다.');
         }
         else {
             return { msg: '사용 가능한 닉네임 입니다.' };
@@ -70,7 +71,7 @@ let UsersService = exports.UsersService = class UsersService {
             userId: user.userId,
             email: user.email,
         });
-        return accessToken;
+        return { accessToken, user };
     }
     async deleteUser(userId) {
         return await this.usersRepository.deleteUser(userId);

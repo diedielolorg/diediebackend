@@ -49,7 +49,7 @@ export class EmailService {
 
   async reSendConfirmationEmail(email: string): Promise<any> {
     try {
-      const authcode = await this.generateRandomCode();
+      const authcode: string = await this.generateRandomCode();
       if (!email) {
         throw new BadRequestException('이메일을 입력 해주세요');
       }
@@ -62,7 +62,6 @@ export class EmailService {
       await this.transporter.sendMail(mailOptions);
 
       const value = await this.cacheManager.get(email);
-      console.log(value);
       if (value) {
         console.log('기존인증번호를 삭제합니다');
         await this.cacheManager.del(email);

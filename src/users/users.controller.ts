@@ -47,9 +47,10 @@ export class UsersController {
     description: '회원가입',
   })
   @ApiCreatedResponse({ description: '유저 생성', type: CreateUsersDto })
+  @ApiResponse({ status: 400, description: '닉네임 중복 확인을 완료해주세요' })
   async createUser(
     @Body(ValidationPipe) createUserdto: CreateUsersDto,
-  ): Promise<void> {
+  ): Promise<any> {
     return await this.usersService.createUser(createUserdto);
   }
 
@@ -58,7 +59,12 @@ export class UsersController {
     summary: '닉네임 중복확인',
     description: '중복확인',
   })
-  @ApiCreatedResponse({ description: '닉네임 중복확인', type: CheckNickDto })
+  @ApiCreatedResponse({
+    status: 200,
+    description: '닉네임 중복확인',
+    type: CheckNickDto,
+  })
+  @ApiResponse({ status: 400, description: '중복된 닉네임 입니다.' })
   async checknickname(@Body() checkNickDto: CheckNickDto) {
     const { nickname } = checkNickDto;
     return await this.usersService.checknickname(nickname);
@@ -104,6 +110,7 @@ export class UsersController {
     description: '인증번호 4자리 재발송',
   })
   @ApiCreatedResponse({ description: '인증 메일 재전송', type: VerifyEmailDto })
+  @ApiResponse({ status: 400, description: '이메일을 입력 해주세요' })
   async reVerifyEmailSend(
     @Body() verifyEmailDto: VerifyEmailDto,
   ): Promise<void> {
@@ -118,6 +125,7 @@ export class UsersController {
     description: '인증번호 4자리 발송',
   })
   @ApiCreatedResponse({ description: '인증 메일 전송', type: VerifyEmailDto })
+  @ApiResponse({ status: 400, description: '이메일을 입력해주세요' })
   async verifyEmailSend(@Body() verifyEmailDto: VerifyEmailDto): Promise<void> {
     const { email } = verifyEmailDto;
     return await this.emailSerivce.sendConfirmationEmail(email);
@@ -130,6 +138,7 @@ export class UsersController {
     description: '인증번호 4자리 검증',
   })
   @ApiCreatedResponse({ description: '인증 검증', type: VerifyEmailCodeDto })
+  @ApiResponse({ status: 400, description: '인증번호가 일치하지 않습니다.' })
   async verifyEmail(@Body() verifyEmailDto: VerifyEmailCodeDto) {
     const { email, code } = verifyEmailDto;
     return await this.emailSerivce.verifyEmail(email, code);
@@ -142,6 +151,7 @@ export class UsersController {
     description: '로그인',
   })
   @ApiCreatedResponse({ description: '로그인', type: UserLoginDto })
+  @ApiResponse({ status: 400, description: '유저가 존재하지 않습니다' })
   async login(
     @Body() userLoginDtodto: UserLoginDto,
     @Res({ passthrough: true }) response: Response,
@@ -150,7 +160,7 @@ export class UsersController {
     const accessToken = await this.usersService.login(email, password);
     response.header('Hi-junsoo', 'junsoobabo');
     response.header('authorization', `Bearer ${accessToken}`);
-    return { msg: '로그인 성공' };
+    return accessToken;
   }
 
   @Delete('/logout')
@@ -158,7 +168,7 @@ export class UsersController {
     summary: '로그아웃',
     description: '로그아웃',
   })
-  @ApiResponse({ status: 200, description: '로그아웃' })
+  @ApiCreatedResponse({ status: 200, description: '로그아웃' })
   async logOut(@Req() request: Request) {
     if (request.headers && request.headers['authorization']) {
       delete request.headers['authorization'];
@@ -173,6 +183,7 @@ export class UsersController {
     description: '회원 탈퇴',
   })
   @ApiResponse({ status: 200, description: '회원 탈퇴' })
+  // @ApiResponse({ status: 400, description: '닉네임 중복 확인을 완료해주세요' })
   @UseGuards(AuthGuard)
   async deleteUser(@Req() request: Request) {
     const userId = request['user'].userId;
