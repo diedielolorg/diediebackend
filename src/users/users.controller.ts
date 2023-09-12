@@ -46,7 +46,17 @@ export class UsersController {
     summary: '회원가입',
     description: '회원가입',
   })
-  @ApiCreatedResponse({ description: '유저 생성', type: CreateUsersDto })
+  @ApiCreatedResponse({
+    status: 200,
+    description: '유저 생성',
+    schema: {
+      properties: {
+        msg: {
+          description: '닉네임 중복확인 완료',
+        },
+      },
+    },
+  })
   @ApiResponse({ status: 400, description: '닉네임 중복 확인을 완료해주세요' })
   async createUser(
     @Body(ValidationPipe) createUserdto: CreateUsersDto,
@@ -62,7 +72,13 @@ export class UsersController {
   @ApiCreatedResponse({
     status: 200,
     description: '닉네임 중복확인',
-    type: CheckNickDto,
+    schema: {
+      properties: {
+        msg: {
+          description: '닉네임 중복확인 완료',
+        },
+      },
+    },
   })
   @ApiResponse({ status: 400, description: '중복된 닉네임 입니다.' })
   async checknickname(@Body() checkNickDto: CheckNickDto) {
@@ -109,7 +125,17 @@ export class UsersController {
     summary: '이메일 인증 번호 4자리 재발송',
     description: '인증번호 4자리 재발송',
   })
-  @ApiCreatedResponse({ description: '인증 메일 재전송', type: VerifyEmailDto })
+  @ApiCreatedResponse({
+    status: 200,
+    description: '인증 메일을 성공적으로 재전송했습니다.',
+    schema: {
+      properties: {
+        msg: {
+          description: '인증 메일을 성공적으로 재전송했습니다.',
+        },
+      },
+    },
+  })
   @ApiResponse({ status: 400, description: '이메일을 입력 해주세요' })
   async reVerifyEmailSend(
     @Body() verifyEmailDto: VerifyEmailDto,
@@ -124,7 +150,17 @@ export class UsersController {
     summary: '이메일 인증 번호 4자리 발송',
     description: '인증번호 4자리 발송',
   })
-  @ApiCreatedResponse({ description: '인증 메일 전송', type: VerifyEmailDto })
+  @ApiCreatedResponse({
+    status: 200,
+    description: '인증 메일 전송',
+    schema: {
+      properties: {
+        msg: {
+          description: '인증 메일 전송 성공',
+        },
+      },
+    },
+  })
   @ApiResponse({ status: 400, description: '이메일을 입력해주세요' })
   async verifyEmailSend(@Body() verifyEmailDto: VerifyEmailDto): Promise<void> {
     const { email } = verifyEmailDto;
@@ -137,7 +173,17 @@ export class UsersController {
     summary: '이메일 인증 번호 4자리 검증',
     description: '인증번호 4자리 검증',
   })
-  @ApiCreatedResponse({ description: '인증 검증', type: VerifyEmailCodeDto })
+  @ApiCreatedResponse({
+    status: 200,
+    description: '인증 검증',
+    schema: {
+      properties: {
+        msg: {
+          description: '인증 메일 전송 성공',
+        },
+      },
+    },
+  })
   @ApiResponse({ status: 400, description: '인증번호가 일치하지 않습니다.' })
   async verifyEmail(@Body() verifyEmailDto: VerifyEmailCodeDto) {
     const { email, code } = verifyEmailDto;
@@ -150,7 +196,17 @@ export class UsersController {
     summary: '로그인',
     description: '로그인',
   })
-  @ApiCreatedResponse({ description: '로그인', type: UserLoginDto })
+  @ApiCreatedResponse({
+    status: 200,
+    description: '로그인',
+    schema: {
+      properties: {
+        msg: {
+          description: '로그인 성공',
+        },
+      },
+    },
+  })
   @ApiResponse({ status: 400, description: '유저가 존재하지 않습니다' })
   async login(
     @Body() userLoginDtodto: UserLoginDto,
@@ -168,7 +224,17 @@ export class UsersController {
     summary: '로그아웃',
     description: '로그아웃',
   })
-  @ApiCreatedResponse({ status: 200, description: '로그아웃' })
+  @ApiCreatedResponse({
+    status: 200,
+    description: '로그아웃',
+    schema: {
+      properties: {
+        msg: {
+          description: '로그아웃 성공',
+        },
+      },
+    },
+  })
   async logOut(@Req() request: Request) {
     if (request.headers && request.headers['authorization']) {
       delete request.headers['authorization'];
@@ -182,7 +248,17 @@ export class UsersController {
     summary: '회원 탈퇴',
     description: '회원 탈퇴',
   })
-  @ApiResponse({ status: 200, description: '회원 탈퇴' })
+  @ApiResponse({
+    status: 200,
+    description: '회원 탈퇴',
+    schema: {
+      properties: {
+        msg: {
+          description: '회원 탈퇴 성공',
+        },
+      },
+    },
+  })
   // @ApiResponse({ status: 400, description: '닉네임 중복 확인을 완료해주세요' })
   @UseGuards(AuthGuard)
   async deleteUser(@Req() request: Request) {
@@ -196,7 +272,17 @@ export class UsersController {
     summary: '마이페이지 내 정보 수정',
     description: '마이페이지에서 내 정보를 수정하는 API',
   })
-  @ApiResponse({ status: 200, description: '마이페이지 내 정보 수정' })
+  @ApiResponse({
+    status: 200,
+    description: '마이페이지 내 정보 수정',
+    schema: {
+      properties: {
+        msg: {
+          description: '마이페이지 내 정보 수정 성공',
+        },
+      },
+    },
+  })
   async putMyInfo(
     @Body() putMyInfoDto: PutMyInfoDto,
     @Req() request: Request,

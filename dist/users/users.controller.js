@@ -108,7 +108,17 @@ __decorate([
         summary: '회원가입',
         description: '회원가입',
     }),
-    (0, swagger_1.ApiCreatedResponse)({ description: '유저 생성', type: create_user_dto_1.CreateUsersDto }),
+    (0, swagger_1.ApiCreatedResponse)({
+        status: 200,
+        description: '유저 생성',
+        schema: {
+            properties: {
+                msg: {
+                    description: '닉네임 중복확인 완료',
+                },
+            },
+        },
+    }),
     (0, swagger_1.ApiResponse)({ status: 400, description: '닉네임 중복 확인을 완료해주세요' }),
     __param(0, (0, common_1.Body)(common_1.ValidationPipe)),
     __metadata("design:type", Function),
@@ -124,7 +134,13 @@ __decorate([
     (0, swagger_1.ApiCreatedResponse)({
         status: 200,
         description: '닉네임 중복확인',
-        type: check_nick_dto_1.CheckNickDto,
+        schema: {
+            properties: {
+                msg: {
+                    description: '닉네임 중복확인 완료',
+                },
+            },
+        },
     }),
     (0, swagger_1.ApiResponse)({ status: 400, description: '중복된 닉네임 입니다.' }),
     __param(0, (0, common_1.Body)()),
@@ -154,7 +170,17 @@ __decorate([
         summary: '이메일 인증 번호 4자리 재발송',
         description: '인증번호 4자리 재발송',
     }),
-    (0, swagger_1.ApiCreatedResponse)({ description: '인증 메일 재전송', type: verify_email_dto_1.VerifyEmailDto }),
+    (0, swagger_1.ApiCreatedResponse)({
+        status: 200,
+        description: '인증 메일을 성공적으로 재전송했습니다.',
+        schema: {
+            properties: {
+                msg: {
+                    description: '인증 메일을 성공적으로 재전송했습니다.',
+                },
+            },
+        },
+    }),
     (0, swagger_1.ApiResponse)({ status: 400, description: '이메일을 입력 해주세요' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -167,7 +193,17 @@ __decorate([
         summary: '이메일 인증 번호 4자리 발송',
         description: '인증번호 4자리 발송',
     }),
-    (0, swagger_1.ApiCreatedResponse)({ description: '인증 메일 전송', type: verify_email_dto_1.VerifyEmailDto }),
+    (0, swagger_1.ApiCreatedResponse)({
+        status: 200,
+        description: '인증 메일 전송',
+        schema: {
+            properties: {
+                msg: {
+                    description: '인증 메일 전송 성공',
+                },
+            },
+        },
+    }),
     (0, swagger_1.ApiResponse)({ status: 400, description: '이메일을 입력해주세요' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -180,7 +216,17 @@ __decorate([
         summary: '이메일 인증 번호 4자리 검증',
         description: '인증번호 4자리 검증',
     }),
-    (0, swagger_1.ApiCreatedResponse)({ description: '인증 검증', type: verify_email_code_dto_1.VerifyEmailCodeDto }),
+    (0, swagger_1.ApiCreatedResponse)({
+        status: 200,
+        description: '인증 검증',
+        schema: {
+            properties: {
+                msg: {
+                    description: '인증 메일 전송 성공',
+                },
+            },
+        },
+    }),
     (0, swagger_1.ApiResponse)({ status: 400, description: '인증번호가 일치하지 않습니다.' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -193,7 +239,17 @@ __decorate([
         summary: '로그인',
         description: '로그인',
     }),
-    (0, swagger_1.ApiCreatedResponse)({ description: '로그인', type: user_login_dto_1.UserLoginDto }),
+    (0, swagger_1.ApiCreatedResponse)({
+        status: 200,
+        description: '로그인',
+        schema: {
+            properties: {
+                msg: {
+                    description: '로그인 성공',
+                },
+            },
+        },
+    }),
     (0, swagger_1.ApiResponse)({ status: 400, description: '유저가 존재하지 않습니다' }),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Res)({ passthrough: true })),
@@ -207,7 +263,17 @@ __decorate([
         summary: '로그아웃',
         description: '로그아웃',
     }),
-    (0, swagger_1.ApiCreatedResponse)({ status: 200, description: '로그아웃' }),
+    (0, swagger_1.ApiCreatedResponse)({
+        status: 200,
+        description: '로그아웃',
+        schema: {
+            properties: {
+                msg: {
+                    description: '로그아웃 성공',
+                },
+            },
+        },
+    }),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -219,7 +285,17 @@ __decorate([
         summary: '회원 탈퇴',
         description: '회원 탈퇴',
     }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: '회원 탈퇴' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: '회원 탈퇴',
+        schema: {
+            properties: {
+                msg: {
+                    description: '회원 탈퇴 성공',
+                },
+            },
+        },
+    }),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
@@ -233,7 +309,17 @@ __decorate([
         summary: '마이페이지 내 정보 수정',
         description: '마이페이지에서 내 정보를 수정하는 API',
     }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: '마이페이지 내 정보 수정' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: '마이페이지 내 정보 수정',
+        schema: {
+            properties: {
+                msg: {
+                    description: '마이페이지 내 정보 수정 성공',
+                },
+            },
+        },
+    }),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Req)()),
     __param(2, (0, common_1.Param)('userId')),
