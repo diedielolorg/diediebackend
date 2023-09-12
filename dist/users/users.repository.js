@@ -25,7 +25,6 @@ let UsersRepository = exports.UsersRepository = class UsersRepository extends ty
         await queryRunner.startTransaction();
         try {
             const userObject = this.create({ email, nickname, password });
-            console.log(userObject);
             await this.save(userObject);
         }
         catch (error) {
@@ -45,7 +44,10 @@ let UsersRepository = exports.UsersRepository = class UsersRepository extends ty
         return user !== null;
     }
     async loginUserExists(email, password) {
-        const user = await this.findOne({ where: { email, password } });
+        const user = await this.findOne({
+            where: { email, password },
+            select: ['nickname'],
+        });
         return user;
     }
     async deleteUser(userId) {

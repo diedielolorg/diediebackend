@@ -13,7 +13,7 @@ export declare class UsersController {
     private readonly emailSerivce;
     private usersService;
     constructor(configService: ConfigService, emailSerivce: EmailService, usersService: UsersService);
-    createUser(createUserdto: CreateUsersDto): Promise<void>;
+    createUser(createUserdto: CreateUsersDto): Promise<any>;
     checknickname(checkNickDto: CheckNickDto): Promise<{
         msg: string;
     }>;
@@ -23,7 +23,8 @@ export declare class UsersController {
     verifyEmailSend(verifyEmailDto: VerifyEmailDto): Promise<void>;
     verifyEmail(verifyEmailDto: VerifyEmailCodeDto): Promise<any>;
     login(userLoginDtodto: UserLoginDto, response: Response): Promise<{
-        msg: string;
+        accessToken: string;
+        user: import("./entities/user.entity").Users;
     }>;
     logOut(request: Request): Promise<{
         msg: string;

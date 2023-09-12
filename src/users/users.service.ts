@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -38,33 +40,33 @@ export class UsersService {
     this.accessToken = '';
   }
 
-  async createUser(createUserdto: CreateUsersDto): Promise<any> {
+  async createUser(createUserdto: CreateUsersDto) {
     try {
       const { email, emailVerified, nicknameVerified } = createUserdto;
       console.log(emailVerified, nicknameVerified);
-      const userExist = await this.usersRepository.checkUserExists(email);
-      if (userExist) {
-        throw new BadRequestException('해당 이메일로는 가입할 수 없습니다.');
-      }
       if (!emailVerified) {
         throw new BadRequestException('이메일 인증을 완료해주세요');
       }
-
       if (!nicknameVerified) {
-        throw new BadRequestException('닉네임 중복 확을 완료해주세요');
+        throw new BadRequestException('닉네임 중복 확인을 완료해주세요');
+      }
+      const userExist = await this.usersRepository.checkUserExists(email);
+      if (userExist) {
+        throw new BadRequestException('해당 이메일로는 가입할 수 없습니다.');
       }
 
       await this.usersRepository.createUser(createUserdto);
       return { msg: '회원가입 성공' };
     } catch (error) {
       console.error(error);
+      throw error;
     }
   }
 
   async checknickname(nickname: string) {
     const nickBool = await this.usersRepository.checknickname(nickname);
     if (nickBool) {
-      return { msg: '중복된 닉네임 입니다.' };
+      throw new BadRequestException('중복된 닉네임 입니다.');
     } else {
       return { msg: '사용 가능한 닉네임 입니다.' };
     }
@@ -82,7 +84,7 @@ export class UsersService {
       userId: user.userId,
       email: user.email,
     });
-    return accessToken;
+    return { accessToken, user };
   }
 
   async deleteUser(userId: number) {

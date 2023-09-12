@@ -18,11 +18,11 @@ exports.VerifyEmailDto = VerifyEmailDto;
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)({ message: '이메일을 입력해주세요' }),
-    (0, class_validator_1.IsEmail)({}, { message: '이메일 형식을 확인해주세요' }),
+    (0, class_validator_1.IsEmail)(),
     (0, swagger_1.ApiProperty)({
         example: 'ystar5008@naver.com',
         description: '이메일',
     }),
     __metadata("design:type", String)
 ], VerifyEmailDto.prototype, "email", void 0);
-//# sourceMappingURL=verify-email.dto.js.map
+//# sourceMappingURL=VerifyEmailDto.js.map

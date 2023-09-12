@@ -59,7 +59,9 @@ let EmailService = exports.EmailService = class EmailService {
     async reSendConfirmationEmail(email) {
         try {
             const authcode = await this.generateRandomCode();
-            if (!email) {
+            if (!email)
+                : Boolean;
+            {
                 throw new common_1.BadRequestException('이메일을 입력 해주세요');
             }
             const mailOptions = {
@@ -95,4 +97,4 @@ exports.EmailService = EmailService = __decorate([
     __param(0, (0, common_1.Inject)(cache_manager_1.CACHE_MANAGER)),
     __metadata("design:paramtypes", [Object])
 ], EmailService);
-//# sourceMappingURL=email.service.js.map
+//# sourceMappingURL=EmailService.js.map
