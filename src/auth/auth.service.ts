@@ -24,7 +24,7 @@ export class AuthService {
         issuer: '다이백엔드',
       });
 
-      return accessToken;
+      return `bearer ${accessToken}`;
     } catch (error) {
       console.error(error);
     }

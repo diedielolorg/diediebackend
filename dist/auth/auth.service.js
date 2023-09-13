@@ -28,7 +28,7 @@ let AuthService = exports.AuthService = class AuthService {
                 audience: '다이다이',
                 issuer: '다이백엔드',
             });
-            return accessToken;
+            return `bearer ${accessToken}`;
         }
         catch (error) {
             console.error(error);
