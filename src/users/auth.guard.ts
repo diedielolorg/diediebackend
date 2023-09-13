@@ -30,7 +30,7 @@ export class AuthGuard implements CanActivate {
 
     const accessToken = this.extractTokenFromHeader(request);
 
-    console.log(accessToken);
+    //console.log(accessToken);
     //const accessToken = request.cookies.accessToken;
 
     if (!accessToken) {
@@ -38,14 +38,15 @@ export class AuthGuard implements CanActivate {
     }
     try {
       //토큰분해해서 나온 사용자 정보 변수에 할당
+      console.log('1');
+
       const payload = await this.jwtService.verifyAsync(accessToken, {
         secret: process.env.JWT_SECRET,
       });
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
-      //request['user']에 할당
       request['user'] = payload;
-    } catch {
+      console.log(payload);
+    } catch (error) {
+      console.error(error);
       throw new UnauthorizedException('로그인 후 이용할 수 있습니다.');
     }
     return true;
@@ -54,10 +55,10 @@ export class AuthGuard implements CanActivate {
   //토큰 추출 함수
   private extractTokenFromHeader(request: Request): string | undefined {
     const authorizationHeader = request.headers.authorization;
-    console.log(authorizationHeader);
+    // console.log(authorizationHeader);
     if (authorizationHeader) {
       const [type, token] = authorizationHeader.split(' ');
-      if (type === 'Bearer') {
+      if (type === 'bearer') {
         return token;
       }
       return undefined;
