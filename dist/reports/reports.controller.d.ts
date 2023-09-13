@@ -19,6 +19,7 @@ export declare class ReportsController {
             mostFrequentWord: string;
             rank: number;
             count: any;
+            summonerPhoto: string;
         }[];
     }>;
     getUserInfoIngame(summonerName: string): Promise<any>;

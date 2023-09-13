@@ -22,6 +22,7 @@ export declare class ReportsService {
         mostFrequentWord: string;
         rank: number;
         count: any;
+        summonerPhoto: string;
     }[]>;
     getUserInfoIngame(getId: string): Promise<any>;
     getUserName(getUsersId: any[]): Promise<any>;

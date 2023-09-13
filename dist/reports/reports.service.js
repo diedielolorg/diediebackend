@@ -340,9 +340,10 @@ let ReportsService = exports.ReportsService = class ReportsService {
                     return `${year}.${month}.${day} ${hours}:${minutes}`;
                 }
                 const formattedTime = formatDateToCustomString(lastAccessTime);
-                console.log(formattedTime);
                 if (matchingReport) {
+                    const summonerPhoto = matchingFilteredReport.summonerPhoto;
                     return {
+                        summonerPhoto,
                         ...tierInfo,
                         ...matchingReport,
                         lastAccessTime: formattedTime,

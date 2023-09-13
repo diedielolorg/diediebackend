@@ -20,6 +20,7 @@ const auth_guard_1 = require("../users/auth.guard");
 const S3FileInterceptor_1 = require("../utils/S3FileInterceptor");
 const create_report_dto_1 = require("./dto/create-report.dto");
 const reports_service_1 = require("./reports.service");
+const rank_dto_1 = require("./dto/rank.dto");
 let ReportsController = exports.ReportsController = class ReportsController {
     constructor(reportsService, searchService) {
         this.reportsService = reportsService;
@@ -97,7 +98,16 @@ __decorate([
         summary: '유저 신고 등록',
         description: '롤에서 욕한 유저 신고 기능, 소환사 이름, 욕한 날짜, 스크린샷, 욕 카테고리, 신고 내용',
     }),
-    (0, swagger_1.ApiCreatedResponse)({ description: '신고 등록', type: create_report_dto_1.CreateReportDto }),
+    (0, swagger_1.ApiCreatedResponse)({
+        description: '신고 등록',
+        schema: {
+            properties: {
+                msg: {
+                    description: '신고 등록',
+                },
+            },
+        },
+    }),
     (0, common_1.UseInterceptors)(S3FileInterceptor_1.S3FileInterceptor),
     __param(0, (0, common_1.UploadedFiles)()),
     __param(1, (0, common_1.Body)()),
@@ -112,7 +122,11 @@ __decorate([
         summary: '신고 횟수에 따른 랭킹 조회',
         description: '롤에서 욕한 유저가 신고당한 횟수만큼 랭킹 매김',
     }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: '랭킹 조회' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: '랭킹 조회',
+        type: rank_dto_1.rankType,
+    }),
     __param(0, (0, common_1.Query)('Date')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
