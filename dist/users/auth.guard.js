@@ -29,27 +29,28 @@ let AuthGuard = exports.AuthGuard = class AuthGuard {
         }
         const request = context.switchToHttp().getRequest();
         const accessToken = this.extractTokenFromHeader(request);
-        console.log(accessToken);
         if (!accessToken) {
             throw new common_1.UnauthorizedException();
         }
         try {
+            console.log('1');
             const payload = await this.jwtService.verifyAsync(accessToken, {
                 secret: process.env.JWT_SECRET,
             });
             request['user'] = payload;
+            console.log(payload);
         }
-        catch {
+        catch (error) {
+            console.error(error);
             throw new common_1.UnauthorizedException('로그인 후 이용할 수 있습니다.');
         }
         return true;
     }
     extractTokenFromHeader(request) {
         const authorizationHeader = request.headers.authorization;
-        console.log(authorizationHeader);
         if (authorizationHeader) {
             const [type, token] = authorizationHeader.split(' ');
-            if (type === 'Bearer') {
+            if (type === 'bearer') {
                 return token;
             }
             return undefined;
