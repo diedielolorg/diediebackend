@@ -54,7 +54,7 @@ export class AuthGuard implements CanActivate {
   //토큰 추출 함수
   private extractTokenFromHeader(request: Request): string | undefined {
     const authorizationHeader = request.headers.authorization;
-    // console.log(authorizationHeader);
+    console.log(authorizationHeader);
     if (authorizationHeader) {
       const [type, token] = authorizationHeader.split(' ');
       if (type === 'bearer') {
