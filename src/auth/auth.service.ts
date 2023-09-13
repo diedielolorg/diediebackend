@@ -19,7 +19,7 @@ export class AuthService {
     const payload = { ...user };
     try {
       const accessToken = jwt.sign(payload, this.config.jwtSecret, {
-        expiresIn: '2h',
+        expiresIn: '12h',
         audience: '다이다이',
         issuer: '다이백엔드',
       });

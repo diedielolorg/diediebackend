@@ -29,6 +29,7 @@ let AuthGuard = exports.AuthGuard = class AuthGuard {
         }
         const request = context.switchToHttp().getRequest();
         const accessToken = this.extractTokenFromHeader(request);
+        console.log(accessToken);
         if (!accessToken) {
             throw new common_1.UnauthorizedException();
         }
