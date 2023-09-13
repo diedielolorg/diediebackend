@@ -216,7 +216,7 @@ export class UsersController {
     const accessToken = await this.usersService.login(email, password);
     response.header('Hi-junsoo', 'junsoobabo');
     response.header('authorization', `Bearer ${accessToken}`);
-    return accessToken;
+    return `bearer ${accessToken}`;
   }
 
   @Delete('/logout')
