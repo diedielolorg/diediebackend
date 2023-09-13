@@ -448,9 +448,11 @@ export class ReportsService {
         }
 
         const formattedTime = formatDateToCustomString(lastAccessTime);
-        console.log(formattedTime);
+
         if (matchingReport) {
+          const summonerPhoto = matchingFilteredReport.summonerPhoto; // summonerPhoto를 추가
           return {
+            summonerPhoto,
             ...tierInfo,
             ...matchingReport,
             lastAccessTime: formattedTime,

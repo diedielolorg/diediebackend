@@ -23,6 +23,7 @@ import { AuthGuard } from 'src/users/auth.guard';
 import { S3FileInterceptor } from 'src/utils/S3FileInterceptor';
 import { CreateReportDto } from './dto/create-report.dto';
 import { ReportsService } from './reports.service';
+import { rankType } from './dto/rank.dto';
 
 @ApiTags('REPORTS')
 @Controller('/api')
@@ -97,7 +98,16 @@ export class ReportsController {
     description:
       '롤에서 욕한 유저 신고 기능, 소환사 이름, 욕한 날짜, 스크린샷, 욕 카테고리, 신고 내용',
   })
-  @ApiCreatedResponse({ description: '신고 등록', type: CreateReportDto })
+  @ApiCreatedResponse({
+    description: '신고 등록',
+    schema: {
+      properties: {
+        msg: {
+          description: '신고 등록',
+        },
+      },
+    },
+  })
   @UseInterceptors(S3FileInterceptor)
   async createReportUsers(
     @UploadedFiles() file: Express.Multer.File[],
@@ -117,7 +127,11 @@ export class ReportsController {
     summary: '신고 횟수에 따른 랭킹 조회',
     description: '롤에서 욕한 유저가 신고당한 횟수만큼 랭킹 매김',
   })
-  @ApiResponse({ status: 200, description: '랭킹 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '랭킹 조회',
+    type: rankType,
+  })
   async findAll(@Query('Date') Date: string) {
     const data = await this.reportsService.getRankUser(Date);
     return { data };
@@ -157,10 +171,8 @@ export class ReportsController {
     );
     // console.log(getUsersTierByAPI)
 
-    const summonerIds = getUsersId.map(
-      (participant) => participant.summonerId,
-    );
-    console.log(summonerIds)
+    const summonerIds = getUsersId.map((participant) => participant.summonerId);
+    console.log(summonerIds);
     // 데이터베이스에서 신고된 목록 갖고오기
     const getReportsInfoBySummonerName =
       await this.reportsService.getReportsInfo(summonerIds);
