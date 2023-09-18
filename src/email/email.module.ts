@@ -4,7 +4,15 @@ import * as redisStore from 'cache-manager-ioredis';
 import { EmailService } from './email.service';
 
 @Module({
-  imports: [CacheModule.register()],
+  imports: [
+    CacheModule.register({
+      useFactory: () => ({
+        store: redisStore,
+        host: 'localhost',
+        port: 6379,
+      }),
+    }),
+  ],
   providers: [EmailService],
   exports: [EmailService],
 })

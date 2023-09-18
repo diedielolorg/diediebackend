@@ -9,12 +9,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmailModule = void 0;
 const common_1 = require("@nestjs/common");
 const cache_manager_1 = require("@nestjs/cache-manager");
+const redisStore = require("cache-manager-ioredis");
 const email_service_1 = require("./email.service");
 let EmailModule = exports.EmailModule = class EmailModule {
 };
 exports.EmailModule = EmailModule = __decorate([
     (0, common_1.Module)({
-        imports: [cache_manager_1.CacheModule.register()],
+        imports: [
+            cache_manager_1.CacheModule.register({
+                useFactory: () => ({
+                    store: redisStore,
+                    host: 'localhost',
+                    port: 6379,
+                }),
+            }),
+        ],
         providers: [email_service_1.EmailService],
         exports: [email_service_1.EmailService],
     })

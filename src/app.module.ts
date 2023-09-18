@@ -12,20 +12,10 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    //ConfigModule을 불러와 설정
     ConfigModule.forRoot({
-      //한번 읽은 환경변수의 값을 캐싱하여 읽기 속도 향항
       cache: true,
-      //ConfigModule을 다른 모든 모듈에서 불러와야하는 번거로움을 피하기 위함
       isGlobal: true,
       envFilePath: ['.env'],
-    }),
-    CacheModule.register({
-      useFactory: () => ({
-        store: redisStore,
-        host: 'localhost',
-        port: 6379,
-      }),
     }),
     ReportsModule,
     TypeOrmModule.forRoot(dataSourceOptions),
