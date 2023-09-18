@@ -42,6 +42,7 @@ let EmailService = exports.EmailService = class EmailService {
             if (!email) {
                 throw new common_1.BadRequestException('이메일을 입력 해주세요');
             }
+            console.log(authcode);
             const mailOptions = {
                 from: process.env.EMAIL_ADDRESS,
                 to: email,
@@ -49,7 +50,7 @@ let EmailService = exports.EmailService = class EmailService {
                 html: `인증번호 4자리입니다 ${authcode}`,
             };
             await this.transporter.sendMail(mailOptions);
-            await this.cacheManager.set(email, authcode, 180);
+            await this.cacheManager.set(email, authcode, 300000);
             return { msg: '인증번호 발송 완료' };
         }
         catch (error) {
@@ -74,7 +75,7 @@ let EmailService = exports.EmailService = class EmailService {
                 console.log('기존인증번호를 삭제합니다');
                 await this.cacheManager.del(email);
             }
-            await this.cacheManager.set(email, authcode, 300);
+            await this.cacheManager.set(email, authcode, 300000);
             return { msg: '인증번호 재발송 완료' };
         }
         catch (error) {
@@ -83,8 +84,7 @@ let EmailService = exports.EmailService = class EmailService {
     }
     async verifyEmail(email, code) {
         const value = await this.cacheManager.get(email);
-        console.log(value);
-        if (value !== String(code)) {
+        if (value !== `${code}`) {
             throw new common_1.BadRequestException('인증번호가 일치하지 않습니다.');
         }
         return { msg: '인증번호 확인 완료' };
