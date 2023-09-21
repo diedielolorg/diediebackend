@@ -303,7 +303,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "deleteUser", null);
 __decorate([
-    (0, common_1.Put)('/mypage/myinfo'),
+    (0, common_1.Put)('/mypage/myinfo/:userId'),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, swagger_1.ApiOperation)({
         summary: '마이페이지 내 정보 수정',

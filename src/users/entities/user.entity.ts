@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
+  JoinColumn
 } from 'typeorm';
 import { Reports } from '../../reports/entities/report.entity';
 
@@ -36,6 +37,14 @@ export class Users extends BaseEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @OneToMany(() => Reports, (report) => report.Users)
+
+  @OneToMany(() => Reports, (report) => report.Users, {  cascade: true })
   reports: Reports[];
+
+
+  // @OneToMany(() => Reports, (report) => report.Users ,{
+  //   cascade: true,
+  // })
+  // @JoinColumn({ name: 'userId' }) // 외래 키 컬럼 지정
+  // reports: Reports[];
 }

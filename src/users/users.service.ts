@@ -73,13 +73,10 @@ export class UsersService {
   }
 
   async login(email: string, password: string) {
-    //userRepository를 사용해 사용자 검색
     const user = await this.usersRepository.loginUserExists(email, password);
-    //존재하지 않을때 예외처리
     if (!user) {
       throw new NotFoundException('유저가 존재하지 않습니다');
     }
-    //존재하면 해당 사용자 정보로 로그인 토큰 생성
     const accessToken = this.authService.login({
       userId: user.userId,
       email: user.email,
@@ -88,17 +85,19 @@ export class UsersService {
   }
 
   async deleteUser(userId: number) {
-    return await this.usersRepository.deleteUser(userId);
+    await this.usersRepository.deleteUser(userId);
+    return {msg: "회원탈퇴를 축하드립니다. 다시는 보지 말아요 우리"}
   }
 
   async putMyInfo(putMyInfoArg) {
     const { userId, reqUserId } = putMyInfoArg;
-    const loggedInUser = await this.usersRepository.findOne(reqUserId);
-    const wantPutUser = await this.usersRepository.findOne(userId);
+    const loggedInUser = await this.usersRepository.findOne({where: {userId: reqUserId}});
+    const wantPutUser = await this.usersRepository.findOne({where: {userId}});
 
     if (loggedInUser.nickname !== wantPutUser.nickname)
       throw BadRequestException;
-    return await this.usersRepository.putMyInfo(putMyInfoArg);
+    await this.usersRepository.putMyInfo(putMyInfoArg);
+    return {msg: "유저 수정 정보 완료"}
   }
 
   async getMyReport({ page, pageSize, userId }) {
@@ -106,6 +105,7 @@ export class UsersService {
       select: {
         reportId: true,
         summonerId: true,
+        summonerName: true,
         summonerPhoto: true,
         category: true,
         reportPayload: true,
@@ -113,7 +113,7 @@ export class UsersService {
         reportDate: true,
         createdAt: true,
       },
-      where: userId,
+      where: { userId: userId },
       skip: (page - 1) * pageSize,
       take: page * pageSize,
     });
@@ -153,7 +153,6 @@ export class UsersService {
     }
   }
   setToken(token: string): boolean {
-    //주어진 토큰을 accessToken에 저장하고 true를 반환
     this.accessToken = token;
     return true;
   }

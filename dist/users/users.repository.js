@@ -51,9 +51,8 @@ let UsersRepository = exports.UsersRepository = class UsersRepository extends ty
         return user;
     }
     async deleteUser(userId) {
-        await this.delete({
-            userId,
-        });
+        console.log(userId);
+        return await this.delete(userId);
     }
     async isExistUser(userId) {
         if (await this.findOne({ where: { userId } }))

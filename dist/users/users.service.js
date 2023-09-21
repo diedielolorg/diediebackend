@@ -74,21 +74,24 @@ let UsersService = exports.UsersService = class UsersService {
         return { accessToken, user };
     }
     async deleteUser(userId) {
-        return await this.usersRepository.deleteUser(userId);
+        await this.usersRepository.deleteUser(userId);
+        return { msg: "회원탈퇴를 축하드립니다. 다시는 보지 말아요 우리" };
     }
     async putMyInfo(putMyInfoArg) {
         const { userId, reqUserId } = putMyInfoArg;
-        const loggedInUser = await this.usersRepository.findOne(reqUserId);
-        const wantPutUser = await this.usersRepository.findOne(userId);
+        const loggedInUser = await this.usersRepository.findOne({ where: { userId: reqUserId } });
+        const wantPutUser = await this.usersRepository.findOne({ where: { userId } });
         if (loggedInUser.nickname !== wantPutUser.nickname)
             throw common_1.BadRequestException;
-        return await this.usersRepository.putMyInfo(putMyInfoArg);
+        await this.usersRepository.putMyInfo(putMyInfoArg);
+        return { msg: "유저 수정 정보 완료" };
     }
     async getMyReport({ page, pageSize, userId }) {
         const reportData = await this.reportRepository.find({
             select: {
                 reportId: true,
                 summonerId: true,
+                summonerName: true,
                 summonerPhoto: true,
                 category: true,
                 reportPayload: true,
@@ -96,7 +99,7 @@ let UsersService = exports.UsersService = class UsersService {
                 reportDate: true,
                 createdAt: true,
             },
-            where: userId,
+            where: { userId: userId },
             skip: (page - 1) * pageSize,
             take: page * pageSize,
         });

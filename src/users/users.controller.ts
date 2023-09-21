@@ -266,7 +266,7 @@ export class UsersController {
     return await this.usersService.deleteUser(userId);
   }
 
-  @Put('/mypage/myinfo')
+  @Put('/mypage/myinfo/:userId')
   @UseGuards(AuthGuard)
   @ApiOperation({
     summary: '마이페이지 내 정보 수정',
