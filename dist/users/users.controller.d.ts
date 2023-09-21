@@ -29,7 +29,11 @@ export declare class UsersController {
     logOut(request: Request): Promise<{
         msg: string;
     }>;
-    deleteUser(request: Request): Promise<void>;
-    putMyInfo(putMyInfoDto: PutMyInfoDto, request: Request, userId: string): Promise<void>;
+    deleteUser(request: Request): Promise<{
+        msg: string;
+    }>;
+    putMyInfo(putMyInfoDto: PutMyInfoDto, request: Request, userId: string): Promise<{
+        msg: string;
+    }>;
     getMyReport(request: Request, paginationQuery: any): Promise<any>;
 }

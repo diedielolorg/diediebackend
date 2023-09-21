@@ -27,7 +27,9 @@ export class Reports extends BaseEntity {
   @IsString()
   summonerId: string;
 
-  @ManyToOne(() => Users, (Users) => Users.userId)
+  @ManyToOne(() => Users, (Users) => Users.userId ,{
+    onDelete: 'CASCADE'
+  })
   @JoinColumn({ name: 'userId' })
   Users: Users;
 

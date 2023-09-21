@@ -43,7 +43,7 @@ __decorate([
     __metadata("design:type", Date)
 ], Users.prototype, "updatedAt", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => report_entity_1.Reports, (report) => report.Users),
+    (0, typeorm_1.OneToMany)(() => report_entity_1.Reports, (report) => report.Users, { cascade: true }),
     __metadata("design:type", Array)
 ], Users.prototype, "reports", void 0);
 exports.Users = Users = __decorate([

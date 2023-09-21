@@ -23,8 +23,12 @@ export declare class UsersService {
         accessToken: string;
         user: import("./entities/user.entity").Users;
     }>;
-    deleteUser(userId: number): Promise<void>;
-    putMyInfo(putMyInfoArg: any): Promise<void>;
+    deleteUser(userId: number): Promise<{
+        msg: string;
+    }>;
+    putMyInfo(putMyInfoArg: any): Promise<{
+        msg: string;
+    }>;
     getMyReport({ page, pageSize, userId }: {
         page: any;
         pageSize: any;

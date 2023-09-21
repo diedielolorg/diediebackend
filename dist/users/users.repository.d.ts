@@ -8,7 +8,7 @@ export declare class UsersRepository extends Repository<Users> {
     checknickname(nickname: string): Promise<boolean>;
     checkUserExists(email: string): Promise<boolean>;
     loginUserExists(email: string, password: string): Promise<Users>;
-    deleteUser(userId: number): Promise<void>;
+    deleteUser(userId: number): Promise<import("typeorm").DeleteResult>;
     isExistUser(userId: number): Promise<boolean>;
     putMyInfo(putMyInfoArg: {
         userId: number;

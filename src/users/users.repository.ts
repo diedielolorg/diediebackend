@@ -44,9 +44,8 @@ export class UsersRepository extends Repository<Users> {
   }
 
   async deleteUser(userId: number) {
-    await this.delete({
-      userId,
-    });
+    console.log(userId)
+     return await this.delete( userId);
   }
 
   async isExistUser(userId: number) {
