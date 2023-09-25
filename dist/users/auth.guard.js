@@ -28,19 +28,15 @@ let AuthGuard = exports.AuthGuard = class AuthGuard {
             return true;
         }
         const request = context.switchToHttp().getRequest();
-        console.log(request);
         const accessToken = this.extractTokenFromHeader(request);
-        console.log(accessToken);
         if (!accessToken) {
             throw new common_1.UnauthorizedException();
         }
         try {
-            console.log('1');
             const payload = await this.jwtService.verifyAsync(accessToken, {
                 secret: process.env.JWT_SECRET,
             });
             request['user'] = payload;
-            console.log(payload);
         }
         catch (error) {
             console.error(error);
@@ -50,7 +46,6 @@ let AuthGuard = exports.AuthGuard = class AuthGuard {
     }
     extractTokenFromHeader(request) {
         const authorizationHeader = request.headers.authorization;
-        console.log(authorizationHeader);
         if (authorizationHeader) {
             const [type, token] = authorizationHeader.split(' ');
             if (type === 'bearer') {

@@ -22,10 +22,7 @@ export declare class UsersController {
     reVerifyEmailSend(verifyEmailDto: VerifyEmailDto): Promise<void>;
     verifyEmailSend(verifyEmailDto: VerifyEmailDto): Promise<void>;
     verifyEmail(verifyEmailDto: VerifyEmailCodeDto): Promise<any>;
-    login(userLoginDtodto: UserLoginDto, response: Response): Promise<{
-        accessToken: string;
-        user: import("./entities/user.entity").Users;
-    }>;
+    login(userLoginDtodto: UserLoginDto, response: Response): Promise<string>;
     logOut(request: Request): Promise<{
         msg: string;
     }>;

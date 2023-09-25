@@ -46,7 +46,7 @@ let UsersRepository = exports.UsersRepository = class UsersRepository extends ty
     async loginUserExists(email, password) {
         const user = await this.findOne({
             where: { email, password },
-            select: ['nickname'],
+            select: ['userId', 'nickname'],
         });
         return user;
     }

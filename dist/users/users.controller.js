@@ -75,9 +75,10 @@ let UsersController = exports.UsersController = class UsersController {
     }
     async login(userLoginDtodto, response) {
         const { email, password } = userLoginDtodto;
-        const accessToken = await this.usersService.login(email, password);
+        const TokenObj = await this.usersService.login(email, password);
+        const accessToken = TokenObj.accessToken.split(' ')[1];
         response.header('Hi-junsoo', 'junsoobabo');
-        response.header('authorization', `Bearer ${accessToken}`);
+        response.header('authorization', `bearer ${accessToken}`);
         return accessToken;
     }
     async logOut(request) {
