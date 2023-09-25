@@ -38,7 +38,7 @@ export class UsersRepository extends Repository<Users> {
   async loginUserExists(email: string, password: string): Promise<Users> {
     const user = await this.findOne({
       where: { email, password },
-      select: ['nickname'],
+      select: ['userId' ,'nickname'],
     });
     return user;
   }
