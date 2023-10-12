@@ -35,7 +35,7 @@ export class ReportsController {
 
   @Get('userinfo/:summonerName')
   @ApiOperation({
-    summary: '전적 상세 정보',
+    summary: '유저 상세 정보',
     description:
       '소환사의 이름, 솔랭 승률, 주 출몰지역 외 통계, 마지막 플레이 타임 && DB에서 욕 통계, 신고당한 수, 신고당한 수에 비례하여 랭킹, 등록된 신고',
   })

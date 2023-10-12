@@ -211,6 +211,9 @@ let ReportsService = exports.ReportsService = class ReportsService {
                     'reportPayload',
                     'reportCapture',
                 ],
+                order: {
+                    reportId: "DESC"
+                },
                 skip,
                 take,
             });
@@ -353,7 +356,12 @@ let ReportsService = exports.ReportsService = class ReportsService {
                     };
                 }
             });
-            return result;
+            const data = {
+                top1: result[0],
+                data: result
+            };
+            console.log(data);
+            return data;
         }
         catch (error) {
             console.error(error);

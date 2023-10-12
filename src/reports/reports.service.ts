@@ -263,6 +263,9 @@ export class ReportsService {
           'reportPayload',
           'reportCapture',
         ],
+        order: {
+          reportId: "DESC"
+        },
         skip,
         take,
       });
@@ -364,11 +367,13 @@ export class ReportsService {
       const [year, month] = Date.split('-');
 
       const matchDate = await this.reportRepository.find({});
+      // console.log(matchDate)
 
       const filteredReports = matchDate.filter((report) => {
         const [reportYear, reportMonth] = report.reportDate.split('-');
         return reportYear === year && reportMonth === month;
       });
+      // console.log(filteredReports)
 
       const summonerNames = filteredReports.map(
         (report) => report.summonerName,
@@ -463,7 +468,13 @@ export class ReportsService {
         }
       });
 
-      return result;
+      const data = {
+        top1: result[0],
+        data: result
+      }
+      console.log(data)
+
+      return data;
     } catch (error) {
       console.error(error);
     }

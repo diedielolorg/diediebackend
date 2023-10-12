@@ -11,16 +11,29 @@ export declare class ReportsController {
     createReportUsers(file: Express.Multer.File[], createReportDto: CreateReportDto, request: Request): Promise<any>;
     findAll(Date: string): Promise<{
         data: {
-            lastAccessTime: string;
-            winRate: number;
-            wins: number;
-            losses: number;
-            summonerName: string;
-            mostFrequentWord: string;
-            rank: number;
-            count: any;
-            summonerPhoto: string;
-        }[];
+            top1: {
+                lastAccessTime: string;
+                winRate: number;
+                wins: number;
+                losses: number;
+                summonerName: string;
+                mostFrequentWord: string;
+                rank: number;
+                count: any;
+                summonerPhoto: string;
+            };
+            data: {
+                lastAccessTime: string;
+                winRate: number;
+                wins: number;
+                losses: number;
+                summonerName: string;
+                mostFrequentWord: string;
+                rank: number;
+                count: any;
+                summonerPhoto: string;
+            }[];
+        };
     }>;
     getUserInfoIngame(summonerName: string): Promise<any>;
 }
