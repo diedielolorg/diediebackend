@@ -14,16 +14,29 @@ export declare class ReportsService {
     getReportData(getSummonerID: any, page?: number): Promise<any>;
     createReportUsers(userId: any, createReportDto: CreateReportDto, file: any): Promise<any>;
     getRankUser(Date: string): Promise<{
-        lastAccessTime: string;
-        winRate: number;
-        wins: number;
-        losses: number;
-        summonerName: string;
-        mostFrequentWord: string;
-        rank: number;
-        count: any;
-        summonerPhoto: string;
-    }[]>;
+        top1: {
+            lastAccessTime: string;
+            winRate: number;
+            wins: number;
+            losses: number;
+            summonerName: string;
+            mostFrequentWord: string;
+            rank: number;
+            count: any;
+            summonerPhoto: string;
+        };
+        data: {
+            lastAccessTime: string;
+            winRate: number;
+            wins: number;
+            losses: number;
+            summonerName: string;
+            mostFrequentWord: string;
+            rank: number;
+            count: any;
+            summonerPhoto: string;
+        }[];
+    }>;
     getUserInfoIngame(getId: string): Promise<any>;
     getUserName(getUsersId: any[]): Promise<any>;
     getUserTierByApi(getUsersNameByMapping: string[]): Promise<any>;
