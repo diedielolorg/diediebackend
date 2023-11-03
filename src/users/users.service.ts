@@ -96,6 +96,10 @@ export class UsersService {
 
     // if (loggedInUser.nickname !== wantPutUser.nickname)
     //   throw BadRequestException;
+    console.log(putMyInfoArg)
+    if(putMyInfoArg.userId != putMyInfoArg.reqUserId){
+      return ({ error: "로그인한 회원과 일치하지 않습니다"})
+    }
     await this.usersRepository.putMyInfo(putMyInfoArg);
     return {msg: "유저 수정 정보 완료"}
   }
