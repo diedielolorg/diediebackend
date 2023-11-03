@@ -198,4 +198,14 @@ export class ReportsController {
 
     return combinedResponse;
   }
+
+  @Get('/riot.txt')
+  @ApiOperation({
+    summary: 'Riot Api Key 인증 경로'
+  })
+  async riotApiKey(
+  ): Promise<any> {
+   const riotTxtFile = "a2a9d944-4008-4882-a429-e0c69bc6e22f"
+   return riotTxtFile
+  }
 }

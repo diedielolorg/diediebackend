@@ -77,6 +77,10 @@ let ReportsController = exports.ReportsController = class ReportsController {
         };
         return combinedResponse;
     }
+    async riotApiKey() {
+        const riotTxtFile = "a2a9d944-4008-4882-a429-e0c69bc6e22f";
+        return riotTxtFile;
+    }
 };
 __decorate([
     (0, common_1.Get)('userinfo/:summonerName'),
@@ -144,6 +148,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ReportsController.prototype, "getUserInfoIngame", null);
+__decorate([
+    (0, common_1.Get)('/riot.txt'),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Riot Api Key 인증 경로'
+    }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], ReportsController.prototype, "riotApiKey", null);
 exports.ReportsController = ReportsController = __decorate([
     (0, swagger_1.ApiTags)('REPORTS'),
     (0, common_1.Controller)('/api'),

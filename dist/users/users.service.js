@@ -78,7 +78,6 @@ let UsersService = exports.UsersService = class UsersService {
         return { msg: "회원탈퇴를 축하드립니다. 다시는 보지 말아요 우리" };
     }
     async putMyInfo(putMyInfoArg) {
-        console.log(putMyInfoArg);
         if (putMyInfoArg.userId != putMyInfoArg.reqUserId) {
             return ({ error: "로그인한 회원과 일치하지 않습니다" });
         }
