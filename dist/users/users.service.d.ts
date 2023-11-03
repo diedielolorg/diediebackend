@@ -27,7 +27,11 @@ export declare class UsersService {
         msg: string;
     }>;
     putMyInfo(putMyInfoArg: any): Promise<{
+        error: string;
+        msg?: undefined;
+    } | {
         msg: string;
+        error?: undefined;
     }>;
     getMyReport({ page, pageSize, userId }: {
         page: any;

@@ -33,7 +33,11 @@ export declare class UsersController {
         msg: string;
     }>;
     putMyInfo(putMyInfoDto: PutMyInfoDto, request: Request, userId: string): Promise<{
+        error: string;
+        msg?: undefined;
+    } | {
         msg: string;
+        error?: undefined;
     }>;
     getMyReport(request: Request, paginationQuery: any): Promise<any>;
 }
