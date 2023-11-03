@@ -36,4 +36,5 @@ export declare class ReportsController {
         };
     }>;
     getUserInfoIngame(summonerName: string): Promise<any>;
+    riotApiKey(): Promise<any>;
 }
