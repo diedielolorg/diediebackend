@@ -90,12 +90,12 @@ export class UsersService {
   }
 
   async putMyInfo(putMyInfoArg) {
-    const { userId, reqUserId } = putMyInfoArg;
-    const loggedInUser = await this.usersRepository.findOne({where: {userId: reqUserId}});
-    const wantPutUser = await this.usersRepository.findOne({where: {userId}});
+    // const { userId, reqUserId } = putMyInfoArg;
+    // const loggedInUser = await this.usersRepository.findOne({where: {userId: reqUserId}});
+    // const wantPutUser = await this.usersRepository.findOne({where: {userId}});
 
-    if (loggedInUser.nickname !== wantPutUser.nickname)
-      throw BadRequestException;
+    // if (loggedInUser.nickname !== wantPutUser.nickname)
+    //   throw BadRequestException;
     await this.usersRepository.putMyInfo(putMyInfoArg);
     return {msg: "유저 수정 정보 완료"}
   }
