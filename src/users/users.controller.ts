@@ -31,6 +31,7 @@ import { UserLoginDto } from './dto/user-login.dto';
 import { VerifyEmailCodeDto } from './dto/verify-email-code.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { UsersService } from './users.service';
+import { Token } from 'aws-sdk';
 
 @ApiTags('USERS')
 @Controller('/api/users')
@@ -217,7 +218,12 @@ export class UsersController {
     const accessToken=TokenObj.accessToken.split(' ')[1]
     response.header('Hi-junsoo', 'junsoobabo');
     response.header('authorization', `bearer ${accessToken}`);
-    return accessToken;
+    const responseResult = {
+      accessToken: TokenObj.accessToken,
+      nickname: TokenObj.user.nickname
+    }
+    return responseResult
+    // return accessToken;
   }
 
   @Delete('/logout')

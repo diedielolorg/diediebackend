@@ -22,7 +22,10 @@ export declare class UsersController {
     reVerifyEmailSend(verifyEmailDto: VerifyEmailDto): Promise<void>;
     verifyEmailSend(verifyEmailDto: VerifyEmailDto): Promise<void>;
     verifyEmail(verifyEmailDto: VerifyEmailCodeDto): Promise<any>;
-    login(userLoginDtodto: UserLoginDto, response: Response): Promise<string>;
+    login(userLoginDtodto: UserLoginDto, response: Response): Promise<{
+        accessToken: string;
+        nickname: string;
+    }>;
     logOut(request: Request): Promise<{
         msg: string;
     }>;

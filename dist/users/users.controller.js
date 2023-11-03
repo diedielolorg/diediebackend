@@ -79,7 +79,11 @@ let UsersController = exports.UsersController = class UsersController {
         const accessToken = TokenObj.accessToken.split(' ')[1];
         response.header('Hi-junsoo', 'junsoobabo');
         response.header('authorization', `bearer ${accessToken}`);
-        return accessToken;
+        const responseResult = {
+            accessToken: TokenObj.accessToken,
+            nickname: TokenObj.user.nickname
+        };
+        return responseResult;
     }
     async logOut(request) {
         if (request.headers && request.headers['authorization']) {

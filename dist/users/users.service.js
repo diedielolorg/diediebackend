@@ -78,11 +78,6 @@ let UsersService = exports.UsersService = class UsersService {
         return { msg: "회원탈퇴를 축하드립니다. 다시는 보지 말아요 우리" };
     }
     async putMyInfo(putMyInfoArg) {
-        const { userId, reqUserId } = putMyInfoArg;
-        const loggedInUser = await this.usersRepository.findOne({ where: { userId: reqUserId } });
-        const wantPutUser = await this.usersRepository.findOne({ where: { userId } });
-        if (loggedInUser.nickname !== wantPutUser.nickname)
-            throw common_1.BadRequestException;
         await this.usersRepository.putMyInfo(putMyInfoArg);
         return { msg: "유저 수정 정보 완료" };
     }
