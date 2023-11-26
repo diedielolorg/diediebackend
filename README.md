@@ -1,6 +1,6 @@
 # ⚔DieDie-Backend
 
-![140995581](https://github.com/diedielolorg/diediebackend/assets/96641210/e19693ae-91f6-4d65-9fed-832b9f221b89)
+![image](https://github.com/ParkBrianJunSoo/diediebackend/assets/125964794/d29a9699-a432-49e5-9efa-38e14fcad40d)
 
 </br>
 </br>
