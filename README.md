@@ -2,6 +2,7 @@
 
 ![image](https://github.com/ParkBrianJunSoo/diediebackend/assets/125964794/d29a9699-a432-49e5-9efa-38e14fcad40d)
 <img width="1280" alt="image" src="https://github.com/ParkBrianJunSoo/diediebackend/assets/125964794/21700c63-9e5e-4c78-9d8f-9564d760f15f">
+<img width="1280" alt="image" src="https://github.com/ParkBrianJunSoo/diediebackend/assets/125964794/3b29f1f9-e4b8-4adf-9578-c0bc66743c0b">
 <img width="1280" alt="image" src="https://github.com/ParkBrianJunSoo/diediebackend/assets/125964794/6d415425-9bef-4f53-8db8-68556ec20d30">
 
 </br>
