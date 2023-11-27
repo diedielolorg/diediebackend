@@ -50,12 +50,6 @@
 </br>
 </br>
 
-## 🎞와이어 프레임
-
-![메인화면](https://github.com/diedielolorg/diediebackend/assets/96641210/eb90ca94-11af-49d8-84b2-44995ab5eea7)
-![랭킹-1](https://github.com/diedielolorg/diediebackend/assets/96641210/4dc6b221-3689-4fa6-a615-27c5e6e57ca9)
-![신고등록-2](https://github.com/diedielolorg/diediebackend/assets/96641210/a1aea5cf-adc9-4b7b-b9fb-638aa06bff11)
-
 ## ERD
 
 ![erd](https://github.com/diedielolorg/diediebackend/assets/96641210/c2514346-3475-44d0-9d16-619abec6daad)
