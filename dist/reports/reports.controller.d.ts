@@ -21,7 +21,7 @@ export declare class ReportsController {
                 rank: number;
                 count: any;
                 summonerPhoto: string;
-            };
+            }[];
             data: {
                 lastAccessTime: string;
                 winRate: number;

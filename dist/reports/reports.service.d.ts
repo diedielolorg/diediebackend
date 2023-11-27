@@ -24,7 +24,7 @@ export declare class ReportsService {
             rank: number;
             count: any;
             summonerPhoto: string;
-        };
+        }[];
         data: {
             lastAccessTime: string;
             winRate: number;

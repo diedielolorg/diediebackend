@@ -356,8 +356,10 @@ let ReportsService = exports.ReportsService = class ReportsService {
                     };
                 }
             });
+            const top1 = result[0];
+            const top1Array = [top1];
             const data = {
-                top1: result[0],
+                top1: top1Array,
                 data: result
             };
             console.log(data);
