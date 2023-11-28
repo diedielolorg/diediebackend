@@ -24,13 +24,4 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], PutMyInfoDto.prototype, "nickname", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
-    (0, swagger_1.ApiProperty)({
-        example: '1q2w3e4r@!',
-        description: '비밀번호',
-    }),
-    __metadata("design:type", String)
-], PutMyInfoDto.prototype, "password", void 0);
 //# sourceMappingURL=put-myInfo.dto.js.map

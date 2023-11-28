@@ -10,11 +10,4 @@ export class PutMyInfoDto {
   })
   public nickname: string;
 
-  @IsNotEmpty()
-  @IsString()
-  @ApiProperty({
-    example: '1q2w3e4r@!',
-    description: '비밀번호',
-  })
-  password: string;
 }

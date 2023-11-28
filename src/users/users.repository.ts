@@ -56,7 +56,6 @@ export class UsersRepository extends Repository<Users> {
   async putMyInfo(putMyInfoArg: {
     userId: number;
     nickname: string;
-    password: string;
   }) {
     const { userId, nickname } = putMyInfoArg;
     this.update(
