@@ -273,7 +273,7 @@ export class UsersController {
     return await this.usersService.deleteUser(userId);
   }
 
-  @Put('/mypage/myinfo/:userId')
+  @Put('/mypage/myinfo')
   @UseGuards(AuthGuard)
   @ApiOperation({
     summary: '마이페이지 내 정보 수정',
@@ -293,11 +293,10 @@ export class UsersController {
   async putMyInfo(
     @Body() putMyInfoDto: PutMyInfoDto,
     @Req() request: Request,
-    @Param('userId') userId: string,
   ) {
     const reqUserId = request['user'].userId;
     const { nickname, password } = putMyInfoDto;
-    const putMyInfoArg = { userId, reqUserId, nickname, password };
+    const putMyInfoArg = { userId: reqUserId, nickname, password };
 
     return this.usersService.putMyInfo(putMyInfoArg);
   }

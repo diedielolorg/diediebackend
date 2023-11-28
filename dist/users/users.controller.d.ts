@@ -32,7 +32,7 @@ export declare class UsersController {
     deleteUser(request: Request): Promise<{
         msg: string;
     }>;
-    putMyInfo(putMyInfoDto: PutMyInfoDto, request: Request, userId: string): Promise<{
+    putMyInfo(putMyInfoDto: PutMyInfoDto, request: Request): Promise<{
         error: string;
         msg?: undefined;
     } | {
