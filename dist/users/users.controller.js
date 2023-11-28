@@ -95,10 +95,10 @@ let UsersController = exports.UsersController = class UsersController {
         const userId = request['user'].userId;
         return await this.usersService.deleteUser(userId);
     }
-    async putMyInfo(putMyInfoDto, request, userId) {
+    async putMyInfo(putMyInfoDto, request) {
         const reqUserId = request['user'].userId;
         const { nickname, password } = putMyInfoDto;
-        const putMyInfoArg = { userId, reqUserId, nickname, password };
+        const putMyInfoArg = { userId: reqUserId, nickname, password };
         return this.usersService.putMyInfo(putMyInfoArg);
     }
     async getMyReport(request, paginationQuery) {
@@ -308,7 +308,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "deleteUser", null);
 __decorate([
-    (0, common_1.Put)('/mypage/myinfo/:userId'),
+    (0, common_1.Put)('/mypage/myinfo'),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, swagger_1.ApiOperation)({
         summary: '마이페이지 내 정보 수정',
@@ -327,9 +327,8 @@ __decorate([
     }),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Req)()),
-    __param(2, (0, common_1.Param)('userId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [put_myInfo_dto_1.PutMyInfoDto, Object, String]),
+    __metadata("design:paramtypes", [put_myInfo_dto_1.PutMyInfoDto, Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "putMyInfo", null);
 __decorate([
