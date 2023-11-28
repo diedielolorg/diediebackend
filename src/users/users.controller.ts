@@ -295,8 +295,8 @@ export class UsersController {
     @Req() request: Request,
   ) {
     const reqUserId = request['user'].userId;
-    const { nickname, password } = putMyInfoDto;
-    const putMyInfoArg = { userId: reqUserId, nickname, password };
+    const { nickname } = putMyInfoDto;
+    const putMyInfoArg = { userId: reqUserId, nickname };
 
     return this.usersService.putMyInfo(putMyInfoArg);
   }

@@ -13,6 +13,5 @@ export declare class UsersRepository extends Repository<Users> {
     putMyInfo(putMyInfoArg: {
         userId: number;
         nickname: string;
-        password: string;
     }): Promise<void>;
 }

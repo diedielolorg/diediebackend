@@ -97,8 +97,8 @@ let UsersController = exports.UsersController = class UsersController {
     }
     async putMyInfo(putMyInfoDto, request) {
         const reqUserId = request['user'].userId;
-        const { nickname, password } = putMyInfoDto;
-        const putMyInfoArg = { userId: reqUserId, nickname, password };
+        const { nickname } = putMyInfoDto;
+        const putMyInfoArg = { userId: reqUserId, nickname };
         return this.usersService.putMyInfo(putMyInfoArg);
     }
     async getMyReport(request, paginationQuery) {
